@@ -29,20 +29,15 @@ app.use(cookieParser());
 // Ad esempio, se hai un file style.css nella directory public, puoi accedervi nel tuo browser tramite http://localhost:port/style.css
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Definiamo una route per la radice del server, quando starto va direttamente in index.html
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 const uri = process.env.DB_URI || 'mongodb://localhost:27017/gym';
 // Connessione al database
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('Connection to database successful');
-    })
-    .catch((error) => {
-        console.error('Errore connecting to the database:', error.message);
-    });
+  .then(() => {
+    console.log('Connection to database successful');
+  })
+  .catch((error) => {
+    console.error('Errore connecting to the database:', error.message);
+  });
 
 
 // Definiamo i percorsi per i moduli di gestione della palestra
@@ -73,7 +68,3 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
-
-
-
-
