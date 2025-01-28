@@ -1,4 +1,10 @@
 {
   "name": "gym-manager",
-  "workspaces": ["backend", "frontend"]
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "dependencies": {
+    "vite": "^6.0.11"
+  }
 }
