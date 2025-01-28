@@ -1,13 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '@/pages/HomePage.vue';
-import { ref } from 'vue';
 import Login from '@/pages/Login.vue';
 import { useUserStore } from '@/store/user';
+import AdminPage from '@/pages/AdminPage.vue';
 
 
 const routes = [
-    { path: '/', name: "Home", component: Home },
     { path: '/login', name: "Login", component: Login },
+    { path: '/admin', name: "Home", component: AdminPage, meta: {role: "admin"} },
 ];
 
 const router = createRouter({

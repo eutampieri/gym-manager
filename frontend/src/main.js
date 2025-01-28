@@ -3,7 +3,7 @@ import "bootstrap/dist/js/bootstrap"
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './routes/router.js'
+import router from "./routes/router"
 
 createApp(App)
     .use(router)

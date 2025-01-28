@@ -5,7 +5,7 @@ import { useUserStore } from '@/store/user';
 const store = useUserStore();
 function login() {
     store.jwt = "jklònmklò";
-    router.push({"name": "Home"})
+    router.push({"path": "/admin"})
 }
 </script>
 <template>
