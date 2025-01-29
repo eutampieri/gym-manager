@@ -59,11 +59,9 @@ module.exports = class API {
             else {
                 res.status(500).json({ message: "Username already present" });
             }
-            await Lock.updateOne({id: 1}, { available: true }, null);
         } catch (error) {
             res.status(400).json({ message: error.message });
         } finally {
-            await Lock.updateOne({id: 1}, { available: true }, null);
         }
     }
 

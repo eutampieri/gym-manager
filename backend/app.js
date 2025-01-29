@@ -27,11 +27,22 @@ app.use(cookieParser());
 
 // Configuriamo Express per servire i file statici dalla directory 'public' come index.html login.html style.css
 // Ad esempio, se hai un file style.css nella directory public, puoi accedervi nel tuo browser tramite http://localhost:port/style.css
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
 
 // Definiamo una route per la radice del server, quando starto va direttamente in index.html
-app.get('/', function(req, res) {
+/*app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+// Servire index.html dalla cartella frontend
+app.get('/', function(req, res) {
+  res.sendFile(path.resolve('../frontend/index.html'));
+});*/
+//Serviamo l'intera cartella frontend come cartella di file statici
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+//Route per servire index.html quando si accede a "/"
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 const uri = process.env.DB_URI || 'mongodb://localhost:27017/gym';

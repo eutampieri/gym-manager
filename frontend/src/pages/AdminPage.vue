@@ -5,7 +5,7 @@ const buttons = [
     {text: "Create Trainer", route: "/createTrainer",},
     {text: "Delete Trainer", route: "/admin",},
     {text: "Update Trainer", route: "/admin",},
-    {text: "Create Client", route: "/admin",},
+    {text: "Create Client", route: "/createClient",},
     {text: "Delete Client", route: "/admin",},
     {text: "Update Client", route: "/admin",},
     {text: "Create Course", route: "/createCourse",},
