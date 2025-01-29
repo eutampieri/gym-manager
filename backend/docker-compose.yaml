@@ -4,7 +4,7 @@ services:
   web:
     image: applicazione # attenzione ho creato la image con docker image build -t applicazione .
     build:
-      context: ./applicazione
+      context: .
       dockerfile: Dockerfile
     restart: always
     ports:
