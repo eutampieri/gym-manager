@@ -18,7 +18,7 @@ const fieldValid = computed(() => {
 </script>
 <template>
     <div class="mb-3">
-        <label class="form-label" for="username">
+        <label class="form-label" :for="id">
             <slot></slot>
         </label>
         <input :aria-invalid="!fieldValid" class="form-control" :type="type" :id="id" v-model="model">

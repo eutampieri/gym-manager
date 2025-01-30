@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { isOnlyLetters, isOnlyNumbers } from '@/utils/validation';
+import { isOnlyLetters, isOnlyLettersSpaceInclusive, isOnlyNumbers } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import { CreateUserRequest } from "@gym-manager/models";
-import TextInput from '@/components/TextInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
 
 const username = ref("");
@@ -19,8 +18,29 @@ const message = ref("");
 
 
 const usernameValid = ref(false);
+const passwordValid = ref(false);
+const firstNameValid = ref(false);
+const lastNameValid = ref(false);
+const emailValid = ref(false);
+const phoneNumberValid = ref(false);
+const dateOfBirthValid = ref(false);
+const fiscalCodeValid = ref(false);
+const addressValid = ref(false);
+const idValid = ref(false);
+const messageValid = ref(false);
 
-const submitButtonEnabled = computed(() => usernameValid.value);
+const submitButtonEnabled = computed(() => usernameValid.value &&
+    passwordValid.value &&
+    firstNameValid.value &&
+    lastNameValid.value &&
+    emailValid.value &&
+    phoneNumberValid.value &&
+    dateOfBirthValid.value &&
+    fiscalCodeValid.value &&
+    addressValid.value &&
+    idValid.value &&
+    messageValid.value
+);
 
 async function checkId(id: string) {
     try {
@@ -52,7 +72,7 @@ async function handleCreateCourse() {
     }
     // Verifica che la password abbia almeno 7 caratteri
     if (password.value.length < 7 && password.value.length > 10) {
-        message.value = 'The password must be at least 7 characters long and less than 10';
+        message.value = '';
         return; // Interrompe il processo se la password non è abbastanza lunga
     }
 
@@ -128,15 +148,15 @@ async function handleCreateCourse() {
             Username
         </GenericInput>
 
-        <div class="mb-3">
-            <label class="form-label" for="password">Password:</label>
-            <input class="form-control" type="password" id="password" v-model="password">
-        </div>
+        <GenericInput type="password" id="password" error-message="The password must be at least 7 characters long."
+            :validation-function="(x) => x.length >= 7" v-model="password" v-model:valid="usernameValid">
+            Password
+        </GenericInput>
 
-        <div class="mb-3">
-            <label class="form-label" for="firstName">firstName:</label>
-            <input class="form-control" type="text" id="firstName" v-model="firstName">
-        </div>
+        <GenericInput type="text" id="firstName" error-message="Il nome può contenere solo lettere."
+            :validation-function="isOnlyLettersSpaceInclusive" v-model="firstName" v-model:valid="usernameValid">
+            Nome
+        </GenericInput>
 
         <div class="mb-3">
             <label class="form-label" for="lastName">lastName:</label>
