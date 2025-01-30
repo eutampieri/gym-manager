@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { CreateUserRequest } from '@/utils/user';
 import { isOnlyLetters, isOnlyNumbers } from '@/utils/validation';
 import { computed, ref } from 'vue';
+import { CreateUserRequest } from "@gym-manager/models";
 
 const username = ref("");
 const password = ref("");

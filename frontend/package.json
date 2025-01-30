@@ -1,5 +1,5 @@
 {
-  "name": "gym-manager-frontend",
+  "name": "@gym-manager/frontend",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gym-manager/models": "^1.0.0",
     "bootstrap": "^5.3.3",
     "pinia": "^2.3.0",
     "vue": "^3.5.12",
