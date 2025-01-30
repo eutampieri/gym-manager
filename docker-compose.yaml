@@ -9,14 +9,8 @@ services:
     restart: always
     ports:
       - "8080:80"
-    environment:
-      NODE_ENV: development
-      MONGO_HOST: mongodb #il client (la parte web dell'app) deve sapere l'indirizzo del server mongoDB
-      MONGO_PORT: 27017
-      #DB_URI: mongodb://mongodb1:27017/gym
-      DB_URI: mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/gym?replicaSet=rs0
     depends_on:
-      - mongodb1
+      - backend
     deploy:
       replicas: 2 # se voglio scalabilità e elevate prestazioni,
 
@@ -29,7 +23,6 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NODE_ENV: development
       MONGO_HOST: mongodb #il client (la parte web dell'app) deve sapere l'indirizzo del server mongoDB
       MONGO_PORT: 27017
       #DB_URI: mongodb://mongodb1:27017/gym
@@ -98,9 +91,3 @@ volumes:
   mongodata1:
   mongodata2:
   mongodata3:
-
-
-
-
-
-
