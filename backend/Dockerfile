@@ -1,5 +1,5 @@
 # Use a Node.js image as base
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Set the working directory inside the container
 #RUN mkdir /app
@@ -13,6 +13,8 @@ COPY . .
 
 # Install project dependencies
 RUN npm install
+
+WORKDIR /app/backend
 
 # Expose the port that the Express server is listening on
 EXPOSE 3000
