@@ -11,6 +11,18 @@ const mongoose = require('mongoose')
 const logger = require('morgan');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
+const { DocumentBuilder } = require('express-openapi-generator');
+const fs = require('fs');
+
+
+const documentBuilder = DocumentBuilder.initializeDocument({
+  openapi: '3.0.1',
+  info: {
+    title: 'Gym backend',
+    version: '1',
+  },
+  paths: {}, // You don't need to include any path objects, those will be generated later
+});
 
 // Inizializziamo l'applicazione Express
 const app = express();
@@ -41,19 +53,19 @@ app.get('/', function(req, res) {
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 //Route per servire index.html quando si accede a "/"
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 const uri = process.env.DB_URI || 'mongodb://localhost:27017/gym';
 // Connessione al database
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('Connection to database successful');
-    })
-    .catch((error) => {
-        console.error('Errore connecting to the database:', error.message);
-    });
+  .then(() => {
+    console.log('Connection to database successful');
+  })
+  .catch((error) => {
+    console.error('Errore connecting to the database:', error.message);
+  });
 
 
 // Definiamo i percorsi per i moduli di gestione della palestra
@@ -81,10 +93,11 @@ app.use('/auth', auth);
 //  Il server Express viene avviato su una porta specifica,
 //  che è definita come variabile di ambiente process.env.PORT o come porta predefinita 3000.
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
-
-
-
-
+if (process.env.GENERATE_OPENAPI !== undefined) {
+  documentBuilder.generatePathsObject(app);
+  fs.writeFileSync("openapi.json", JSON.stringify(documentBuilder.build()));
+} else {
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+  });
+}
