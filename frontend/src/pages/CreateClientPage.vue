@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { CreateUserRequest } from '@/utils/user';
+import { isOnlyLetters, isOnlyNumbers } from '@/utils/validation';
+import { computed, ref } from 'vue';
+
 const username = ref("");
 const password = ref("");
 const firstName = ref("");
@@ -10,14 +13,13 @@ const dateOfBirth = ref("");
 const fiscalCode = ref("");
 const address = ref("");
 const id = ref("");
-const message = ref(""); 
+const message = ref("");
 
-function isOnlyLetters(input: string) {
-        return /^[a-zA-Z]+$/.test(input);
-}
-function isOnlyNumbers(input: string) {
-        return /^\d+$/.test(input);
-}
+
+const usernameValid = computed(() => isOnlyLetters(username.value));
+
+const submitButtonEnabled = computed(() => usernameValid.value);
+
 async function checkId(id: string) {
         try {
             // FUNZIONE isClientPresent
@@ -43,7 +45,7 @@ async function handleCreateCourse() {
     message.value = "";
     // Controllo per username
         if (!isOnlyLetters(username.value)) {
-            message.value = 'The username can only contain letters';
+            message.value = '';
             return;
         }
         // Verifica che la password abbia almeno 7 caratteri
@@ -75,25 +77,21 @@ async function handleCreateCourse() {
         }
         
     try {
+
         // Creazione dell'oggetto JSON con i dati del cliente
-        const formData = new FormData();
-        formData.set('username', username.value);
-        formData.set('password', password.value);
-        formData.set('firstName', firstName.value);
-        formData.set('lastName', lastName.value);
-        formData.set('email', email.value);
-        formData.set('phoneNumber', phoneNumber.value);
-        formData.set('dateOfBirth', dateOfBirth.value);
-        formData.set('fiscalCode', fiscalCode.value);
-        formData.set('address', address.value);
-        formData.set('id', id.value);
+        const request: CreateUserRequest = {
+            username: username.value,
+            password: password.value,
+            firstName: firstName.value,
+            lastName: lastName.value,
+            email: email.value,
+            phoneNumber: phoneNumber.value,
+            dateOfBirth: dateOfBirth.value,
+            fiscalCode: fiscalCode.value,
+            address: address.value,
+            id: id.value,
+        }
 
-        let clientData: Record<string, string> = {};
-        formData.forEach((value, key) => {
-            clientData[key] = value as string;
-        });
-
-        console.log("Dati inviati:", JSON.stringify(clientData));
 
         // Effettua la richiesta POST per creare il cliente
         const response = await fetch('/clients', {
@@ -101,7 +99,7 @@ async function handleCreateCourse() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(clientData)
+            body: JSON.stringify(request)
         });
 
         if (response.status === 201) {
@@ -120,12 +118,12 @@ async function handleCreateCourse() {
 
 </script>
 <template>
-    <div id="message" style="color: red;">{{ message }}</div> <!-- Div per il messaggio di successo/insuccesso -->
      <form id="clientForm">
      <h2>Creazione di {{ firstName === "" ? "un nuovo cliente" : firstName }}</h2>
    <div class="mb-3">
-   <label class="form-label"for="username">Username:</label>
-   <input class="form-control"type="text" id="username" v-model="username">
+    <label class="form-label"for="username">Username:</label>
+    <input :aria-invalid="!usernameValid" class="form-control"type="text" id="username" v-model="username">
+    <div v-if="!usernameValid" class="form-text text-danger">Lo username può contenere solo lettere.</div>
    </div>
    
    <div class="mb-3">
@@ -175,7 +173,7 @@ async function handleCreateCourse() {
    
   
    
-   <button class="btn btn-primary" type="button" @click="handleCreateCourse()">Create Client {{firstName }}</button>
+   <button class="btn btn-primary" type="button" @click="handleCreateCourse()" :disabled="!submitButtonEnabled">Create Client {{firstName }}</button>
    
    </form>
    
