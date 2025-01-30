@@ -21,4 +21,4 @@ EXPOSE 3000
 
 # Start the application when the container is started
 CMD ["node", "app.js"]
-
+LABEL "traefik.http.routers.backend.rule"="PathPrefix(`/api`)"
