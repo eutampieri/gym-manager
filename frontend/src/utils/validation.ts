@@ -3,9 +3,14 @@ export function isOnlyLetters(input: string) {
 }
 
 export function isOnlyLettersSpaceInclusive(input: string) {
-    return /^[a-zA-Z ]+$/.test(input);
+    return /^[a-zA-Z ']+$/.test(input);
 }
 
 export function isOnlyNumbers(input: string) {
     return /^\d+$/.test(input);
+}
+
+
+export function phoneNumber(input: string) {
+    return /^\+?\d+$/.test(input);
 }

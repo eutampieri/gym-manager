@@ -1,6 +1,5 @@
-export interface CreateUserRequest {
+interface BaseUser {
     username: String
-    password: String
     firstName: String
     lastName: String
     email: String
@@ -8,4 +7,11 @@ export interface CreateUserRequest {
     dateOfBirth: String
     fiscalCode: String
     address: String
+}
+
+export interface User extends BaseUser {
+    id: String
+}
+export interface CreateUserRequest extends BaseUser {
+    password: String
 }
