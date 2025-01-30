@@ -3,6 +3,7 @@ import { isOnlyLetters, isOnlyLettersSpaceInclusive, isOnlyNumbers } from '@/uti
 import { computed, ref } from 'vue';
 import { CreateUserRequest } from "@gym-manager/models";
 import GenericInput from '@/components/GenericInput.vue';
+import { useUserStore } from '../store/user';
 
 const username = ref("");
 const password = ref("");
@@ -41,6 +42,8 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
     idValid.value &&
     messageValid.value
 );
+
+const client = useUserStore().client;
 
 async function checkId(id: string) {
     try {
@@ -111,18 +114,11 @@ async function handleCreateCourse() {
             dateOfBirth: dateOfBirth.value,
             fiscalCode: fiscalCode.value,
             address: address.value,
-            id: id.value,
         }
 
 
         // Effettua la richiesta POST per creare il cliente
-        const response = await fetch('/clients', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(request)
-        });
+        const response = await client.addUser(request);
 
         if (response.status === 201) {
             message.value = "Client successfully created!";
@@ -149,7 +145,7 @@ async function handleCreateCourse() {
         </GenericInput>
 
         <GenericInput type="password" id="password" error-message="The password must be at least 7 characters long."
-            :validation-function="(x) => x.length >= 7" v-model="password" v-model:valid="usernameValid">
+            :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="usernameValid">
             Password
         </GenericInput>
 

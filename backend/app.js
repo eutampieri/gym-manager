@@ -83,7 +83,7 @@ const auth = require('./routes/authRoutes');
 //saranno raggiungibili attraverso l'URL base /trainers.
 app.use('/courses', courses);
 app.use('/trainers', trainers);
-app.use('/clients', clients);
+app.use('/customers', clients);
 app.use('/sessions', sessions);
 app.use('/auth', auth);
 
