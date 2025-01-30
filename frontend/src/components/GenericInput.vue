@@ -3,6 +3,8 @@ import { computed, ref } from 'vue';
 const props = defineProps<{
     validationFunction: (value: string) => boolean,
     errorMessage: string,
+    type: string,
+    id: string,
 }>();
 
 const model = defineModel<string>();
@@ -19,7 +21,7 @@ const fieldValid = computed(() => {
         <label class="form-label" for="username">
             <slot></slot>
         </label>
-        <input :aria-invalid="!fieldValid" class="form-control" type="text" id="username" v-model="model">
+        <input :aria-invalid="!fieldValid" class="form-control" :type="type" :id="id" v-model="model">
         <div v-if="!fieldValid" class="form-text text-danger">{{ props.errorMessage }}</div>
     </div>
 </template>

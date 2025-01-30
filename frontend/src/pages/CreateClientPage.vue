@@ -3,6 +3,7 @@ import { isOnlyLetters, isOnlyNumbers } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import { CreateUserRequest } from "@gym-manager/models";
 import TextInput from '@/components/TextInput.vue';
+import GenericInput from '@/components/GenericInput.vue';
 
 const username = ref("");
 const password = ref("");
@@ -122,8 +123,10 @@ async function handleCreateCourse() {
     <form id="clientForm">
         <h2>Creazione di {{ firstName === "" ? "un nuovo cliente" : firstName }}</h2>
 
-        <TextInput error-message="Lo username può contenere solo lettere." :validation-function="isOnlyLetters"
-            v-model="username" v-model:valid="usernameValid">Username</TextInput>
+        <GenericInput type="text" id="username" error-message="Lo username può contenere solo lettere."
+            :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
+            Username
+        </GenericInput>
 
         <div class="mb-3">
             <label class="form-label" for="password">Password:</label>
