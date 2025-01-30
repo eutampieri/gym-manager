@@ -41,19 +41,19 @@ app.get('/', function(req, res) {
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 //Route per servire index.html quando si accede a "/"
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 const uri = process.env.DB_URI || 'mongodb://localhost:27017/gym';
 // Connessione al database
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        console.log('Connection to database successful');
-    })
-    .catch((error) => {
-        console.error('Errore connecting to the database:', error.message);
-    });
+  .then(() => {
+    console.log('Connection to database successful');
+  })
+  .catch((error) => {
+    console.error('Errore connecting to the database:', error.message);
+  });
 
 
 // Definiamo i percorsi per i moduli di gestione della palestra
@@ -69,11 +69,11 @@ const auth = require('./routes/authRoutes');
 // ad esempio app.use('/trainers', trainersRouter);
 //indica che tutte le route definite nel modulo trainersRouter
 //saranno raggiungibili attraverso l'URL base /trainers.
-app.use('/courses', courses);
-app.use('/trainers', trainers);
-app.use('/clients', clients);
-app.use('/sessions', sessions);
-app.use('/auth', auth);
+app.use('/api/courses', courses);
+app.use('/api/trainers', trainers);
+app.use('/api/clients', clients);
+app.use('/api/sessions', sessions);
+app.use('/api/auth', auth);
 
 
 

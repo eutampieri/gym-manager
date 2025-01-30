@@ -4,7 +4,7 @@ services:
   traefik:
     image: traefik:v3.3
     restart: always
-    command: --api.insecure=true --providers.swarm --log.level=DEBUG
+    command: --api.insecure=true --providers.docker --log.level=DEBUG
     ports:
       - "8080:80"
       - "8081:8080"
@@ -12,7 +12,6 @@ services:
       - backend
       - frontend
     deploy:
-      replicas: 2
       placement:
         constraints:
           - node.role == manager
@@ -41,10 +40,9 @@ services:
     environment:
       MONGO_HOST: mongodb #il client (la parte web dell'app) deve sapere l'indirizzo del server mongoDB
       MONGO_PORT: 27017
-      #DB_URI: mongodb://mongodb1:27017/gym
-      DB_URI: mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/gym?replicaSet=rs0
+      DB_URI: mongodb://mongodb:27017/gym
     depends_on:
-      - mongodb1
+      - mongodb
     deploy:
       replicas: 2 # se voglio scalabilità e elevate prestazioni,
       # e se voglio che l'app continui a essere disponibile anche se il nodo sul quale è in esecuzione fallisce
@@ -54,42 +52,18 @@ services:
       # se salta un nodo il container si restarta
     labels:
      - "traefik.http.services.backend.loadbalancer.server.port=3000"
-
+     - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       # se vado in docker desktop nella sezione volumes vedo che ha creato stackApplicazione_test (applicazione è il nome dello stack)
 # PER REPLICA DEL DATABASE per fault tolerance
 
-  mongodb1:
+  mongodb:
     image: mongo
     restart: always
-    command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
+    command: [ "--bind_ip_all", "--port", "27017" ]
     volumes:
-     - mongodata1:/data/db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+     - mongodata:/data/db
     ports:
      - "27017:27017"
-
-  mongodb2:
-    image: mongo
-    restart: always
-    command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
-    volumes:
-      - mongodata2:/data/db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "27018:27017"
-
-  mongodb3:
-    image: mongo
-    restart: always
-    command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
-    volumes:
-      - mongodata3:/data/db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "27019:27017"
 
 # username is admin and password is pass
   mongoexpress:
@@ -97,15 +71,12 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: pass
-      ME_CONFIG_MONGODB_URL: mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/gym?replicaSet=rs0
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/gym
     restart: always
-    #command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
     ports:
       - "8082:8081"
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 volumes:
-  mongodata1:
-  mongodata2:
-  mongodata3:
+  mongodata:
