@@ -51,13 +51,7 @@ const clientSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Session',
         required: false
-    }],
-    id: {
-        type: Number,
-        required: true
-    }
-
-
+    }]
 });
 
 /* Here are some of the main functions offered by Mongoose:

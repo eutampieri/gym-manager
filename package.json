@@ -2,9 +2,11 @@
   "name": "gym-manager",
   "workspaces": [
     "backend",
-    "frontend"
+    "frontend",
+    "models"
   ],
-  "dependencies": {
-    "vite": "^6.0.11"
+  "devDependencies": {
+    "vite": "^6.0.11",
+    "typescript": "^5.7.3"
   }
 }
