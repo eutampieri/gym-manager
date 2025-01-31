@@ -50,7 +50,7 @@ function getLinkPrefix(field: String): string | undefined {
 <template>
     <h1>User Profile</h1>
     <div>
-        <img src="" alt="???'s profile picture"/>
+        <img src="" :alt="user?.username + 's profile picture'"/>
         <dl>
             <template v-for="item in profileData">
                 <dt>{{ item.label }}</dt>
