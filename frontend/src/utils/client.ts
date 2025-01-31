@@ -1,4 +1,4 @@
-import { CreateUserRequest } from "@gym-manager/models";
+import { Admin, CreateUserRequest, Role, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -18,6 +18,26 @@ export class Client {
         // TODO API request
         this.jwt = "";
         return true;
+    }
+
+    public get getUserDetails(): undefined | User | Trainer | Admin {
+        // TODO
+        const result: User = {
+            username: 'Rox09',
+            firstName: 'Rocco',
+            lastName: 'Siffredi',
+            id: '1',
+            dateOfBirth: '10/10/2020',
+            fiscalCode: 'RVLMLJC987DH43',
+            address: 'Via sghemba 4',
+            email: 'rsiffr@g.com',
+            phoneNumber: '+399333444555',
+        }
+        return result;
+    }
+    public get getRole(): undefined | Role {
+        // TODO
+        return Role.User;
     }
 
     public addUser(user: CreateUserRequest) {
