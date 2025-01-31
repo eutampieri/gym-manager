@@ -12,6 +12,7 @@ const buttons = [
     { text: "Create Course", route: "/admin/createCourse", },
     { text: "Delete Course", route: "/admin", },
     { text: "Update Course", route: "/admin", },
+    { text: "DEBUG user profile", route: "/user/profile", },
 ];
 
 </script>
