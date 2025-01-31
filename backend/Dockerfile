@@ -1,5 +1,5 @@
 # Use a Node.js image as base
-FROM node:18-alpine
+FROM node:22-alpine
 
 # Set the working directory inside the container
 #RUN mkdir /app
@@ -14,9 +14,11 @@ COPY . .
 # Install project dependencies
 RUN npm install
 
+WORKDIR /app/backend
+
 # Expose the port that the Express server is listening on
 EXPOSE 3000
 
 # Start the application when the container is started
 CMD ["node", "app.js"]
-
+LABEL "traefik.http.routers.backend.rule"="PathPrefix(`/api`)"
