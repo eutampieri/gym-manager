@@ -36,3 +36,8 @@ export interface Admin extends BasicInfo {
 export interface CreateAdminRequest extends BasicInfo {
     password: String
 }
+
+export interface LoginRequest {
+    username: string,
+    password: string,
+}

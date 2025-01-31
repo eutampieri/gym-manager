@@ -1,4 +1,4 @@
-import { Admin, CreateUserRequest, Role, Trainer, User } from "@gym-manager/models";
+import { Admin, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -9,13 +9,20 @@ export class Client {
 
     private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
         const h = headers || new Headers;
-        h.append("Authorization", "Bearer " + "pizza");
+        if (this.jwt !== undefined) {
+            h.append("Authorization", "Bearer " + this.jwt);
+        }
         h.append("Content-Type", "application/json");
         return fetch(`/api/${endpoint}`, { method: method, body: JSON.stringify(body), headers: headers })
     }
 
     public async login(username: string, password: string): Promise<boolean> {
         // TODO API request
+        const request: LoginRequest = {
+            username: username,
+            password: password
+        }
+        const response = await this.apiRequest("POST", "/auth/authenticate", request);
         this.jwt = "";
         return true;
     }
