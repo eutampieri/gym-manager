@@ -11,12 +11,12 @@
   "dependencies": {
     "@gym-manager/models": "^1.0.0",
     "bootstrap": "^5.3.3",
-    "bootstrap-vue": "^2.23.1",
     "pinia": "^2.3.0",
     "vue": "^3.5.12",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
     "@vitejs/plugin-vue": "^5.1.4",
     "vite": "^5.4.10",
     "vite-plugin-vue-devtools": "^7.5.4"

@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import GenericInput from '@/components/GenericInput.vue';
+import NotificationArea from '@/components/NotificationArea.vue';
+import { Notification as INotification } from '@/utils/notifications';
 import router from '@/routes/router';
 import { useUserStore } from '@/store/user';
 import { ref } from 'vue';
+import { Role } from '@gym-manager/models';
 
 const store = useUserStore();
 const username = ref<string>();
@@ -10,9 +13,26 @@ const password = ref<string>();
 async function login() {
     let authResult = await store.client.login(username.value || "", password.value || "");
     if (authResult) {
-        router.push({ "path": "/admin" })
+        switch (store.client.getRole) {
+            case Role.Admin:
+                router.push({ "path": "/admin" })
+                break;
+            case Role.Trainer:
+                router.push({ "path": "/trainer" })
+                break;
+            case Role.User:
+                router.push({ "path": "/user" })
+                break;
+        }
+    } else {
+        notifications.value.push({
+            title: 'Authentication error',
+            body: 'The credentials you provided were invalid.',
+            background: "danger"
+        });
     }
 }
+const notifications = ref<Array<INotification>>([]);
 </script>
 <template>
     <h1>Login</h1>
@@ -21,4 +41,5 @@ async function login() {
         <GenericInput v-model="password" type="password" id="password">Password</GenericInput>
     </form>
     <button class="btn btn-primary" type="button" @click="login()">Login</button>
+    <NotificationArea :notifications="notifications"></NotificationArea>
 </template>
