@@ -15,7 +15,7 @@ const breakpoints = `col-md-${colWidth} col-sm-12`;
         </div>
         <section class="body">
             <TableRow v-for="row in data.data" :data="row" :headers="data.headers" :show-headers="false"
-                :class="breakpoints"></TableRow>
+                :class="breakpoints" :actions="data.actions"></TableRow>
         </section>
     </section>
 </template>
