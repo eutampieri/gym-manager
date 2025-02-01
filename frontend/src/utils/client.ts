@@ -43,4 +43,22 @@ export class Client {
     public addUser(user: CreateUserRequest) {
         return this.apiRequest("POST", "/customers", user);
     }
+
+    public async listUsers(): Promise<Array<User>> {
+        /*const x = await this.apiRequest("GET", "/customers");
+        return await x.json();*/
+        return [
+            {
+                id: "1",
+                dateOfBirth: "2021-01-01",
+                fiscalCode: "mockCF",
+                address: "Abbey Road 21, SW234E1 London",
+                email: "info@abbey-road.com",
+                phoneNumber: "+44 0071 194893845",
+                username: "abbeyroad",
+                firstName: "Abbey",
+                lastName: "Road"
+            }
+        ];
+    }
 }

@@ -5,6 +5,7 @@ import AdminPage from '@/pages/AdminPage.vue';
 import CreateCoursePage from '@/pages/CreateCoursePage.vue';
 import CreateClientPage from '@/pages/CreateClientPage.vue';
 import ProfilePage from '@/pages/ProfilePage.vue';
+import UserListPage from '@/pages/UserListPage.vue';
 
 
 const routes = [
@@ -15,6 +16,7 @@ const routes = [
   { path: '/admin/profile', name: "adminProfile", component: ProfilePage, meta: { role: "admin" } },
   { path: '/trainer/profile', name: "trainerProfile", component: ProfilePage, meta: { role: "trainer" } },
   { path: '/user/profile', name: "userProfile", component: ProfilePage, meta: { role: "user" } },
+  { path: '/admin/listCustomers', name: "listCustomers", component: UserListPage, meta: { role: "user" } },
 ];
 
 const router = createRouter({
