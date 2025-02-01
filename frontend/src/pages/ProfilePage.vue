@@ -1,8 +1,7 @@
 <script lang="ts" setup>
-import { Admin, getProfileIcon, Trainer, User } from '@gym-manager/models';
+import { getProfileIcon } from '@gym-manager/models';
 import { useUserStore } from '../store/user';
 import { ref } from 'vue';
-import sha256 from "sha256";
 
 interface ProfileEntry {
     label: string,
