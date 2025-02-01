@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import UiNavigationButton from '@/components/UiNavigationButton.vue';
-import ListView from '@/components/ListView.vue';
-import { ListData, RowData } from '@/utils/lists';
 
 const buttons = [
     { text: "Create Trainer", route: "/admin/createTrainer", },
@@ -12,8 +9,7 @@ const buttons = [
     { text: "List Customers", route: "/admin/listCustomers", },
     { text: "Update Client", route: "/admin", },
     { text: "Create Course", route: "/admin/createCourse", },
-    { text: "Delete Course", route: "/admin", },
-    { text: "Update Course", route: "/admin", },
+    { text: "List Courses", route: "/admin/listCourses", },
 ];
 </script>
 <template>

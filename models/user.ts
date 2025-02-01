@@ -1,4 +1,5 @@
 import sha256 from "sha256";
+import { Identifiable } from ".";
 
 interface BasicInfo {
     username: string,
@@ -25,23 +26,20 @@ export enum Role {
     Admin, Trainer, User
 }
 // User
-export interface User extends CompleteInfo {
-    id: string
-}
+export interface User extends CompleteInfo, Identifiable { }
+
 export interface CreateUserRequest extends CompleteInfo {
     password: string
 }
 // Trainer
-export interface Trainer extends RichInfo {
-    id: string
-}
+export interface Trainer extends RichInfo, Identifiable { }
+
 export interface CreateTrainerRequest extends RichInfo {
     password: string
 }
 // Admin
-export interface Admin extends BasicInfo {
-    id: string
-}
+export interface Admin extends BasicInfo, Identifiable { }
+
 export interface CreateAdminRequest extends BasicInfo {
     password: string
 }

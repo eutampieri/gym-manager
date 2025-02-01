@@ -7,6 +7,7 @@ import CreateClientPage from '@/pages/CreateClientPage.vue';
 import ProfilePage from '@/pages/ProfilePage.vue';
 import UserListPage from '@/pages/UserListPage.vue';
 import TrainerListPage from '@/pages/TrainerListPage.vue';
+import CourseListPage from '@/pages/CourseListPage.vue';
 
 
 const routes = [
@@ -17,8 +18,9 @@ const routes = [
   { path: '/admin/profile', name: "adminProfile", component: ProfilePage, meta: { role: "admin" } },
   { path: '/trainer/profile', name: "trainerProfile", component: ProfilePage, meta: { role: "trainer" } },
   { path: '/user/profile', name: "userProfile", component: ProfilePage, meta: { role: "user" } },
-  { path: '/admin/listCustomers', name: "listCustomers", component: UserListPage, meta: { role: "user" } },
-  { path: '/admin/listTrainers', name: "listTrainers", component: TrainerListPage, meta: { role: "user" } },
+  { path: '/admin/listCustomers', name: "listCustomers", component: UserListPage, meta: { role: "admin" } },
+  { path: '/admin/listTrainers', name: "listTrainers", component: TrainerListPage, meta: { role: "admin" } },
+  { path: '/admin/listCourses', name: "listCourses", component: CourseListPage, meta: { role: "user" } },
 ];
 
 const router = createRouter({

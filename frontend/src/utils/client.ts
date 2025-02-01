@@ -1,4 +1,4 @@
-import { Admin, CreateUserRequest, Role, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CreateUserRequest, Role, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -58,6 +58,24 @@ export class Client {
                 username: "abbeyroad",
                 firstName: "Abbey",
                 lastName: "Road"
+            }
+        ];
+    }
+
+    public async listCourses(): Promise<Array<Course>> {
+        /*const x = await this.apiRequest("GET", "/customers");
+        return await x.json();*/
+        return [
+            {
+                id: "1",
+                name: "Zumba",
+                description: "Sad course description, nothing to see here...",
+                dayOfWeek: "Wednesday",
+                startTime: "10:00",
+                endTime: "11:00",
+                capacity: 20,
+                trainer: "McMuscle",
+                participants: []
             }
         ];
     }
