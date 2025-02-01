@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import UiNavigationButton from '@/components/UiNavigationButton.vue';
 import ListView from '@/components/ListView.vue';
+import { ListData, RowData } from '@/utils/lists';
 
 const buttons = [
     { text: "Create Trainer", route: "/admin/createTrainer", },
@@ -15,12 +16,32 @@ const buttons = [
     { text: "Update Course", route: "/admin", },
 ];
 
-const data = {
-    getHeaders() {
-        return [" A", "B", "C"]
-    },
-    pizza: []
+const data: ListData = {
+    headers: [
+        {
+            key: 'name',
+            name: 'Name'
+        },
+        {
+            key: 'description',
+            name: 'Description'
+        }
+    ],
+    actions: [],
+    data: [
+        {
+            name: "Zumba",
+            description: "A bad course description :("
+        },
+        {
+            name: "Zumba1",
+            description: "A bad course description :("
+        }
+    ]
 };
+function mobileHeader(d: RowData): string {
+    return d.name
+}
 </script>
 <template>
     <h1>Admin Page</h1>
@@ -31,5 +52,5 @@ const data = {
             </UiNavigationButton>
         </div>
     </div>
-    <ListView :data="data"></ListView>
+    <ListView :data="data" :mobile-header="mobileHeader"></ListView>
 </template>

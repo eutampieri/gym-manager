@@ -4,9 +4,17 @@ export interface ListData {
     data: Array<RowData>,
 }
 
-export type Headers = Array<string>;
+export type Headers = Array<Header>;
+export interface Header {
+    key: string,
+    name: string,
+}
 export interface Action {
-
+    action: (data: RowData) => void,
+    label: string,
+    colour: string,
 }
 
-export interface RowData { }
+export type RowData = {
+    [key: string]: string;
+};

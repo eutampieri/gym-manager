@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Headers, RowData } from '@/utils/lists';
 
-const props = defineProps<{ class?: string, data: RowData, headers?: Array<Headers> }>();
+const props = defineProps<{ class?: string, data: RowData, headers: Headers, showHeaders: boolean }>();
 </script>
 <template>
     <div class="row">
-        <div :class="props.class || ''">Test</div>
-        <div :class="props.class || ''">Test1</div>
-        <div :class="props.class || ''">Test2</div>
+        <div v-for="h in headers" :class="props.class || ''"><span class="fw-bold" v-if="showHeaders">{{ h.name }}:
+            </span>{{
+                data[h.key] }}</div>
     </div>
 </template>
