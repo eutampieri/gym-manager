@@ -1,5 +1,5 @@
 {
-  "name": "gym-manager-frontend",
+  "name": "@gym-manager/frontend",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.12"
+    "@gym-manager/models": "^1.0.0",
+    "bootstrap": "^5.3.3",
+    "bootstrap-vue": "^2.23.1",
+    "pinia": "^2.3.0",
+    "vue": "^3.5.12",
+    "vue-responsiveness": "^0.2.0",
+    "vue-router": "^4.5.0",
+    "@types/sha256": "^0.2.2",
+    "sha256": "^0.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",

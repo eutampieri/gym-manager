@@ -11,6 +11,18 @@ const mongoose = require('mongoose')
 const logger = require('morgan');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
+const { DocumentBuilder } = require('express-openapi-generator');
+const fs = require('fs');
+
+
+const documentBuilder = DocumentBuilder.initializeDocument({
+  openapi: '3.0.1',
+  info: {
+    title: 'Gym backend',
+    version: '1',
+  },
+  paths: {}, // You don't need to include any path objects, those will be generated later
+});
 
 // Inizializziamo l'applicazione Express
 const app = express();
@@ -27,7 +39,23 @@ app.use(cookieParser());
 
 // Configuriamo Express per servire i file statici dalla directory 'public' come index.html login.html style.css
 // Ad esempio, se hai un file style.css nella directory public, puoi accedervi nel tuo browser tramite http://localhost:port/style.css
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
+
+// Definiamo una route per la radice del server, quando starto va direttamente in index.html
+/*app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+// Servire index.html dalla cartella frontend
+app.get('/', function(req, res) {
+  res.sendFile(path.resolve('../frontend/index.html'));
+});*/
+//Serviamo l'intera cartella frontend come cartella di file statici
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+//Route per servire index.html quando si accede a "/"
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+});
 
 const uri = process.env.DB_URI || 'mongodb://localhost:27017/gym';
 // Connessione al database
@@ -55,7 +83,7 @@ const auth = require('./routes/authRoutes');
 //saranno raggiungibili attraverso l'URL base /trainers.
 app.use('/courses', courses);
 app.use('/trainers', trainers);
-app.use('/clients', clients);
+app.use('/customers', clients);
 app.use('/sessions', sessions);
 app.use('/auth', auth);
 
@@ -65,6 +93,11 @@ app.use('/auth', auth);
 //  Il server Express viene avviato su una porta specifica,
 //  che è definita come variabile di ambiente process.env.PORT o come porta predefinita 3000.
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+if (process.env.GENERATE_OPENAPI !== undefined) {
+  documentBuilder.generatePathsObject(app);
+  fs.writeFileSync("openapi.json", JSON.stringify(documentBuilder.build()));
+} else {
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+  });
+}

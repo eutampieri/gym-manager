@@ -1,5 +1,5 @@
 {
-  "name": "gym-manager-frontend",
+  "name": "@gym-manager/backend",
   "version": "0.0.0",
   "main": "app.js",
   "private": true,
@@ -11,9 +11,13 @@
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "express-openapi-generator": "^1.2.0",
     "http-errors": "~1.6.3",
     "mongoose": "^8.1.1",
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11"
+  },
+  "peerDependencies": {
+    "ajv": "8.17.1"
   }
 }
