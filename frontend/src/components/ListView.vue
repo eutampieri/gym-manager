@@ -23,6 +23,6 @@ const filteredData = computed((): ListData => {
 </script>
 <template>
     <SerarchBar v-model="searchQuery"></SerarchBar>
-    <MobileListView :data="filteredData" v-if="$matches.sm.max" :accordion-header="mobileHeader"></MobileListView>
-    <DesktopListView :data="filteredData" v-else></DesktopListView>
+    <MobileListView v-if="$matches.sm.max" :data="filteredData" :accordion-header="mobileHeader"></MobileListView>
+    <DesktopListView v-else :data="filteredData"></DesktopListView>
 </template>

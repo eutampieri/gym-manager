@@ -6,7 +6,7 @@ import { ListData, RowData } from '@/utils/lists';
 
 const buttons = [
     { text: "Create Trainer", route: "/admin/createTrainer", },
-    { text: "Delete Trainer", route: "/admin", },
+    { text: "List Trainers", route: "/admin/listTrainers", },
     { text: "Update Trainer", route: "/admin", },
     { text: "Create Client", route: "/admin/createClient", },
     { text: "List Customers", route: "/admin/listCustomers", },
