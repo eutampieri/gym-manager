@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { Admin, Trainer, User } from '@gym-manager/models';
+import { Admin, getProfileIcon, Trainer, User } from '@gym-manager/models';
 import { useUserStore } from '../store/user';
 import { ref } from 'vue';
+import sha256 from "sha256";
 
 interface ProfileEntry {
     label: string,
@@ -10,7 +11,8 @@ interface ProfileEntry {
 }
 
 const client = useUserStore().client;
-const profileData = ref<Array<ProfileEntry>>()
+const profileData = ref<Array<ProfileEntry>>();
+const profileIcon = ref('');
 
 // get the logged user info
 const user = client.getUserDetails;
@@ -33,9 +35,11 @@ if (user) {
             linkPrefix: getLinkPrefix(k)
         }
     });
+    profileIcon.value = getProfileIcon(user);
 } else {
     // error
 }
+
 function getLinkPrefix(field: String): string | undefined {
     if (field == 'email') {
         return 'mailto:';
@@ -50,7 +54,7 @@ function getLinkPrefix(field: String): string | undefined {
 <template>
     <h1>User Profile</h1>
     <div>
-        <img src="" :alt="user?.username + 's profile picture'"/>
+        <img :src="profileIcon" :alt="user?.username + 's profile picture'"/>
         <dl>
             <template v-for="item in profileData">
                 <dt>{{ item.label }}</dt>
