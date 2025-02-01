@@ -9,7 +9,7 @@ function displayableCourseFormatter(c: Course): RowData {
     return {
         name: c.name,
         description: c.description,
-        dateTime: `${c.dayOfWeek} ${c.startTime}-${c.endTime}`,
+        dateTime: [`${c.dayOfWeek} ${c.startTime}-${c.endTime}`, `${c.dayOfWeek} ${c.startTime}-${c.endTime}`, `${c.dayOfWeek} ${c.startTime}-${c.endTime}`],
         trainer: c.trainer,
         capacityStatus: `${c.capacity - c.participants.length}/${c.capacity}`,
     };
@@ -43,9 +43,9 @@ const mobileHeader = (d: Course | RowData) =>
     `${d.name} (${d.trainer})`;
 
 const filter = (d: Course | RowData, s: string) =>
-    d.name.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
-    d.description.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
-    d.trainer.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0;
+    (d as Course).name.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
+    (d as Course).description.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
+    (d as Course).trainer.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0;
 
 </script>
 <template>
