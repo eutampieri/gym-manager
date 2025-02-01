@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 const props = defineProps<{
     validationFunction: (value: string) => boolean,
     errorMessage: string,
@@ -15,13 +15,16 @@ const fieldValid = computed(() => {
     validationModel.value = status;
     return status;
 });
+console.log(props.errorMessage.length);
 </script>
 <template>
     <div class="mb-3">
         <label class="form-label" :for="id">
             <slot></slot>
         </label>
-        <input :aria-invalid="!fieldValid" class="form-control" :type="type" :id="id" v-model="model">
-        <div v-if="!fieldValid && !(model?.length == 0)" class="form-text text-danger">{{ props.errorMessage }}</div>
+        <input ref="input" :aria-invalid="!fieldValid"
+            :class="`form-control ${((model?.length || 0 > 0) && errorMessage.length > 0) ? (fieldValid ? 'is-valid' : 'is-invalid') : ''}`"
+            :type="type" :id="id" v-model="model">
+        <div class="invalid-feedback">{{ props.errorMessage }}</div>
     </div>
 </template>

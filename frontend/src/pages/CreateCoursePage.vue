@@ -8,12 +8,12 @@ const endTime = ref("");
 const capacity = ref("");
 const id = ref("");
 const trainer = ref("");
-const message = ref(""); 
+const message = ref("");
 function isOnlyLetters(id: string) {
-        return /^[a-zA-Z]+$/.test(id);
-    }
+    return /^[a-zA-Z]+$/.test(id);
+}
 function isOnlyNumbers(id: string) {
-        return /^\d+$/.test(id);
+    return /^\d+$/.test(id);
 }
 
 async function fetchTrainerId(trainerUsername: string) {
@@ -47,20 +47,20 @@ async function checkId(id: string) {
         message.value = "Id can only contain numbers";
         return true;
     }
-        try {
-            // FUNZIONE isCourseidPresent
-            const response = await fetch(`/courses/checkId/${id}`);
-            if (response.ok) {
-                const check = await response.json();
-                return check;
-            }
-            else {
-                message.value = "Error in checking id";
-            }
-        } catch (error) {
-            console.error('Errore nel check dell id:', error);
+    try {
+        // FUNZIONE isCourseidPresent
+        const response = await fetch(`/courses/checkId/${id}`);
+        if (response.ok) {
+            const check = await response.json();
+            return check;
+        }
+        else {
             message.value = "Error in checking id";
         }
+    } catch (error) {
+        console.error('Errore nel check dell id:', error);
+        message.value = "Error in checking id";
+    }
 }
 async function handleCreateCourse() {
     message.value = "";
@@ -155,51 +155,51 @@ async function handleCreateCourse() {
 
 </script>
 <template>
- <div id="message" style="color: red;">{{ message }}</div> <!-- Div per il messaggio di successo/insuccesso -->
-  <form id="courseForm">
-  <h2>Creazione di {{ name === "" ? "un nuovo corso" : name }}</h2>
-<div class="mb-3">
-<label class="form-label"for="name">Name:</label>
-<input class="form-control"type="text" id="name" v-model="name">
-</div>
+    <div id="message" style="color: red;">{{ message }}</div> <!-- Div per il messaggio di successo/insuccesso -->
+    <form id="courseForm">
+        <h2>Creazione di {{ name === "" ? "un nuovo corso" : name }}</h2>
+        <div class="mb-3">
+            <label class="form-label" for="name">Name:</label>
+            <input class="form-control" type="text" id="name" v-model="name">
+        </div>
 
-<div class="mb-3">
-<label class="form-label"for="description">Description:</label>
-<input class="form-control"type="text" id="description" v-model="description">
-</div>
+        <div class="mb-3">
+            <label class="form-label" for="description">Description:</label>
+            <input class="form-control" type="text" id="description" v-model="description">
+        </div>
 
-<div class="mb-3">
-<label class="form-label"for="dayOfWeek">Day of Week:</label>
-<input class="form-control"type="text" id="dayOfWeek" v-model="dayOfWeek">
-</div>
+        <div class="mb-3">
+            <label class="form-label" for="dayOfWeek">Day of Week:</label>
+            <input class="form-control" type="text" id="dayOfWeek" v-model="dayOfWeek">
+        </div>
 
-<div class="mb-3">
-<label class="form-label"for="startTime">Start Time:</label>
-<input class="form-control"type="time" id="startTime" v-model="startTime">
-</div>
+        <div class="mb-3">
+            <label class="form-label" for="startTime">Start Time:</label>
+            <input class="form-control" type="time" id="startTime" v-model="startTime">
+        </div>
 
-<div class="mb-3">
-<label class="form-label"for="endTime">End Time:</label>
-<input class="form-control"type="time" id="endTime" v-model="endTime">
-</div>
+        <div class="mb-3">
+            <label class="form-label" for="endTime">End Time:</label>
+            <input class="form-control" type="time" id="endTime" v-model="endTime">
+        </div>
 
-<div class="mb-3">
-<label class="form-label"for="capacity">Capacity:</label>
-<input class="form-control"type="number" id="capacity" v-model="capacity">
-</div>
+        <div class="mb-3">
+            <label class="form-label" for="capacity">Capacity:</label>
+            <input class="form-control" type="number" id="capacity" v-model="capacity">
+        </div>
 
-<div class="mb-3">
-<label class="form-label"for="id">ID:</label>
-<input class="form-control"type="number" id="id" v-model="id">
-</div>
+        <div class="mb-3">
+            <label class="form-label" for="id">ID:</label>
+            <input class="form-control" type="number" id="id" v-model="id">
+        </div>
 
-<div class="mb-3">
-<label class="form-label"for="trainer">Username del trainer:</label>
-<input class="form-control"type="text" id="trainer" v-model="trainer">
-</div>
+        <div class="mb-3">
+            <label class="form-label" for="trainer">Username del trainer:</label>
+            <input class="form-control" type="text" id="trainer" v-model="trainer">
+        </div>
 
-<button class="btn btn-primary" type="button" @click="handleCreateCourse()">Create Course {{name }}</button>
+        <button class="btn btn-primary" type="button" @click="handleCreateCourse()">Create Course {{ name }}</button>
 
-</form>
+    </form>
 
 </template>
