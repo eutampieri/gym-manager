@@ -52,19 +52,19 @@ function getLinkPrefix(field: String): string | undefined {
 </script>
 
 <template>
-    <h1>User Profile</h1>
-    <div>
-        <img :src="profileIcon" :alt="user?.username + 's profile picture'"/>
-        <dl>
-            <template v-for="item in profileData">
-                <dt>{{ item.label }}</dt>
-                <dd v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
-                <dd v-else>{{ item.value }}</dd>
-            </template>
-        </dl>
-    </div>
+    <section class="container ">
+        <div class="d-flex justify-content-center">
+            <h1>User Profile</h1>
+        </div>
+        <div class="d-flex flex-column justify-content-center">
+            <img :src="profileIcon" class="rounded mx-auto d-block" :alt="user?.username + 's profile picture'"/>
+            <dl class="mx-auto w-75">
+                <template v-for="item in profileData">
+                    <dt>{{ item.label }}</dt>
+                    <dd v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
+                    <dd v-else>{{ item.value }}</dd>
+                </template>
+            </dl>
+        </div> 
+    </section>
 </template>
-
-<style>
-
-</style>
