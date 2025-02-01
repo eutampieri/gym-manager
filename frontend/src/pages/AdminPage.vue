@@ -42,6 +42,9 @@ const data: ListData = {
 function mobileHeader(d: RowData): string {
     return d.name
 }
+const filter = (d: RowData, s: string) =>
+    d.name.toLowerCase().indexOf(s.toLowerCase()) >= 0;
+
 </script>
 <template>
     <h1>Admin Page</h1>
@@ -52,5 +55,5 @@ function mobileHeader(d: RowData): string {
             </UiNavigationButton>
         </div>
     </div>
-    <ListView :data="data" :mobile-header="mobileHeader"></ListView>
+    <ListView :filter-function="filter" :data="data" :mobile-header="mobileHeader"></ListView>
 </template>
