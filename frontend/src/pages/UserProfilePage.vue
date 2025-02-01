@@ -28,13 +28,15 @@ const fieldNameMapper = {
 }
 // prepare the display data
 if (user) {
-    profileData.value = Object.keys(fieldNameMapper).map(k => {
-        return {
-            label: fieldNameMapper[k as keyof typeof fieldNameMapper],
-            value: user[k as keyof typeof user] as string,
-            linkPrefix: getLinkPrefix(k)
-        }
-    });
+    profileData.value = Object.keys(user)
+        .filter(k => Object.keys(fieldNameMapper).includes(k))
+        .map(k => {
+            return {
+                label: fieldNameMapper[k as keyof typeof fieldNameMapper],
+                value: user[k as keyof typeof user] as string,
+                linkPrefix: getLinkPrefix(k)
+            }
+        });
     profileIcon.value = getProfileIcon(user);
 } else {
     // error
