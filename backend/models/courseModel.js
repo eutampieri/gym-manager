@@ -33,10 +33,6 @@ const courseSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    id: {
-        type: Number,
-        required: true
-    },
     trainer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Trainer',

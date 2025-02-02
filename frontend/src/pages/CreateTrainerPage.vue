@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { isOnlyLetters, isPhoneNumber } from '@/utils/validation';
 import { computed, ref } from 'vue';
-import { CreateUserRequest } from "@gym-manager/models/user";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
 import BackButton from '@/components/BackButton.vue';
 import PageTitle from '@/components/PageTitle.vue';
-import { useUserStore } from '../store/user';
+import { useTrainerStore } from '@/store/trainer';
+import { CreateTrainerRequest } from '@gym-manager/models/trainer';
 
 const username = ref("");
 const password = ref("");
@@ -14,9 +14,6 @@ const firstName = ref("");
 const lastName = ref("");
 const email = ref("");
 const phoneNumber = ref("");
-const dateOfBirth = ref("");
-const fiscalCode = ref("");
-const address = ref("");
 const message = ref("");
 
 const usernameValid = ref(false);
@@ -25,51 +22,42 @@ const firstNameValid = ref(false);
 const lastNameValid = ref(false);
 const emailValid = computed(() => email.value.length > 0);
 const phoneNumberValid = computed(() => phoneNumber.value.length > 0);
-const dateOfBirthValid = computed(() => dateOfBirth.value.length > 0);
-const fiscalCodeValid = computed(() => fiscalCode.value.length > 0);
-const addressValid = computed(() => address.value.length > 0);
 
 const submitButtonEnabled = computed(() => usernameValid.value &&
     passwordValid.value &&
     firstNameValid.value &&
     lastNameValid.value &&
     emailValid.value &&
-    phoneNumberValid.value &&
-    dateOfBirthValid.value &&
-    fiscalCodeValid.value &&
-    addressValid.value
+    phoneNumberValid.value
 );
 
-const client = useUserStore().client;
+const trainer = useTrainerStore().trainer;
 
-async function handleCreateClient() {
+async function handleCreateTrainer() {
     try {
 
         // Creazione dell'oggetto JSON con i dati del cliente
-        const request: CreateUserRequest = {
+        const request: CreateTrainerRequest = {
             username: username.value,
             password: password.value,
             firstName: firstName.value,
             lastName: lastName.value,
             email: email.value,
-            phoneNumber: phoneNumber.value,
-            dateOfBirth: dateOfBirth.value,
-            fiscalCode: fiscalCode.value,
-            address: address.value,
+            phoneNumber: phoneNumber.value
         }
 
 
         // Effettua la richiesta POST per creare il cliente
-        const response = await client.addUser(request);
+        const response = await trainer.addTrainer(request);
 
         if (response.status === 201) {
-            message.value = "Client successfully created!";
+            message.value = "Trainer successfully created!";
         } else {
-            message.value = "Error during client creation";
+            message.value = "Error during trainer creation";
         }
     } catch (error) {
-        console.error("Error during client creation:", error);
-        message.value = "Error during client creation";
+        console.error("Error during trainer creation:", error);
+        message.value = "Error during trainer creation";
     }
 
 }
@@ -79,8 +67,8 @@ async function handleCreateClient() {
         <BackButton buttonText="Back" />
         <PageTitle title="Gym Manager" />
     </div>
-    <form id="clientForm">
-        <h2>Creating {{ firstName === "" ? "a new customer" : `${firstName} ${lastName}` }}</h2>
+    <form id="trainerForm">
+        <h2>Creating {{ firstName === "" ? "a new trainer" : `${firstName} ${lastName}` }}</h2>
 
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
             :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
@@ -111,15 +99,9 @@ async function handleCreateClient() {
             Phone number
         </ValidatingGenericInput>
 
-        <GenericInput type="date" id="dateOfBirth" v-model="dateOfBirth">Date of birth</GenericInput>
+        <button class="btn btn-primary" type="button" @click="handleCreateTrainer()"
+            :disabled="!submitButtonEnabled">Create Trainer {{ firstName }}</button>
 
-        <GenericInput type="text" id="fiscalCode" v-model="fiscalCode">CF</GenericInput>
-
-        <GenericInput type="text" id="address" v-model="address">Address</GenericInput>
-
-        <button class="btn btn-primary" type="button" @click="handleCreateClient()"
-            :disabled="!submitButtonEnabled">Create Client {{ firstName }}</button>
-        
         <p v-if="message">
             {{ message }}
         </p>
