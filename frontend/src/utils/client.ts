@@ -11,7 +11,7 @@ export class Client {
         const h = headers || new Headers;
         //h.append("Authorization", "Bearer " + "pizza");
         h.append("Content-Type", "application/json");
-        return fetch(`/api/${endpoint}`, { method: method, body: JSON.stringify(body), headers: headers })
+        return fetch(`/api/${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
     public async login(username: string, password: string): Promise<boolean> {
