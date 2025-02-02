@@ -29,32 +29,7 @@ module.exports = class API {
         }
     }
 
-    static async isTrainerIdPresent(req, res) {
-        const id = req.params.id;
-        try {
-            const trainer = await Trainer.findOne({ id: id }, null, null).exec();
-            if(trainer) {
-                res.status(200).json(true);
-            }
-            else {
-                res.status(200).json(false);
-            }
-        } catch (error) {
-            res.status(404).json({message: error.message});
-        } finally {
-        }
-    }
 
-    static async fetchTrainerById(req, res) {
-        const id = req.params.id;
-        try {
-            const trainer = await Trainer.findOne({id: id}, null, null).exec();
-            res.status(200).json(trainer);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
 
     static async createTrainer(req, res) {
         const trainer = req.body;
@@ -105,7 +80,7 @@ module.exports = class API {
     }
 
     static async deleteTrainer(req, res) {
-        const username = req.body.username;
+        const username = req.params.username;
         try {
             const trainer = await Trainer.findOneAndDelete({username:username}, null);
             if (!trainer) {
@@ -149,7 +124,7 @@ module.exports = class API {
 
     static async addTrainerCourse(req, res) {
         try {
-            const trainerId = req.params.id;
+            const trainerId = req.params.trainerId;
             const courseId = req.params.courseId;
             const trainer = await Trainer.findById(trainerId, null, null).populate('courses').exec();
 
@@ -172,15 +147,15 @@ module.exports = class API {
 
     static async deleteTrainerCourse(req, res) {
         try {
-            const trainerId = req.params.id;
+            const trainerId = req.params.trainerId;
             const courseId = req.params.courseId;
 
-            const trainer = await Trainer.findOne({id: trainerId}, null, null).populate("courses").exec();
+            const trainer = await Trainer.findOne({_id: trainerId}, null, null).populate("courses").exec();
 
             if (!trainer) {
                 return res.status(404).json({ message: 'Trainer not found' });
             }
-            const indexToRemove = trainer.courses.findIndex(course => course.id === parseInt(courseId));
+            const indexToRemove = trainer.courses.findIndex(course => course._id === parseInt(courseId));
 
             if (indexToRemove === -1) {
                 return res.status(404).json({ message: 'Trainer not found' });
@@ -211,7 +186,7 @@ module.exports = class API {
 
 
     // SAME AS DELETETRAINERSESSION BUT USING GET INSTEAD OF POST
-    static async deleteTrainerSessionById(req, res) {
+    static async deleteTrainerSessionBy_Id(req, res) {
         try {
 
             const id = req.params.id;
@@ -223,7 +198,7 @@ module.exports = class API {
                 return res.status(404).json({ message: 'Trainer not found' });
             }
 
-            const indexToRemove = trainer.sessions.findIndex(session => session.id === parseInt(id));
+            const indexToRemove = trainer.sessions.findIndex(session => session._id === parseInt(id));
             if (indexToRemove === -1) {
                 return res.status(404).json({ message: 'Trainer not found' });
             }
@@ -239,7 +214,7 @@ module.exports = class API {
     }
 
     // SAME AS ADDTRAINERSESSION BUT USING GET INSTEAD OF POST
-    static async addTrainerSessionById(req, res) {
+    static async addTrainerSessionBy_Id(req, res) {
         try {
             const id = req.params.id;
             const username = req.params.username;

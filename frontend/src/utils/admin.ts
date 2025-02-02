@@ -1,7 +1,5 @@
-import { CreateUserRequest } from "@gym-manager/models/user";
-
-
-export class Client {
+import { CreateAdminRequest } from "@gym-manager/models/admin";
+export class Admin {
 
     private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
         const h = headers || new Headers;
@@ -10,7 +8,7 @@ export class Client {
         return fetch(`//localhost:3000${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
-    public addUser(user: CreateUserRequest) {
-        return this.apiRequest("POST", "/customers", user);
+    public addAdmin(admin: CreateAdminRequest) {
+        return this.apiRequest("POST", "/admins", admin);
     }
 } 

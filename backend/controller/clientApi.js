@@ -30,22 +30,6 @@ module.exports = class API {
         }
     }
 
-    static async isClientIdPresent(req, res) {
-        const id = req.params.id;
-        try {
-            const client = await Client.findOne({ id: id }, null, null).exec();
-            if(client) {
-                res.status(200).json(true);
-            }
-            else {
-                res.status(200).json(false);
-            }
-        } catch (error) {
-            res.status(404).json({message: error.message});
-        } finally {
-        }
-    }
-
 
 
     static async createClient(req, res) {
@@ -96,7 +80,7 @@ module.exports = class API {
 
 
     static async deleteClient(req, res) {
-        const username = req.body.username;
+        const username = req.params.username;
         try {
             await Client.findOneAndDelete({username:username}, null);
             res.status(200).json({ message: 'Client deleted successfully' });
@@ -136,13 +120,13 @@ module.exports = class API {
 
     static async deleteClientCourse(req, res) {
         try {
-            const id = req.params.id;
+            const courseName = req.params.courseName;
             const username = req.params.username;
             const client = await Client.findOne({username: username}, null, null).populate('courses').exec();
             if (!client) {
                 return res.status(404).json({ message: 'Client not found' });
             }
-            const indexToRemove = client.courses.findIndex(course => course.id === parseInt(id));
+            const indexToRemove = client.courses.findIndex(course => course.name === courseName);
             if (indexToRemove === -1) {
                 return res.status(404).json({ message: 'Course not found' });
             }
@@ -158,13 +142,13 @@ module.exports = class API {
 
     static async deleteClientSession(req, res) {
         try {
-            const id = req.params.id;
+            const id = req.params.sessionId;
             const username = req.params.username;
             const client = await Client.findOne({username: username}, null, null).populate('sessions').exec();
             if (!client) {
                 return res.status(404).json({ message: 'Client not found' });
             }
-            const indexToRemove = client.sessions.findIndex(session => session.id === parseInt(id));
+            const indexToRemove = client.sessions.findIndex(session => session._id === parseInt(id));
 
             if (indexToRemove === -1) {
                 return res.status(404).json({ message: 'Session not found' });
@@ -179,9 +163,9 @@ module.exports = class API {
         }
     }
 
-    static async addClientCourseById(req, res) {
+    static async addClientCourseBy_Id(req, res) {
         try {
-            const id = req.params.id;
+            const id = req.params.courseId;
             const username = req.params.username;
             const client = await Client.findOne({username: username}, null, null).populate('courses').exec();
             if (!client) {
@@ -200,9 +184,9 @@ module.exports = class API {
         }
     }
 
-    static async addClientSessionById(req, res) {
+    static async addClientSessionBy_Id(req, res) {
         try {
-            const id = req.params.id;
+            const id = req.params.sessionId;
             const username = req.params.username;
             const client = await Client.findOne({username: username}, null, null).populate('sessions').exec();
             if (!client) {

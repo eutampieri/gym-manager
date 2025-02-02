@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-const props = defineProps<{
+const props = defineProps<{ // props per valori non modificabili dal figlio
     validationFunction: (value: string) => boolean,
     errorMessage: string,
     type: string,
     id: string,
 }>();
-
-const model = defineModel<string>();
-const validationModel = defineModel<boolean>("valid");
+// le props vengono passata dal padre al figlio :nomeProp e nel figlio vengono usate direttamente:  nomeProp
+const model = defineModel<string>(); // defineModel per valori modificabili con v-model che possono essere modificati dal figlio
+const validationModel = defineModel<boolean>("valid"); // valid è il modificatore
 
 const fieldValid = computed(() => {
     const status = props.validationFunction(model.value || "");
