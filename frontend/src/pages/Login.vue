@@ -1,11 +1,17 @@
 <script lang="ts" setup>
+import GenericInput from '@/components/GenericInput.vue';
 import router from '@/routes/router';
 import { useUserStore } from '@/store/user';
+import { ref } from 'vue';
 
 const store = useUserStore();
-function login() {
-    store.jwt = "jklònmklò";
-    router.push({"path": "/admin"})
+const username = ref<string>();
+const password = ref<string>();
+async function login() {
+    let authResult = await store.client.login(username.value || "", password.value || "");
+    if (authResult) {
+        router.push({ "path": "/admin" })
+    }
 }
 </script>
 <template>

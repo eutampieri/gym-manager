@@ -2,5 +2,5 @@
 </script>
 
 <template>
-    <RouterView />
+    <RouterView class="mt-md-4"/>
 </template>
