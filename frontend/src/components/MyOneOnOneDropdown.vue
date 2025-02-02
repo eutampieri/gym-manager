@@ -5,17 +5,13 @@ import DropdownItem from '@/components/DropdownItem.vue';
 import { Role } from '@gym-manager/models/user';
 
 const store = useUserStore();
-// const myCourses = store.client.getCoursesOfUser()
-const myCourses = [
+// const myOneOnOne = store.client.getSessionsOfUser()
+const myOneOnOne = [
     {
-        name: "ZUMBA",
         trainer: "BOCCO",
-        description: "a very ggo course",
         time: 'Wen 10:00-11:00'
     },{
-        name: "ZEMBA",
         trainer: "BECCO",
-        description: "a very bba course",
         time: 'Fri 10:00-11:00'
     }
 ];
@@ -24,17 +20,15 @@ const isTrainer = store.client.getRole == Role.Trainer;
 </script>
 
 <template>
-    <section id="my-courses">
-        <h2>My Courses</h2>
+    <section id="my-one-on-one">
+        <h2>My One-on-one</h2>
         <Dropdown>
-            <DropdownItem v-for="(course, i) in myCourses" :key="i" :header="[course.time, course.name]" :id-prefix="'course'" :index="i">
+            <DropdownItem v-for="(course, i) in myOneOnOne" :key="i" :header="[course.time, course.trainer]" :id-prefix="'one-on-one'" :index="i">
                 <dl>
-                    <dt>{{ course.name }}</dt>
-                    <dd>{{ course.description }}</dd>
                     <dt>Trainer</dt>
                     <dd>{{ course.trainer }}</dd>
                 </dl>
-                <button type="button" class="btn btn-primary m-2">Unsubscribe</button>
+                <button type="button" class="btn btn-primary m-2">Cancel appointment</button>
             </DropdownItem>
         </Dropdown>
     </section>
