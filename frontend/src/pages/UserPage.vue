@@ -3,20 +3,31 @@ import { useUserStore } from '@/store/user';
 import MyCoursesDropdown from '@/components/MyCoursesDropdown.vue';
 import MyOneOnOneDropdown from '@/components/MyOneOnOneDropdown.vue';
 import MainButton from '@/components/MainButton.vue';
+import router from '@/routes/router';
 
 const store = useUserStore();
 
 const user = store.client.getUserDetails;
+
+function bookCourse() {
+    // TODO
+}
+function bookOneonOne() {
+    // TODO
+}
+function contactSupport() {
+    // TODO
+}
 
 </script>
 
 <template>
     <div class="d-flex flex-column">
         <h1 class="mx-auto">Hello {{ user?.username }}!</h1>
-        <MainButton class="btn-primary">Book course</MainButton>
-        <MainButton class="btn-primary">Book one-on-one</MainButton>
+        <MainButton :action="bookCourse">Book course</MainButton>
+        <MainButton :action="bookOneonOne">Book one-on-one</MainButton>
     </div>
     <MyCoursesDropdown />
     <MyOneOnOneDropdown />
-    <MainButton class="btn-secondary mt-5">Need help?</MainButton>
+    <MainButton class="btn-secondary mt-5" :action="contactSupport">Need help?</MainButton>
 </template>
