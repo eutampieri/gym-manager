@@ -15,6 +15,8 @@ router.get("/courses/delete/:trainerId/:courseId", API.deleteTrainerCourse)
 router.get("/trainerId/:username", API.fetchTrainerIdByUsername)
 router.get("/sessions/add/:username/:id", API.addTrainerSessionBy_Id)
 router.get("/sessions/delete/:username/:id", API.deleteTrainerSessionBy_Id)
+router.get("/trainerName/:id", API.fetchTrainerNameBy_Id)
+router.get("/trainer/:id", API.fetchTrainerBy_Id)
 
 
 module.exports = router

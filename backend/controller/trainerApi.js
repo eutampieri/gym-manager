@@ -236,4 +236,25 @@ module.exports = class API {
         } finally {
         }
     }
+
+     static async fetchTrainerNameBy_Id(req, res) {
+            const id = req.params.id;
+            try {
+                const trainer = await Trainer.findById(id, null, null).exec();
+                res.status(200).json(trainer.name);
+            } catch (error) {
+                res.status(404).json({ message: error.message });
+            } finally {
+            }
+    }
+    static async fetchTrainerBy_Id(req, res) {
+        const id = req.params.id;
+        try {
+            const trainer = await Trainer.findById(id, null, null).exec();
+            res.status(200).json(trainer);
+        } catch (error) {
+            res.status(404).json({ message: error.message });
+        } finally {
+        }
+}
 }
