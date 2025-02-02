@@ -1,4 +1,5 @@
 import { Admin, CreateUserRequest, Role, Trainer, User } from "@gym-manager/models";
+import { CourseModel } from "@gym-manager/models/course";
 
 export class Client {
     private jwt?: string = undefined;
@@ -42,5 +43,22 @@ export class Client {
 
     public addUser(user: CreateUserRequest) {
         return this.apiRequest("POST", "/customers", user);
+    }
+
+    public getCourses(): Promise<Array<CourseModel>> {
+        const user = this.getUserDetails;
+        return this.apiRequest("GET", "/customers/courses/" + user?.username)
+            .then(res => res.json())
+            .then(cs => Promise.all(
+                cs.map((c: CourseModel) => 
+                    this.apiRequest("GET", "/trainers/>>>" + c.trainer)
+                    .then(res2 => res2.json())
+                    .then(res3 => {
+                        let nc = c;
+                        nc.trainer = res3.username;
+                        return nc;
+                    })
+                )
+            ))
     }
 } 

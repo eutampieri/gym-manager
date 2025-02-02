@@ -2,6 +2,7 @@
 import { useUserStore } from '@/store/user';
 import Dropdown from '@/components/Dropdown.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
+import NameLink from '@/components/NameLink.vue';
 import { Role } from '@gym-manager/models/user';
 
 const store = useUserStore();
@@ -9,17 +10,25 @@ const store = useUserStore();
 const myCourses = [
     {
         name: "ZUMBA",
-        trainer: "BOCCO",
+        trainer: {
+            username: "BBBBB"
+        },
         description: "a very ggo course",
         time: 'Wen 10:00-11:00'
     },{
         name: "ZEMBA",
-        trainer: "BECCO",
+        trainer: {
+            username: "banbbn"
+        },
         description: "a very bba course",
         time: 'Fri 10:00-11:00'
     }
 ];
 const isTrainer = store.client.getRole == Role.Trainer;
+
+function gotoTrainerProfile(username: string) {
+    // TODO
+}
 
 </script>
 
@@ -32,7 +41,7 @@ const isTrainer = store.client.getRole == Role.Trainer;
                     <dt>{{ course.name }}</dt>
                     <dd>{{ course.description }}</dd>
                     <dt>Trainer</dt>
-                    <dd>{{ course.trainer }}</dd>
+                    <dd><NameLink :action="() => gotoTrainerProfile(course.trainer.username)">{{ course.trainer.username }}</NameLink></dd>
                 </dl>
                 <button type="button" class="btn btn-primary m-2">Unsubscribe</button>
             </DropdownItem>

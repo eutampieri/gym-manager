@@ -1,4 +1,4 @@
-export interface CreateCourseRequest {
+export interface CourseModel {
     name: String
     description: String
     schedule: {
