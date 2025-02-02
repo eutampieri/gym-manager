@@ -20,7 +20,7 @@ const isTrainer = store.client.getRole == Role.Trainer;
 </script>
 
 <template>
-    <section id="my-one-on-one">
+    <section id="my-one-on-one" class="my-3">
         <h2>My One-on-one</h2>
         <Dropdown>
             <DropdownItem v-for="(course, i) in myOneOnOne" :key="i" :header="[course.time, course.trainer]" :id-prefix="'one-on-one'" :index="i">
