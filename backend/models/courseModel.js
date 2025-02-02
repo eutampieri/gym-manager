@@ -14,21 +14,20 @@ const courseSchema = new mongoose.Schema({
         required: true
     },
 
-    dayOfWeek: {
-        type: String,
-        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
-        required: true
-    },
-    startTime: {
-        type: String,
-        required: true,
-        match: /^(09|1[0-8]):00$/ // Regex for the "HH:00" format and hours between 09 and 18
-    },
-    endTime: {
-        type: String,
-        required: true,
-        match: /^(1[0-9]):00$/ // Regex for the "HH:00" format and hours between 10 and 19
-    },
+    schedule: [{
+        dayOfWeek: {
+            type: String,
+            enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+            required: true
+        },
+        startTime: {
+            type: String,
+            required: true,
+            match: /^(09|1[0-8]):00$/ // Regex per il formato "HH:00", tra 09 e 18
+        }
+        
+    }],
+   
     capacity: {
         type: Number,
         required: true

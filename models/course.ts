@@ -1,9 +1,10 @@
 export interface CreateCourseRequest {
     name: String
     description: String
-    dayOfWeek: String
-    startTime: String
-    endTime: String
+    schedule: {
+        dayOfWeek: string;
+        startTime: string;        
+    }[];
     capacity: String
     trainer: String
 }
