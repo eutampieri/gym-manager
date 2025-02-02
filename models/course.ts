@@ -1,10 +1,10 @@
 export interface CourseModel {
-    name: String
-    description: String
+    name: string
+    description: string
     schedule: {
         dayOfWeek: string;
         startTime: string;        
     }[];
-    capacity: String
-    trainer: String
+    capacity: string
+    trainer: string
 }

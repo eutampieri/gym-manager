@@ -51,14 +51,51 @@ export class Client {
             .then(res => res.json())
             .then(cs => Promise.all(
                 cs.map((c: CourseModel) => 
-                    this.apiRequest("GET", "/trainers/>>>" + c.trainer)
+                    this.apiRequest("GET", "/trainer/" + c.trainer)
                     .then(res2 => res2.json())
                     .then(res3 => {
-                        let nc = c;
-                        nc.trainer = res3.username;
-                        return nc;
+                        c.trainer = res3.username;
+                        return c;
                     })
                 )
             ))
+        // TEST
+        // const courses = [{
+        //     name: "cico",
+        //     description: "cico",
+        //     schedule: [{
+        //         dayOfWeek: "cico",
+        //         startTime: "cico",
+        //     },{
+        //         dayOfWeek: "afh",
+        //         startTime: "cihhhhhhco",
+        //     }],
+        //     capacity: "cico",
+        //     trainer: "1"
+        // },{
+        //     name: "afijdjgh",
+        //     description: "afijdjgh",
+        //     schedule: [{
+        //         dayOfWeek: "afijdjgh",
+        //         startTime: "afijdjgh",
+        //     }],
+        //     capacity: "afijdjgh",
+        //     trainer: "2"
+        // }]
+        // const trainers = {
+        //     username: "CKINADSNPOIN"
+        // }
+        // return Promise.resolve(courses)
+        //     // .then(res => res.json())
+        //     .then(cs => Promise.all(
+        //         cs.map((c: CourseModel) => 
+        //             Promise.resolve(trainers)
+        //             // .then(res2 => res2.json())
+        //             .then(res3 => {
+        //                 c.trainer = res3.username;
+        //                 return c;
+        //             })
+        //         )
+        //     ))
     }
 } 
