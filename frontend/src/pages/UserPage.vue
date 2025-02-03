@@ -6,24 +6,16 @@ import NameLink from '@/components/NameLink.vue';
 import MyOneOnOneDropdown from '@/components/MyOneOnOneDropdown.vue';
 import MainButton from '@/components/MainButton.vue';
 import router from '@/routes/router';
-import { CourseModel } from '@gym-manager/models/course';
+import { Course } from '@gym-manager/models';
 import { ref } from 'vue';
 
 const store = useUserStore();
 
 const user = store.client.getUserDetails;
 
-const myCourses = ref<Array<CourseModel>>();
+const myCourses = ref<Array<Course>>();
     
-store.client.getCourses()
-    .then(courses => courses.flatMap(c =>
-        c.schedule.map(s => {
-            console.log(s)
-            let nc = { ...c };
-            nc.schedule = Array.of(s);
-            return nc;
-        })
-    ))
+store.client.getUserCourses()
     .then(courses => myCourses.value = courses);
 
 function gotoTrainerProfile(username: string) {

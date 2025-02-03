@@ -77,13 +77,26 @@ export class Client {
                 id: "1",
                 name: "Zumba",
                 description: "Sad course description, nothing to see here...",
-                dayOfWeek: "Wednesday",
-                startTime: "10:00",
-                endTime: "11:00",
+                schedule: [
+                    {
+                        dayOfWeek: "Wednesday",
+                        startTime: "10:00",
+                        participants: []
+                    }
+                ],
                 capacity: 20,
                 trainer: "McMuscle",
-                participants: []
             }
         ];
+    }
+
+    public getUserCourses(): Promise<Array<Course>> {
+        if (this.getRole == Role.User) {
+            return Promise.resolve([]);
+        } else if (this.getRole == Role.Trainer) {
+            return Promise.resolve([]);
+        } else {
+            return Promise.resolve([]);
+        }
     }
 }

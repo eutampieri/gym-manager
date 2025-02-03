@@ -1,5 +1,5 @@
-import { CourseModel } from "@gym-manager/models/course";
-export class Course {
+import { Course } from "@gym-manager/models/course";
+export class CourseDELETETHIS {
 
     private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
         const h = headers || new Headers;
@@ -8,7 +8,7 @@ export class Course {
         return fetch(`//localhost:3000${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
-    public addCourse(course: CourseModel) {
+    public addCourse(course: Course) {
         return this.apiRequest("POST", "/courses", course);
     }
 } 
