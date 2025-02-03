@@ -43,3 +43,8 @@ export interface Admin extends BasicInfo, Identifiable { }
 export interface CreateAdminRequest extends BasicInfo {
     password: string
 }
+
+export interface LoginRequest {
+    username: string,
+    password: string,
+}
