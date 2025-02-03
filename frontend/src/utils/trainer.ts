@@ -5,7 +5,7 @@ export class Trainer {
         const h = headers || new Headers;
         //h.append("Authorization", "Bearer " + "pizza");
         h.append("Content-Type", "application/json");
-        return fetch(`//localhost:3000${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
+        return fetch(`/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
     public addTrainer(trainer: CreateTrainerRequest) {
