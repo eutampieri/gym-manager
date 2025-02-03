@@ -10,7 +10,6 @@ const buttons = [
     { text: "View Courses", route: "/admin/listCourses", },
     { text: "Create Admin", route: "/admin/createAdmin"},
     { text: "View Admins", route: "/admin/listAdmins"},
-    { text: "TEST User Page", route: "/user"},
 ];
 </script>
 
