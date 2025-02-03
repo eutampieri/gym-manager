@@ -79,7 +79,7 @@ async function handleCreateClient() {
         <BackButton buttonText="Back" />
         <PageTitle title="Gym Manager" />
     </div>
-    <form id="clientForm">
+    <form>
         <h2>Creating {{ firstName === "" ? "a new customer" : `${firstName} ${lastName}` }}</h2>
 
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
@@ -119,7 +119,7 @@ async function handleCreateClient() {
 
         <button class="btn btn-primary" type="button" @click="handleCreateClient()"
             :disabled="!submitButtonEnabled">Create Client {{ firstName }}</button>
-        
+
         <p v-if="message">
             {{ message }}
         </p>

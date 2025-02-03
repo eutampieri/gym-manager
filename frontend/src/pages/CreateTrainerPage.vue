@@ -67,7 +67,7 @@ async function handleCreateTrainer() {
         <BackButton buttonText="Back" />
         <PageTitle title="Gym Manager" />
     </div>
-    <form id="trainerForm">
+    <form>
         <h2>Creating {{ firstName === "" ? "a new trainer" : `${firstName} ${lastName}` }}</h2>
 
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
