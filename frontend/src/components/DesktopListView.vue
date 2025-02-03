@@ -2,10 +2,9 @@
 import { ListData } from '@/utils/lists';
 import TableRow from './TableRow.vue';
 
-const props = defineProps<{ data: ListData }>();
+defineProps<{ data: ListData }>();
 
-const colWidth = Math.max(1, Math.floor(12 / (props.data.headers.length + 1)));
-const breakpoints = `col-md-${colWidth} col-sm-12 p-1`;
+const breakpoints = `col-md col-sm-12 p-1`;
 </script>
 <template>
     <section class="text-break">
