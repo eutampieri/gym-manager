@@ -4,24 +4,13 @@ import { useUserStore } from '@/store/user';
 
 const store = useUserStore();
 const admin = store.client.getUserDetails;
-const buttons = [
-    { text: "Create Trainer", route: "/admin/createTrainer", },
-    { text: "View Trainers", route: "/admin/listTrainers", },
-    { text: "Create Client", route: "/admin/createClient", },
-    { text: "View Customers", route: "/admin/listCustomers", },
-    { text: "Create Course", route: "/admin/createCourse", },
-    { text: "View Courses", route: "/admin/listCourses", },
-    { text: "Create Admin", route: "/admin/createAdmin"},
-    { text: "View Admins", route: "/admin/listAdmins"},
-    { text: "TEST User Page", route: "/user"},
-];
+
 </script>
 
 <template>
     <div class="d-flex flex-column">
         <h1 class="mx-auto mb-5">Hello {{ admin?.username }}!</h1>
     </div>
-    <MainButton :path="'/user'">TEST user home page</MainButton>
     <section class="d-flex flex-column mt-4">
         <h2 class="mx-auto">Courses</h2>
         <MainButton :path="'/admin/createCourse'">Create course</MainButton>
