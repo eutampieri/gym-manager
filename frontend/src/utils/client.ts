@@ -1,4 +1,4 @@
-import { Admin, Course, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CreateUserRequest, LoginRequest, Role, Session, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -108,6 +108,31 @@ export class Client {
         }
         const user = this.getUserDetails
         // unsubscribe
+        // ... TODO
+    }
+
+    public getUserSessions(): Promise<Array<Session>> {
+        return Promise.resolve(
+            [{
+                id: "1",
+                participant: "Rox",
+                dayOfWeek: "Tuesday",
+                startTime: "14:00",
+                trainer: "McBorro",
+            }]
+        )
+        if (this.getRole == Role.User) {
+            return Promise.resolve([]);
+        } else if (this.getRole == Role.Trainer) {
+            return Promise.resolve([]);
+        } else {
+            return Promise.resolve([]);
+        }
+    }
+
+    public cancelSession(sessionId: string): Promise<string> {
+        return Promise.resolve(sessionId);
+        // cancel one-on-one
         // ... TODO
     }
 }
