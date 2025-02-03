@@ -9,7 +9,7 @@ router.get('/:id', API.fetchSessionById);
 router.get("/_id/:id", API.fetchSessionBy_Id)
 router.get("/_id/id/:id", API.fetchSession_IdById)
 router.post('/', API.createSession);
-router.post('/delete', API.deleteSession);
+router.delete('/delete/:id', API.deleteSession);
 router.get("/delete/deleteBy_Id/:id", API.deleteSessionBy_Id)
 router.get("/trainer/:id", API.fetchSessionTrainer);
 router.get("/participant/:id", API.fetchSessionParticipant);
