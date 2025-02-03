@@ -85,7 +85,7 @@ module.exports = class API {
 
 
     static async deleteSession(req, res) {
-        const id = req.body.id;
+        const id = req.params.id;
         try {
             await Session.findOneAndDelete({id:id}, null);
             res.status(200).json({ message: 'Session deleted successfully' });

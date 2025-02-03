@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import ValidatingGenericInput from './ValidatingGenericInput.vue';
-import { computed, ref } from 'vue';
 const props = defineProps<{
     type: string,
     id: string,

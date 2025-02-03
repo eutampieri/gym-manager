@@ -16,9 +16,20 @@ async function login() {
 </script>
 <template>
     <h1>Login</h1>
-    <form>
-        <GenericInput v-model="username" type="text" id="username">Username</GenericInput>
-        <GenericInput v-model="password" type="password" id="password">Password</GenericInput>
-    </form>
-    <button class="btn btn-primary" type="button" @click="login()">Login</button>
+    <br>
+       <div class="form-group">
+       <label for="exampleInputEmail1">Email address</label>
+       <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+       </div>
+       <br>
+       <div class="form-group">
+       <label for="exampleInputPassword1">Password</label>
+       <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+       </div>
+       <br>
+       <!-- Bottone Login -->
+       <button class="btn btn-primary w-100" @click="login">
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        Accedi
+       </button>
 </template>

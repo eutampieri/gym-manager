@@ -3,15 +3,17 @@ import UiNavigationButton from '@/components/UiNavigationButton.vue';
 
 const buttons = [
     { text: "Create Trainer", route: "/admin/createTrainer", },
-    { text: "List Trainers", route: "/admin/listTrainers", },
-    { text: "Update Trainer", route: "/admin", },
+    { text: "View Trainers", route: "/admin/listTrainers", },
     { text: "Create Client", route: "/admin/createClient", },
-    { text: "List Customers", route: "/admin/listCustomers", },
-    { text: "Update Client", route: "/admin", },
+    { text: "View Customers", route: "/admin/listCustomers", },
     { text: "Create Course", route: "/admin/createCourse", },
-    { text: "List Courses", route: "/admin/listCourses", },
+    { text: "View Courses", route: "/admin/listCourses", },
+    { text: "Create Admin", route: "/admin/createAdmin"},
+    { text: "View Admins", route: "/admin/listAdmins"},
 ];
 </script>
+
+
 <template>
     <h1>Admin Page</h1>
     <div class="d-flex justify-content-center">
@@ -22,3 +24,4 @@ const buttons = [
         </div>
     </div>
 </template>
+
