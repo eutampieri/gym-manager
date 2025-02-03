@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 
 const props = defineProps<{
-    action: () => void
+    path: string
 }>();
 
 </script>
 
 <template>
-    <a href="#" @click="action"><slot></slot></a>
+    <RouterLink :to="{ path: path }">
+        <a href="#"><slot></slot></a>
+    </RouterLink>
 </template>

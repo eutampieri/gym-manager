@@ -47,6 +47,11 @@ export class Client {
         return Role.Admin;
     }
 
+    public getUserById(id: string): undefined | User | Trainer | Admin {
+        // TODO
+        return this.getUserDetails;
+    }
+
     public addUser(user: CreateUserRequest) {
         return this.apiRequest("POST", "/customers", user);
     }

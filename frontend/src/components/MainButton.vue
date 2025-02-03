@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 
 const props = defineProps<{
-    action: () => void
+    path: string
 }>();
 
 </script>
 
 <template>
-    <button type="button" class="btn-primary btn m-2 p-3 main-container mx-auto d-block" @click="action">
-        <slot></slot>
-    </button>
+    <RouterLink :to="{ path: path }" class="nav-link">
+        <button type="button" class="btn-primary btn m-2 p-3 main-container mx-auto d-block">
+            <slot></slot>
+        </button>
+    </RouterLink>
 </template>
 
 <style>

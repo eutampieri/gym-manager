@@ -32,29 +32,22 @@ function cancelSession(sessionId: string) {
         .then(id => myOneOnOne.value = myOneOnOne.value?.filter(x => x.id != id));
     }
 }
-function gotoTrainerProfile(username: string) {
+function trainerProfilePath(trainerId: string) {
     // TODO 
+    return '/trainer/profile/' + trainerId;
 }
-function bookCourse() {
-    // TODO
-    console.log('book course clicked')
-}
-function bookOneonOne() {
-    // TODO
-    console.log('book one-on-one clicked')
-}
-function contactSupport() {
-    // TODO
-    console.log('contact support clicked')
-}
+
+const bookCourse = '/user/bookCourse'
+const bookOneonOne = '/user/bookSession'
+const contactSupport = '/support/chat'
 
 </script>
 
 <template>
     <div class="d-flex flex-column">
         <h1 class="mx-auto">Hello {{ user?.username }}!</h1>
-        <MainButton :action="bookCourse">Book course</MainButton>
-        <MainButton :action="bookOneonOne">Book one-on-one</MainButton>
+        <MainButton :path="bookCourse">Book course</MainButton>
+        <MainButton :path="bookOneonOne">Book one-on-one</MainButton>
     </div>
     <section id="my-courses" class="my-3">
         <h2>My Courses</h2>
@@ -65,7 +58,7 @@ function contactSupport() {
                     <dt>{{ course.name }}</dt>
                     <dd>{{ course.description }}</dd>
                     <dt>Trainer</dt>
-                    <dd><NameLink :action="() => gotoTrainerProfile(course.trainer)">{{ course.trainer }}</NameLink></dd>
+                    <dd><NameLink :path="trainerProfilePath(course.trainer)">{{ course.trainer }}</NameLink></dd>
                 </dl>
                 <button type="button" class="btn btn-primary m-2" @click="() => unsubscribeFromCourse(course.id, course.name)">Unsubscribe</button>
             </DropdownItem>
@@ -84,5 +77,5 @@ function contactSupport() {
             </DropdownItem>
         </Dropdown>
     </section>
-    <MainButton class="btn-secondary mt-5" :action="contactSupport">Need help?</MainButton>
+    <MainButton class="btn-secondary mt-5" :path="contactSupport">Need help?</MainButton>
 </template>

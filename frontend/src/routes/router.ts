@@ -24,7 +24,7 @@ const routes = [
   { path: '/admin/listCourses', name: "listCourses", component: CourseListPage, meta: { role: "user" } },
   { path: '/admin/createTrainer', name: "createTrainer", component: CreateTrainerPage, meta: { role: "admin" } },
   { path: '/admin/createAdmin', name: "createAdmin", component: CreateAdminPage, meta: { role: "admin" } },
-  { path: '/trainer/profile', name: "trainerProfile", component: ProfilePage, meta: { role: "trainer" } },
+  { path: '/trainer/profile/:id', name: "trainerProfile", component: ProfilePage, meta: { role: "trainer" }, props: true },
   { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
   { path: '/user/profile', name: "userProfile", component: ProfilePage, meta: { role: "user" } },
 ];
