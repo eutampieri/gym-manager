@@ -1,0 +1,42 @@
+Auth (/api/auth):
+    POST /login -> JWT
+    GET /impersonate/:id -> JWT
+
+Course (/api/courses):
+    POST / -> create Course
+    GET / -> list courses
+    GET /:id -> get course
+    PUT / -> update courses
+    DELETE /:id -> delete course
+    GET /:id/bookings -> list bookings for a course
+    POST /:id/bookings -> Create booking (body {dayOfWeek: "", startTime: ""})
+    DELETE /:id/bookings -> Create booking (body {dayOfWeek: "", startTime: ""})
+    
+Session (/api/sessions):
+    POST / -> create Session (user initiated)
+    GET / -> list sessions
+    GET /with-trainer/:id List all sessions (trainer)
+    GET /with-user/:id List all sessions (user)
+    GET /:id -> get course
+    DELETE /:id -> delete session
+
+Customer (/api/customers)
+    POST / Create a customer
+    GET / Get all customers
+    GET /:id Get a customer by _id
+    PUT / Update a customer
+    DELETE /:id Delete a customer
+
+Trainer (/api/trainers)
+    POST /
+    GET /
+    GET /:id
+    PUT /
+    DELETE /:id
+
+Admin (/api/admins)
+    POST /
+    GET /
+    GET /:id
+    PUT /
+    DELETE /:id
