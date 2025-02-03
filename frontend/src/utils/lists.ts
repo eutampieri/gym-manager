@@ -16,5 +16,5 @@ export interface Action {
 }
 
 export type RowData = {
-    [key: string]: string;
+    [key: string]: string | Array<string>;
 };

@@ -15,7 +15,8 @@ defineProps<{ data: ListData, accordionHeader: (d: RowData) => string }>();
             </h2>
             <div :id="'collapse' + index" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
                 <div class="accordion-body">
-                    <TableRow :data="row" :headers="data.headers" :show-headers="true" class="col-sm-12"></TableRow>
+                    <TableRow :actions="data.actions" :data="row" :headers="data.headers" :show-headers="true"
+                        class="col-sm-12"></TableRow>
                 </div>
             </div>
         </div>

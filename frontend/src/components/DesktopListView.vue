@@ -5,17 +5,17 @@ import TableRow from './TableRow.vue';
 const props = defineProps<{ data: ListData }>();
 
 const colWidth = Math.max(1, Math.floor(12 / (props.data.headers.length + 1)));
-const breakpoints = `col-md-${colWidth} col-sm-12`;
+const breakpoints = `col-md-${colWidth} col-sm-12 p-1`;
 </script>
 <template>
-    <section>
+    <section class="text-break">
         <div class="row">
             <div v-for="h in data.headers" :class="breakpoints + ' fw-bold'">{{ h.name }}</div>
             <div :class="breakpoints + ' fw-bold'"></div>
         </div>
         <section class="body">
             <TableRow v-for="row in data.data" :data="row" :headers="data.headers" :show-headers="false"
-                :class="breakpoints"></TableRow>
+                :class="breakpoints" :actions="data.actions"></TableRow>
         </section>
     </section>
 </template>

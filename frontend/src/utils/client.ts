@@ -1,4 +1,4 @@
-import { Admin, CreateUserRequest, Role, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CreateUserRequest, Role, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -43,4 +43,40 @@ export class Client {
     public addUser(user: CreateUserRequest) {
         return this.apiRequest("POST", "/customers", user);
     }
-} 
+
+    public async listUsers(): Promise<Array<User>> {
+        /*const x = await this.apiRequest("GET", "/customers");
+        return await x.json();*/
+        return [
+            {
+                id: "1",
+                dateOfBirth: "2021-01-01",
+                fiscalCode: "mockCF",
+                address: "Abbey Road 21, SW234E1 London",
+                email: "info@abbey-road.com",
+                phoneNumber: "+44 0071 194893845",
+                username: "abbeyroad",
+                firstName: "Abbey",
+                lastName: "Road"
+            }
+        ];
+    }
+
+    public async listCourses(): Promise<Array<Course>> {
+        /*const x = await this.apiRequest("GET", "/customers");
+        return await x.json();*/
+        return [
+            {
+                id: "1",
+                name: "Zumba",
+                description: "Sad course description, nothing to see here...",
+                dayOfWeek: "Wednesday",
+                startTime: "10:00",
+                endTime: "11:00",
+                capacity: 20,
+                trainer: "McMuscle",
+                participants: []
+            }
+        ];
+    }
+}
