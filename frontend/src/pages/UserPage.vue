@@ -4,7 +4,6 @@ import Dropdown from '@/components/Dropdown.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
 import MainButton from '@/components/MainButton.vue';
-import router from '@/routes/router';
 import { Course, Session } from '@gym-manager/models';
 import { ref } from 'vue';
 
@@ -33,7 +32,6 @@ function cancelSession(sessionId: string) {
     }
 }
 function trainerProfilePath(trainerId: string) {
-    // TODO 
     return '/trainer/profile/' + trainerId;
 }
 
@@ -71,7 +69,7 @@ const contactSupport = '/support/chat'
                 :id-prefix="'one-on-one'" :index="i" :dropdown-id="'my-oo-dropdown'">
                 <dl>
                     <dt>Trainer</dt>
-                    <dd>{{ course.trainer }}</dd>
+                    <dd><NameLink :path="trainerProfilePath(course.trainer)">{{ course.trainer }}</NameLink></dd>
                 </dl>
                 <button type="button" class="btn btn-primary m-2" @click="() => cancelSession(course.id)">Cancel appointment</button>
             </DropdownItem>
