@@ -91,6 +91,7 @@ export class Client {
     }
 
     public getUserCourses(): Promise<Array<Course>> {
+        return this.listCourses()
         if (this.getRole == Role.User) {
             return Promise.resolve([]);
         } else if (this.getRole == Role.Trainer) {
@@ -98,5 +99,15 @@ export class Client {
         } else {
             return Promise.resolve([]);
         }
+    }
+
+    public unsubscribeFromCourse(courseId: string): Promise<string> {
+        return Promise.resolve(courseId);
+        if (this.getRole != Role.User) {
+            return Promise.reject();
+        }
+        const user = this.getUserDetails
+        // unsubscribe
+        // ... TODO
     }
 }

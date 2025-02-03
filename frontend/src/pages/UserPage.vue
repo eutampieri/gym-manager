@@ -21,19 +21,23 @@ store.client.getUserCourses()
 function gotoTrainerProfile(username: string) {
     // TODO 
 }
-function unsubsribeFromCourse(courseName: string) {
+function unsubscribeFromCourse(courseId: string, courseName: string) {
     if (confirm('Do you want to unsubscribe from ' + courseName + '?')) {
-        // store.client.removeUserFromCourse(user?.username, courseName);
+        store.client.unsubscribeFromCourse(courseId)
+            .then(id => myCourses.value = myCourses.value?.filter(x => x.id != id));
     }
 }
 function bookCourse() {
     // TODO
+    console.log('book course clicked')
 }
 function bookOneonOne() {
     // TODO
+    console.log('book one-on-one clicked')
 }
 function contactSupport() {
     // TODO
+    console.log('contact support clicked')
 }
 
 </script>
@@ -46,15 +50,16 @@ function contactSupport() {
     </div>
     <section id="my-courses" class="my-3">
         <h2>My Courses</h2>
-        <Dropdown>
-            <DropdownItem v-for="(course, i) in myCourses" :key="i" :header="[course.schedule[0].dayOfWeek + ' ' + course.schedule[0].startTime, course.name]" :id-prefix="'course'" :index="i">
+        <Dropdown id="my-courses-dropdown">
+            <DropdownItem v-for="(course, i) in myCourses" :key="i" :header="[course.schedule[0].dayOfWeek + ' ' + course.schedule[0].startTime, course.name]" 
+                :id-prefix="'course'" :index="i" :dropdown-id="'my-courses-dropdown'">
                 <dl>
                     <dt>{{ course.name }}</dt>
                     <dd>{{ course.description }}</dd>
                     <dt>Trainer</dt>
                     <dd><NameLink :action="() => gotoTrainerProfile(course.trainer)">{{ course.trainer }}</NameLink></dd>
                 </dl>
-                <button type="button" class="btn btn-primary m-2" @click="() => unsubsribeFromCourse(course.name)">Unsubscribe</button>
+                <button type="button" class="btn btn-primary m-2" @click="() => unsubscribeFromCourse(course.id, course.name)">Unsubscribe</button>
             </DropdownItem>
         </Dropdown>
     </section>

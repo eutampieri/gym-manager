@@ -5,5 +5,4 @@ import UserPage from './pages/UserPage.vue';
 
 <template>
     <RouterView class="mt-md-4"/>
-    <UserPage/>
 </template>
