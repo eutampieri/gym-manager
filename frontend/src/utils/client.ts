@@ -18,32 +18,6 @@ export class Client {
 
     public async login(username: string, password: string): Promise<boolean> {
         // TODO API request
-        this.jwt = "";
-        return true;
-    }
-
-    public get getUserDetails(): undefined | User | Trainer | Admin {
-        // TODO
-        const result: User = {
-            username: 'Rox09',
-            firstName: 'Rocco',
-            lastName: 'Siffredi',
-            id: '1',
-            dateOfBirth: '10/10/2020',
-            fiscalCode: 'RVLMLJC987DH43',
-            address: 'Via sghemba 4',
-            email: 'rsiffr@g.com',
-            phoneNumber: '+399333444555',
-        }
-        return result;
-    }
-    public get getRole(): undefined | Role {
-        // TODO
-        return Role.User;
-    }
-
-    public async login(username: string, password: string): Promise<boolean> {
-        // TODO API request
         const request: LoginRequest = {
             username: username,
             password: password
@@ -70,7 +44,7 @@ export class Client {
     }
     public get getRole(): undefined | Role {
         // TODO
-        return Role.User;
+        return Role.Admin;
     }
 
     public addUser(user: CreateUserRequest) {
