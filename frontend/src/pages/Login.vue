@@ -10,8 +10,11 @@ import { Role } from '@gym-manager/models';
 const store = useUserStore();
 const username = ref<string>();
 const password = ref<string>();
+const loginInProgress = ref(false);
 async function login() {
+    loginInProgress.value = true;
     let authResult = await store.client.login(username.value || "", password.value || "");
+    loginInProgress.value = false;
     if (authResult) {
         switch (store.client.getRole) {
             case Role.Admin:
