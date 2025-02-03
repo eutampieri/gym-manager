@@ -11,5 +11,5 @@ defineProps<{ title: string }>(); // Riceve il titolo come prop
 }
 </style>
 <template>
-    <h1 class="title">{{ title }}</h1>
+    <h1 class="title flex-grow-1">{{ title }}</h1>
 </template>

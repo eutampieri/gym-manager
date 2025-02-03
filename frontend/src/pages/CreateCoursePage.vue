@@ -4,9 +4,8 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { CreateCourseRequest } from "@gym-manager/models/course";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
-import PageTitle from '@/components/PageTitle.vue';
-import BackButton from '@/components/BackButton.vue';
 import { useCourseStore } from '../store/course';
+import Header from '@/components/Header.vue';
 
 const name = ref("");
 const description = ref("");
@@ -125,13 +124,11 @@ async function handleCreateCourse() {
 </script>
 
 <template>
-    <div class="header-container">
-        <BackButton buttonText="Back" />
-        <PageTitle title="Gym Manager" />
-    </div>
-    <form>
+    <Header>
         <h2>Creating {{ name === "" ? "a new course" : `${name}` }}</h2>
+    </Header>
 
+    <form>
         <ValidatingGenericInput type="text" id="name" error-message="The name can only contain letters"
             :validation-function="isOnlyLetters" v-model="name" v-model:valid="nameValid">
             Name

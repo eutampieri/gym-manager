@@ -3,10 +3,9 @@ import { isOnlyLetters, isPhoneNumber } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
-import BackButton from '@/components/BackButton.vue';
-import PageTitle from '@/components/PageTitle.vue';
 import { useTrainerStore } from '@/store/trainer';
 import { CreateTrainerRequest } from '@gym-manager/models/trainer';
+import Header from '@/components/Header.vue';
 
 const username = ref("");
 const password = ref("");
@@ -63,13 +62,10 @@ async function handleCreateTrainer() {
 }
 </script>
 <template>
-    <div class="header-container">
-        <BackButton buttonText="Back" />
-        <PageTitle title="Gym Manager" />
-    </div>
-    <form>
+    <Header>
         <h2>Creating {{ firstName === "" ? "a new trainer" : `${firstName} ${lastName}` }}</h2>
-
+    </Header>
+    <form>
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
             :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
             Username
