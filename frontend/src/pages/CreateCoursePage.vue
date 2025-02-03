@@ -14,7 +14,7 @@ const trainer = ref("");
 const message = ref("");
 const trainerId = ref("");
 const trainersList = ref<string[]>([]);
-const scheduleEntries = ref<{ dayOfWeek: string, startTime: string }[]>([]);
+const scheduleEntries = ref<{ dayOfWeek: string, startTime: string, availableSpots: number }[]>([]);
 
 const nameValid = ref(false);
 const descriptionValid = ref(false);
@@ -38,23 +38,33 @@ const submitButtonEnabled = computed(() => {
 // Giorni della settimana
 const daysOfWeek = ref(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]);
 
-// Orari disponibili (9:00 - 18:00)
+// Orari disponibili (09:00 - 18:00)
 const timeSlots = computed(() => {
     const times = [];
     for (let hour = 9; hour <= 18; hour++) {
-        times.push(`${hour}:00`);
+        times.push(`${hour.toString().padStart(2, '0')}:00`); //padding iniziale per avere 09:00
     }
     return times;
 });
 // Aggiungi un nuovo giorno/orario
 const addScheduleEntry = () => {
-    scheduleEntries.value.push({ dayOfWeek: "", startTime: "" });
+    scheduleEntries.value.push({ dayOfWeek: "", startTime: "", availableSpots: 0 });
 };
+
 // Rimuovi un giorno/orario
 const removeScheduleEntry = (index: number) => {
     scheduleEntries.value.splice(index, 1);
 };
-
+// Watch per aggiornare availableSpots quando cambia capacity
+watch(capacity, (newCapacity) => {
+    const numericCapacity = Number(newCapacity);
+    if (!isNaN(numericCapacity)) {
+        scheduleEntries.value = scheduleEntries.value.map(entry => ({
+            ...entry,
+            availableSpots: numericCapacity
+        }));
+    }
+});
 watch(trainer, async (newTrainer) => {
     if (!newTrainer) {
         trainerId.value = ""; // Resetta trainerId se trainer è vuoto
@@ -96,13 +106,13 @@ onMounted(() => {
 const course = useCourseStore().course;
 async function handleCreateCourse() {
     try {
-
+    
         // Creazione dell'oggetto JSON con i dati del cliente
         const request: CreateCourseRequest = {
             name: name.value,
             description: description.value,
             schedule: scheduleEntries.value,
-            capacity: capacity.value,
+            capacity: Number(capacity.value),
             trainer: trainerId.value,
         }
         // Effettua la richiesta POST per creare il cliente

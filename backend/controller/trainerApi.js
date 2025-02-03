@@ -6,6 +6,24 @@ const Client = require("../models/clientModel");
 // le funzioni di Mongoose sono CRUD
 
 module.exports = class API {
+    static async createTrainer(req, res) {
+        const trainer = req.body;
+        console.log(req.body);
+        try {
+            const trainerAlreadyPresent = await Trainer.findOne({username: req.body.username}, null, null).exec();
+
+            if (!trainerAlreadyPresent) {
+                await Trainer.create(trainer, null);
+                res.status(201).json({ message: 'Trainer created successfully' });
+            }
+            else {
+                res.status(500).json({ message: "Trainer already present" });
+            }
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        } finally {
+        }
+    }
 
     static async fetchAllTrainers(req, res) {
         try {
@@ -28,24 +46,13 @@ module.exports = class API {
         } finally {
         }
     }
-
-
-
-    static async createTrainer(req, res) {
-        const trainer = req.body;
-        console.log(req.body);
+    static async fetchTrainerBy_Id(req, res) {
+        const id = req.params.id;
         try {
-            const trainerAlreadyPresent = await Trainer.findOne({username: req.body.username}, null, null).exec();
-
-            if (!trainerAlreadyPresent) {
-                await Trainer.create(trainer, null);
-                res.status(201).json({ message: 'Trainer created successfully' });
-            }
-            else {
-                res.status(500).json({ message: "Trainer already present" });
-            }
+            const trainer = await Trainer.findById(id, null, null).exec();
+            res.status(200).json(trainer);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(404).json({ message: error.message });
         } finally {
         }
     }
@@ -80,9 +87,9 @@ module.exports = class API {
     }
 
     static async deleteTrainer(req, res) {
-        const username = req.params.username;
+        const id = req.params.id;
         try {
-            const trainer = await Trainer.findOneAndDelete({username:username}, null);
+            const trainer = await Trainer.findOneAndDelete({_id:id}, null);
             if (!trainer) {
                 return res.status(404).json({message: 'Trainer not found'});
             }
@@ -94,9 +101,15 @@ module.exports = class API {
     }
 
     static async fetchAllTrainerCourses(req, res) {
-        const username = req.params.username;
+        const id = req.params.id;
         try {
-            const trainer = await Trainer.findOne({username: username}, null, null).exec();
+              // Trova il trainer e popola i corsi con il nome
+             const trainer = await Trainer.findOne({ _id: id })
+            .populate({
+            path: "courses", // Popola il campo `courses`
+            select: "name description schedule capacity trainer" // Seleziona solo i campi necessari
+            })
+            .exec();
             if (!trainer) {
                 return res.status(404).json({message: 'Trainer not found'});
             }
@@ -108,9 +121,9 @@ module.exports = class API {
     }
 
     static async fetchAllTrainerSessions(req, res) {
-        const username = req.params.username;
+        const id = req.params.id;
         try {
-            const trainer = await Trainer.findOne({username: username}, null, null).exec();
+            const trainer = await Trainer.findOne({_id: id}, null, null).exec();
             if (!trainer) {
                 return res.status(404).json({message: 'Trainer not found'});
             }
@@ -121,7 +134,7 @@ module.exports = class API {
         }
     }
 
-
+//////////////////////////////////////////////////////////////////////7
     static async addTrainerCourse(req, res) {
         try {
             const trainerId = req.params.trainerId;
@@ -183,6 +196,7 @@ module.exports = class API {
         } finally {
         }
     }
+
 
 
     // SAME AS DELETETRAINERSESSION BUT USING GET INSTEAD OF POST
@@ -247,14 +261,5 @@ module.exports = class API {
             } finally {
             }
     }
-    static async fetchTrainerBy_Id(req, res) {
-        const id = req.params.id;
-        try {
-            const trainer = await Trainer.findById(id, null, null).exec();
-            res.status(200).json(trainer);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-}
+    
 }

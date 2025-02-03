@@ -45,17 +45,14 @@ const clientSchema = new mongoose.Schema({
     courses: [{
         course: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Course',
-            required: false
+            ref: 'Course'
         },
         dayOfWeek: {
             type: String,
-            enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-            required: true
+            enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
         },
         startTime: {
             type: String,
-            required: true,
             match: /^(09|1[0-8]):00$/ // Regex per il formato "HH:00", tra 09 e 18
         }
     }],

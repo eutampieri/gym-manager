@@ -5,34 +5,7 @@ const Client = require('../models/clientModel');
 // find returns an array of objects
 
 module.exports = class API {
-
-    static async fetchAllClients(req, res) {
-        try {
-                const user = await Client.find({}, null, null).exec();
-                res.status(200).json(user);
-
-        } catch (error) {
-            res.status(404).json({ message: error.message })
-        } finally {
-        }
-
-    }
-
-
-    static async fetchClientByUsername(req, res) {
-        const username = req.params.username;
-        try {
-            const user = await Client.findOne({username: username}, null, null).exec();
-            res.status(200).json(user);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-
-
-
-    static async createClient(req, res) {
+    static async createCustomer(req, res) {
         const client = req.body;
         try {
             const userAlreadyPresent = await Client.findOne({ username: req.body.username }, null, null).exec();
@@ -49,7 +22,42 @@ module.exports = class API {
         }
     }
 
-    static async updateClient(req, res) {
+    static async fetchAllCustomers(req, res) {
+        try {
+                const user = await Client.find({}, null, null).exec();
+                res.status(200).json(user);
+
+        } catch (error) {
+            res.status(404).json({ message: error.message })
+        } finally {
+        }
+
+    }
+
+
+    static async fetchCustomerByUsername(req, res) {
+        const username = req.params.username;
+        try {
+            const user = await Client.findOne({username: username}, null, null).exec();
+            res.status(200).json(user);
+        } catch (error) {
+            res.status(404).json({ message: error.message });
+        } finally {
+        }
+    }
+    static async fetchCustomerBy_Id(req, res) {
+        const id = req.params.id;
+        try {
+            const user = await Client.findById(id);
+            res.status(200).json(user);
+        } catch (error) {
+            res.status(404).json({ message: error.message });
+        } finally {
+        }
+    }
+
+
+    static async updateCustomer(req, res) {
         const username = req.body.username;
         const { password, email, phoneNumber, dateOfBirth, address, courses, sessions } = req.body; // Extract the fields to update
 
@@ -79,10 +87,10 @@ module.exports = class API {
 
 
 
-    static async deleteClient(req, res) {
-        const username = req.params.username;
+    static async deleteCustomer(req, res) {
+        const id = req.params.id;
         try {
-            await Client.findOneAndDelete({username:username}, null);
+            await Client.findOneAndDelete({_id:id}, null);
             res.status(200).json({ message: 'Client deleted successfully' });
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -90,10 +98,10 @@ module.exports = class API {
         }
     }
 
-    static async fetchAllClientCourses(req, res) {
+    static async fetchAllCustomerCourses(req, res) {
         try {
-            const username = req.params.username;
-            const client = await Client.findOne({username: username}, null, null).exec();
+            const id = req.params.id;
+            const client = await Client.findOne({_id: id}, null, null).exec();
             if (!client) {
                 return res.status(404).json({message: 'Client not found'});
             }
@@ -104,10 +112,10 @@ module.exports = class API {
         }
     }
 
-    static async fetchAllClientSessions(req, res) {
+    static async fetchAllCustomerSessions(req, res) {
         try {
-            const username = req.params.username;
-            const client = await Client.findOne({username: username}, null, null).exec();
+            const id = req.params.id;
+            const client = await Client.findOne({_id: id}, null, null).exec();
             if (!client) {
                 return res.status(404).json({ message: 'Client not found' });
             }
@@ -118,6 +126,7 @@ module.exports = class API {
         }
     }
 
+///////////////////////////////////////////////////////////////////////////////////////
     static async deleteClientCourse(req, res) {
         try {
             const courseName = req.params.courseName;
