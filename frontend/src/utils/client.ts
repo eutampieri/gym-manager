@@ -1,4 +1,4 @@
-import { Admin, Course, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CreateAdminRequest, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -86,4 +86,9 @@ export class Client {
             }
         ];
     }
+
+    public addAdmin(admin: CreateAdminRequest) {
+        return this.apiRequest("POST", "/admins", admin);
+    }
+
 }
