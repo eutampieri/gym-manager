@@ -77,5 +77,5 @@ const contactSupport = '/support/chat'
             </DropdownItem>
         </Dropdown>
     </section>
-    <MainButton class="btn-secondary mt-5" :path="contactSupport">Need help?</MainButton>
+    <MainButton class="mt-5" :path="contactSupport" :use-variant="true">Need help?</MainButton>
 </template>
