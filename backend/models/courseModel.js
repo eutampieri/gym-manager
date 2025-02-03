@@ -24,10 +24,14 @@ const courseSchema = new mongoose.Schema({
             type: String,
             required: true,
             match: /^(09|1[0-8]):00$/ // Regex per il formato "HH:00", tra 09 e 18
-        }
-        
+        },
+        participants: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Client',
+            required: false
+        }]
     }],
-   
+
     capacity: {
         type: Number,
         required: true
@@ -37,11 +41,6 @@ const courseSchema = new mongoose.Schema({
         ref: 'Trainer',
         required: true
     },
-    participants: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Client',
-        required: false
-    }]
 });
 
 
