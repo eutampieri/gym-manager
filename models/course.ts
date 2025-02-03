@@ -1,10 +1,15 @@
+import { Identifiable } from ".";
+
 export interface CreateCourseRequest {
-    name: String
-    description: String
-    schedule: {
-        dayOfWeek: string;
-        startTime: string;        
-    }[];
-    capacity: String
-    trainer: String
+    name: string,
+    description: string,
+    dayOfWeek: string,
+    startTime: string,
+    endTime: string,
+    capacity: number,
+    trainer: string,
+    participants: string[]
+
 }
+
+export interface Course extends CreateCourseRequest, Identifiable { }
