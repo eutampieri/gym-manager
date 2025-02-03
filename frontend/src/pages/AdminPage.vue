@@ -1,48 +1,19 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
 import UiNavigationButton from '@/components/UiNavigationButton.vue';
-import ListView from '@/components/ListView.vue';
-import { ListData, RowData } from '@/utils/lists';
 
 const buttons = [
     { text: "Create Trainer", route: "/admin/createTrainer", },
-    { text: "Delete Trainer", route: "/admin", },
-    { text: "Update Trainer", route: "/admin", },
+    { text: "View Trainers", route: "/admin/listTrainers", },
     { text: "Create Client", route: "/admin/createClient", },
-    { text: "Delete Client", route: "/admin", },
-    { text: "Update Client", route: "/admin", },
+    { text: "View Customers", route: "/admin/listCustomers", },
     { text: "Create Course", route: "/admin/createCourse", },
-    { text: "Delete Course", route: "/admin", },
-    { text: "Update Course", route: "/admin", },
+    { text: "View Courses", route: "/admin/listCourses", },
+    { text: "Create Admin", route: "/admin/createAdmin"},
+    { text: "View Admins", route: "/admin/listAdmins"},
 ];
-
-const data: ListData = {
-    headers: [
-        {
-            key: 'name',
-            name: 'Name'
-        },
-        {
-            key: 'description',
-            name: 'Description'
-        }
-    ],
-    actions: [],
-    data: [
-        {
-            name: "Zumba",
-            description: "A bad course description :("
-        },
-        {
-            name: "Zumba1",
-            description: "A bad course description :("
-        }
-    ]
-};
-function mobileHeader(d: RowData): string {
-    return d.name
-}
 </script>
+
+
 <template>
     <h1>Admin Page</h1>
     <div class="d-flex justify-content-center">
@@ -52,5 +23,5 @@ function mobileHeader(d: RowData): string {
             </UiNavigationButton>
         </div>
     </div>
-    <ListView :data="data" :mobile-header="mobileHeader"></ListView>
 </template>
+
