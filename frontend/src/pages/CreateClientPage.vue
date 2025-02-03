@@ -4,9 +4,8 @@ import { computed, ref } from 'vue';
 import { CreateUserRequest } from "@gym-manager/models/user";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
-import BackButton from '@/components/BackButton.vue';
-import PageTitle from '@/components/PageTitle.vue';
 import { useUserStore } from '../store/user';
+import Header from '@/components/Header.vue';
 
 const username = ref("");
 const password = ref("");
@@ -75,12 +74,10 @@ async function handleCreateClient() {
 }
 </script>
 <template>
-    <div class="header-container">
-        <BackButton buttonText="Back" />
-        <PageTitle title="Gym Manager" />
-    </div>
-    <form id="clientForm">
+    <Header>
         <h2>Creating {{ firstName === "" ? "a new customer" : `${firstName} ${lastName}` }}</h2>
+    </Header>
+    <form>
 
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
             :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
@@ -119,7 +116,7 @@ async function handleCreateClient() {
 
         <button class="btn btn-primary" type="button" @click="handleCreateClient()"
             :disabled="!submitButtonEnabled">Create Client {{ firstName }}</button>
-        
+
         <p v-if="message">
             {{ message }}
         </p>

@@ -1,18 +1,17 @@
 <script lang="ts" setup>
 import { isValidCapacity, isOnlyLetters } from '@/utils/validation';
-import { computed, onMounted, ref, watch} from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { CreateCourseRequest } from "@gym-manager/models/course";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
-import PageTitle from '@/components/PageTitle.vue';
-import BackButton from '@/components/BackButton.vue';
 import { useCourseStore } from '../store/course';
+import Header from '@/components/Header.vue';
 
 const name = ref("");
 const description = ref("");
 const capacity = ref("");
 const trainer = ref("");
-const message = ref(""); 
+const message = ref("");
 const trainerId = ref("");
 const trainersList = ref<string[]>([]);
 const scheduleEntries = ref<{ dayOfWeek: string, startTime: string }[]>([]);
@@ -28,7 +27,7 @@ const submitButtonEnabled = computed(() => {
         description.value !== "" &&
         scheduleEntries.value.length > 0 &&
         capacity.value !== "" &&
-        trainer.value !== "" &&        
+        trainer.value !== "" &&
         trainerId.value !== "" &&
         descriptionValid.value &&
         capacityValid.value &&
@@ -49,7 +48,7 @@ const timeSlots = computed(() => {
 });
 // Aggiungi un nuovo giorno/orario
 const addScheduleEntry = () => {
-    scheduleEntries.value.push({ dayOfWeek: "", startTime: ""});
+    scheduleEntries.value.push({ dayOfWeek: "", startTime: "" });
 };
 // Rimuovi un giorno/orario
 const removeScheduleEntry = (index: number) => {
@@ -71,9 +70,9 @@ async function fetchAllTrainers() {
     try {
         const response = await fetch(`/trainers`);
         if (!response.ok) throw new Error("Error retrieving trainers");
-        const trainers = await response.json();        
+        const trainers = await response.json();
         // Estrai gli username e aggiorna la lista dei trainer
-        trainersList.value = trainers.map((trainer: { username: String; }) => trainer.username);    
+        trainersList.value = trainers.map((trainer: { username: String; }) => trainer.username);
     } catch (error) {
         console.error('Error retrieving trainers:', error);
         message.value = "Error retrieving trainers";
@@ -83,9 +82,9 @@ async function fetchTrainerId() {
     try {
         const response = await fetch(`/trainers/trainerId/${trainer.value}`);
         if (!response.ok) throw new Error("Error retrieving trainer id");
-        const id = await response.json();        
+        const id = await response.json();
         // Estrai gli username e aggiorna la lista dei trainer
-        trainerId.value = id; 
+        trainerId.value = id;
     } catch (error) {
         console.error('Error retrieving trainer id:', error);
         message.value = "Error retrieving trainer id";
@@ -125,13 +124,11 @@ async function handleCreateCourse() {
 </script>
 
 <template>
-    <div class="header-container">
-        <BackButton buttonText="Back" />
-        <PageTitle title="Gym Manager" />
-    </div>
-    <form id="courseForm">
+    <Header>
         <h2>Creating {{ name === "" ? "a new course" : `${name}` }}</h2>
+    </Header>
 
+    <form>
         <ValidatingGenericInput type="text" id="name" error-message="The name can only contain letters"
             :validation-function="isOnlyLetters" v-model="name" v-model:valid="nameValid">
             Name
@@ -163,7 +160,7 @@ async function handleCreateCourse() {
         </ValidatingGenericInput>
 
         <SelectInput id="trainer" v-model="trainer" :options="trainersList">
-          Trainer
+            Trainer
         </SelectInput>
 
 
