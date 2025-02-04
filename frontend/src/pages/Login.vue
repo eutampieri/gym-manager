@@ -1,16 +1,19 @@
 <script lang="ts" setup>
 import GenericInput from '@/components/GenericInput.vue';
-import NotificationArea from '@/components/NotificationArea.vue';
-import { Notification as INotification } from '@/utils/notifications';
+
 import router from '@/routes/router';
 import { useUserStore } from '@/store/user';
 import { ref } from 'vue';
 import { Role } from '@gym-manager/models';
+import { useNotificationsStore } from '@/store/notifications';
 
 const store = useUserStore();
 const username = ref<string>();
 const password = ref<string>();
 const loginInProgress = ref(false);
+
+const notifications = useNotificationsStore();
+
 async function login() {
     loginInProgress.value = true;
     let authResult = await store.client.login(username.value || "", password.value || "");
@@ -28,14 +31,13 @@ async function login() {
                 break;
         }
     } else {
-        notifications.value.push({
+        notifications.fire({
             title: 'Authentication error',
             body: 'The credentials you provided were invalid.',
             background: "danger"
         });
     }
 }
-const notifications = ref<Array<INotification>>([]);
 </script>
 <template>
     <h1>Login</h1>
@@ -48,5 +50,4 @@ const notifications = ref<Array<INotification>>([]);
             </div> Login
         </button>
     </form>
-    <NotificationArea :notifications="notifications"></NotificationArea>
 </template>
