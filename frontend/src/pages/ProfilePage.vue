@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import Header from '@/components/Header.vue';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import router from '@/routes/router';
 
 const props = defineProps<{ id: string, role: Role }>();
 
@@ -18,14 +19,14 @@ const client = useUserStore().client;
 const userName = ref('');
 const profileData = ref<Array<ProfileEntry>>();
 const profileIcon = ref('');
+const logged = props.id == undefined || props.id == '';
 
 function getUser(): Promise<undefined | User | Trainer | Admin> {
     if (props.id) {
         if (props.role == Role.User) {
             return client.getUserById(props.id);
         } else if (props.role == Role.Trainer) {
-            // TODO
-            return Promise.reject();
+            return client.getTrainer(props.id);
         } else {
             // TODO
             return Promise.reject();
@@ -70,21 +71,29 @@ function getLinkPrefix(field: string): string | undefined {
         return undefined;
     }
 }
+function logout() {
+    client.logout().then(res => {
+        if (res) {
+            router.push({ "path": "/login" });
+        }
+    })
+}
 </script>
 
 <template>
     <SectionContainer>
         <SectionContainerItem id="profile">
             <div class="d-flex flex-column justify-content-center">
-            <img :src="profileIcon" class="rounded mx-auto d-block my-5" :alt="userName + 's profile picture'" />
-            <dl>
-                <template v-for="item in profileData">
-                    <dt class="text-center">{{ item.label }}</dt>
-                    <dd class="text-center" v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
-                    <dd class="text-center" v-else>{{ item.value }}</dd>
-                </template>
-            </dl>
-        </div>
+                <img :src="profileIcon" class="rounded mx-auto d-block my-5" :alt="userName + 's profile picture'" />
+                <dl>
+                    <template v-for="item in profileData">
+                        <dt class="text-center">{{ item.label }}</dt>
+                        <dd class="text-center" v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
+                        <dd class="text-center" v-else>{{ item.value }}</dd>
+                    </template>
+                </dl>
+                <button type="button" class="btn btn-secondary m-2 mx-auto" @click="logout">Logout</button>
+            </div>
         </SectionContainerItem>
     </SectionContainer>
 </template>

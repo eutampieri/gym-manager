@@ -26,6 +26,11 @@ export class Client {
         this.jwt = "";
         return true;
     }
+    public async logout(): Promise<boolean> {
+        const ret = this.isLoggedIn;
+        this.jwt = undefined;
+        return ret;
+    }
 
     public get userDetails(): undefined | User | Trainer | Admin {
         // TODO
