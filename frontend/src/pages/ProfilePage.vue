@@ -1,10 +1,13 @@
 <script lang="ts" setup>
-import { getProfileIcon, User, Trainer, Admin } from '@gym-manager/models';
+import { getProfileIcon, User, Trainer, Admin, Role } from '@gym-manager/models';
 import { useUserStore } from '../store/user';
 import { ref } from 'vue';
 import Header from '@/components/Header.vue';
+import SectionContainer from '@/components/SectionContainer.vue';
+import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import router from '@/routes/router';
 
-const props = defineProps<{ id: string }>();
+const props = defineProps<{ id: string, role: Role }>();
 
 interface ProfileEntry {
     label: string,
@@ -13,18 +16,25 @@ interface ProfileEntry {
 }
 
 const client = useUserStore().client;
+const userName = ref('');
 const profileData = ref<Array<ProfileEntry>>();
 const profileIcon = ref('');
+const logged = props.id == undefined || props.id == '';
 
-function getUser(): undefined | User | Trainer | Admin {
+function getUser(): Promise<undefined | User | Trainer | Admin> {
     if (props.id) {
-        return client.getUserById(props.id);
+        if (props.role == Role.User) {
+            return client.getUserById(props.id);
+        } else if (props.role == Role.Trainer) {
+            return client.getTrainer(props.id);
+        } else {
+            // TODO
+            return Promise.reject();
+        }
     } else {
-        return client.userDetails;
+        return Promise.resolve(client.userDetails);
     }
 }
-// get the logged user info
-const user = getUser();
 const fieldNameMapper = {
     username: 'Username',
     firstName: 'First Name',
@@ -36,20 +46,21 @@ const fieldNameMapper = {
     fiscalCode: 'CF',
 }
 // prepare the display data
-if (user) {
-    profileData.value = Object.keys(user)
-        .filter(k => Object.keys(fieldNameMapper).includes(k))
-        .map(k => {
-            return {
-                label: fieldNameMapper[k as keyof typeof fieldNameMapper],
-                value: user[k as keyof typeof user] as string,
-                linkPrefix: getLinkPrefix(k)
-            }
-        });
-    profileIcon.value = getProfileIcon(user);
-} else {
-    // error
-}
+getUser().then((user: undefined | User | Trainer | Admin) => {
+    if (user) {
+        userName.value = user.username;
+        profileData.value = Object.keys(user)
+            .filter(k => Object.keys(fieldNameMapper).includes(k))
+            .map(k => {
+                return {
+                    label: fieldNameMapper[k as keyof typeof fieldNameMapper],
+                    value: user[k as keyof typeof user] as string,
+                    linkPrefix: getLinkPrefix(k)
+                }
+            });
+        profileIcon.value = getProfileIcon(user);
+    }
+});
 
 function getLinkPrefix(field: string): string | undefined {
     if (field == 'email') {
@@ -60,25 +71,29 @@ function getLinkPrefix(field: string): string | undefined {
         return undefined;
     }
 }
+function logout() {
+    client.logout().then(res => {
+        if (res) {
+            router.push({ "path": "/login" });
+        }
+    })
+}
 </script>
 
 <template>
-    <section class="container ">
-        <Header>
-            <h2>User Profile</h2>
-        </Header>
-
-        <div class="d-flex justify-content-center">
-        </div>
-        <div class="d-flex flex-column justify-content-center">
-            <img :src="profileIcon" class="rounded mx-auto d-block" :alt="user?.username + 's profile picture'" />
-            <dl class="mx-auto w-75">
-                <template v-for="item in profileData">
-                    <dt>{{ item.label }}</dt>
-                    <dd v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
-                    <dd v-else>{{ item.value }}</dd>
-                </template>
-            </dl>
-        </div>
-    </section>
+    <SectionContainer>
+        <SectionContainerItem id="profile">
+            <div class="d-flex flex-column justify-content-center">
+                <img :src="profileIcon" class="rounded mx-auto d-block my-5" :alt="userName + 's profile picture'" />
+                <dl>
+                    <template v-for="item in profileData">
+                        <dt class="text-center">{{ item.label }}</dt>
+                        <dd class="text-center" v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
+                        <dd class="text-center" v-else>{{ item.value }}</dd>
+                    </template>
+                </dl>
+                <button v-if="logged" type="button" class="btn btn-secondary m-2 mx-auto" @click="logout">Logout</button>
+            </div>
+        </SectionContainerItem>
+    </SectionContainer>
 </template>
