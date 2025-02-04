@@ -2,7 +2,7 @@
 import Header from '@/components/Header.vue';
 import NotificationArea from '@/components/NotificationArea.vue';
 import { useNotificationsStore } from './store/notifications';
-import BookCoursePage from './pages/BookCoursePage.vue';
+import UserPage from './pages/UserPage.vue';
 
 const notifications = useNotificationsStore().notifications;
 </script>
@@ -10,6 +10,6 @@ const notifications = useNotificationsStore().notifications;
 <template>
     <Header></Header>
     <RouterView />
-    <BookCoursePage/>
+    <UserPage/>
     <NotificationArea :notifications="notifications"></NotificationArea>
 </template>
