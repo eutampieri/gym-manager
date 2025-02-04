@@ -9,9 +9,9 @@ function displayableCourseFormatter(c: Course): RowData {
     return {
         name: c.name,
         description: c.description,
-        dateTime: [`${c.dayOfWeek} ${c.startTime}-${c.endTime}`, `${c.dayOfWeek} ${c.startTime}-${c.endTime}`, `${c.dayOfWeek} ${c.startTime}-${c.endTime}`],
+        dateTime: c.schedule.map((x) => `${x.dayOfWeek} ${x.startTime}`),
         trainer: c.trainer,
-        capacityStatus: `${c.capacity - c.participants.length}/${c.capacity}`,
+        capacityStatus: c.schedule.map((x) => `${c.capacity - x.participants.length}/${c.capacity}`),
     };
 }
 

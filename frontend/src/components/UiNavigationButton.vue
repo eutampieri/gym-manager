@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps({
-    path: { type: String, required: true },
+    path: { type: string, required: true },
 })
 
 </script>

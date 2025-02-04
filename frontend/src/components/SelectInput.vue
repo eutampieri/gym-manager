@@ -15,7 +15,7 @@ const model = defineModel<string>();
         <label class="form-label" :for="id">
             <slot></slot> <!-- Testo della label -->
         </label>
-        
+
         <select class="form-select" :id="id" v-model="model">
             <option value="" disabled>Select...</option> <!-- Opzione vuota iniziale -->
             <option v-for="option in props.options" :key="option" :value="option">
