@@ -45,6 +45,9 @@ exports.authenticate = async (req, res) => {
             token.role = user.kind;
             token.username = user.data.username;
             token.profile = user.data;
+            token.profile.password = undefined;
+            token.profile.sessions = undefined;
+            token.profile.courses = undefined;
             const jwt = await new jose.SignJWT(token) // details to  encode in the token
                 .setProtectedHeader({
                     alg: 'HS256'
