@@ -12,7 +12,7 @@ const emit = defineEmits<{ send: [string], close: [] }>();
 defineProps<{
     isActive: boolean,
     messages: IMessage[],
-    otherPart: [Admin, Role],
+    otherParty: [Admin, Role],
 }>();
 const minimised = ref(false);
 const currentMessage = ref("");
@@ -30,9 +30,9 @@ function send() {
             <section class="d-flex flex-row ">
                 <section class="flex-grow-1">
                     <h2>Support chat</h2>
-                    <h3 v-if="otherPart[1] != Role.Admin">with
+                    <h3 v-if="otherParty[1] != Role.Admin">with
                         <NameLink path="">
-                            {{ otherPart[0].firstName }} {{ otherPart[0].lastName }} ({{ otherPart[1] }})
+                            {{ otherParty[0].firstName }} {{ otherParty[0].lastName }} ({{ otherParty[1] }})
                         </NameLink>
                     </h3>
                 </section>
@@ -59,7 +59,7 @@ function send() {
         </section>
         <div v-else class="d-grid gap-2">
             <button class="btn btn-primary btn-lg" @click="expand">
-                Resume chat with {{ otherPart[0].firstName }} {{ otherPart[0].lastName }}
+                Resume chat with {{ otherParty[0].firstName }} {{ otherParty[0].lastName }}
             </button>
         </div>
     </section>
