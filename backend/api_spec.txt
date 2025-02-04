@@ -18,7 +18,6 @@ Session (/api/sessions):
   GET / -> fetchAllSessions   (non ha input, ritorna l'elenco dei session)    
   GET /:id -> fetchSessionBy_Id (prende come parametro l'_id della session, ritorna la session)
   DELETE /:id -> deleteSession (prende come parametri l'_id della session, elimina la session, elimina la session dal client e dal trainer) 
-  GET /with-user/:id List all course
 
 Customer (/api/customers)
   POST / createCustomer  (prende come body un client, crea il client) 
