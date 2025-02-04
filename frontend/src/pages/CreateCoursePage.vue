@@ -3,8 +3,7 @@ import { isValidCapacity, isOnlyLetters } from '@/utils/validation';
 import { computed, onMounted, ref, watch } from 'vue';
 import { CourseScheduleEntry, CreateCourseRequest } from "@gym-manager/models/course";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
-import SelectInput, { SelectInputValue } from '@/components/SelectInput.vue';
-import Header from '@/components/Header.vue';
+import { SelectInputValue } from '@/components/SelectInput.vue';
 import { useUserStore } from '@/store/user';
 
 const name = ref("");
@@ -100,9 +99,9 @@ async function handleCreateCourse() {
 </script>
 
 <template>
-    <Header>
-        <h2>Creating {{ name === "" ? "a new course" : `${name}` }}</h2>
-    </Header>
+    
+    <h2>Creating {{ name === "" ? "a new course" : `${name}` }}</h2>
+    
 
     <form>
         <ValidatingGenericInput type="text" id="name" error-message="The name can only contain letters"
