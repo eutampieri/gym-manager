@@ -12,12 +12,15 @@ onMounted(() => {
 <template>
     <div ref="toast" class="toast" :class="'text-bg-' + background" role="alert" aria-live="assertive"
         aria-atomic="true">
-        <div class="toast-header">
-            <strong class="me-auto">{{ title }}</strong>
-            <small v-if="when" class="text-body-secondary">{{ when.toLocaleTimeString() }}</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        <div :class="(title) ? 'toast-header' : 'd-flex'">
+            <strong v-if="title" class="me-auto">{{ title }}</strong>
+            <small v-if="when && title" class="text-body-secondary">{{ when.toLocaleTimeString() }}</small>
+            <div v-if="!title" class="toast-body">
+                {{ body }}
+            </div>
+            <button type="button" :class="'btn-close' + ((!title) ? ' btn-close-white me-2 m-auto' : '')" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-        <div class="toast-body">
+        <div v-if="title" class="toast-body">
             {{ body }}
         </div>
     </div>
