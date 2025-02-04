@@ -1,21 +1,28 @@
 <script lang="ts" setup>
+import { useRoute } from 'vue-router';
 import BackButton from '@/components/BackButton.vue';
 import PageTitle from '@/components/PageTitle.vue';
 import { useUserStore } from '@/store/user'; 
 import { getProfileIcon } from '@gym-manager/models/user';
+import router from '@/routes/router';
+import { computed } from 'vue';
+
+// Recupero del percorso corrente
+const route = useRoute();
+
+const isLoginPage = computed(() => route.path === '/login');
 
 // Recupero dei dati dell'utente dallo store Vuex/Pinia
 const store = useUserStore();
 const user = store.client.userDetails; // Verifica se ci sono dettagli utente
 const profileIcon = user ? getProfileIcon(user) : ''; // Calcola l'icona profilo solo se user esiste
-console.log("profileIcon: "+profileIcon);
-console.log("user: "+user);
 </script>
+
 
 <template>
     <header class="header-container">
-        <!-- Pulsante Back (a sinistra) -->
-        <BackButton buttonText="Back" />
+        <!-- Pulsante Back visibile solo se NON siamo nella pagina di login -->
+        <BackButton v-if="!isLoginPage" buttonText="Back" />
 
         <!-- Titolo centrato -->
         <PageTitle title="Gym Manager" class="header-title" />
@@ -24,6 +31,7 @@ console.log("user: "+user);
         <img v-if="profileIcon" :src="profileIcon" alt="Profile Icon" class="profile-icon" />
     </header>
 </template>
+
 
 <style scoped>
 /* Header ben bilanciato */
