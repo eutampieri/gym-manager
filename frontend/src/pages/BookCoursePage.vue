@@ -28,6 +28,10 @@ if (user) {
         .then(courses => myCourses.value = courses);
 }
 
+function isAlreadyBooked(courseId: string, dayOfWeek: string, startTime: string): boolean {
+    return undefined != myCourses.value?.find(e => e.course.id == courseId && e.dayOfWeek == dayOfWeek && e.startTime == startTime)
+}
+
 </script>
 
 <template>
@@ -46,7 +50,8 @@ if (user) {
                     </dd>
                     <dt>Date & Time</dt>
                     <dd class="container">
-                        <CourseSchedule v-for="schedule in course.course.schedule" :course-id="course.course.id" :schedule="schedule" :booked="false"/>
+                        <CourseSchedule v-for="schedule in course.course.schedule" :course-id="course.course.id" 
+                            :schedule="schedule" :booked="isAlreadyBooked(course.course.id, schedule.dayOfWeek, schedule.startTime)"/>
                     </dd>
                 </dl>
             </DropdownItem>
