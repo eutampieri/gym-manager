@@ -36,11 +36,6 @@ const trainerSchema = new mongoose.Schema({
         ref: 'Session',
         required: false
     }],
-    id: {
-        type: Number,
-        required: true
-    }
-
 });
 
 module.exports = mongoose.model("Trainer", trainerSchema)

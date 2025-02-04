@@ -1,7 +1,11 @@
 <script lang="ts" setup>
-import { isOnlyLetters, isOnlyNumbers } from '@/utils/validation';
+import { isOnlyLetters, isPhoneNumber } from '@/utils/validation';
 import { computed, ref } from 'vue';
-import { CreateUserRequest } from "@gym-manager/models";
+import { CreateUserRequest } from "@gym-manager/models/user";
+import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
+import GenericInput from '@/components/GenericInput.vue';
+import { useUserStore } from '../store/user';
+import Header from '@/components/Header.vue';
 
 const username = ref("");
 const password = ref("");
@@ -12,70 +16,32 @@ const phoneNumber = ref("");
 const dateOfBirth = ref("");
 const fiscalCode = ref("");
 const address = ref("");
-const id = ref("");
 const message = ref("");
 
+const usernameValid = ref(false);
+const passwordValid = ref(false);
+const firstNameValid = ref(false);
+const lastNameValid = ref(false);
+const emailValid = computed(() => email.value.length > 0);
+const phoneNumberValid = computed(() => phoneNumber.value.length > 0);
+const dateOfBirthValid = computed(() => dateOfBirth.value.length > 0);
+const fiscalCodeValid = computed(() => fiscalCode.value.length > 0);
+const addressValid = computed(() => address.value.length > 0);
 
-const usernameValid = computed(() => isOnlyLetters(username.value));
+const submitButtonEnabled = computed(() => usernameValid.value &&
+    passwordValid.value &&
+    firstNameValid.value &&
+    lastNameValid.value &&
+    emailValid.value &&
+    phoneNumberValid.value &&
+    dateOfBirthValid.value &&
+    fiscalCodeValid.value &&
+    addressValid.value
+);
 
-const submitButtonEnabled = computed(() => usernameValid.value);
+const client = useUserStore().client;
 
-async function checkId(id: string) {
-        try {
-            // FUNZIONE isClientPresent
-            const response = await fetch(`/clients/checkId/${id}`);
-            if (response.ok) {
-                const check = await response.json();
-                console.log("Risultato checkId:", check);
-                return check;
-            }
-            else {
-                message.value ='Error in checking id';
-            }
-        } catch (error) {
-            console.error('Error in checking id:', error);
-            message.value ='Error in checking id' ;
-        }
-}
-
-
-
-
-async function handleCreateCourse() {
-    message.value = "";
-    // Controllo per username
-        if (!isOnlyLetters(username.value)) {
-            message.value = '';
-            return;
-        }
-        // Verifica che la password abbia almeno 7 caratteri
-        if (password.value.length < 7 && password.value.length > 10) {
-            message.value = 'The password must be at least 7 characters long and less than 10';
-            return; // Interrompe il processo se la password non è abbastanza lunga
-        }
-
-        if (!isOnlyLetters(firstName.value)) {
-            message.value = 'FirstName can only contain letters';
-            return;
-        }
-        if (!isOnlyLetters(lastName.value)) {
-            message.value = 'LastName can only contain letters';
-            return;
-        }
-        if (!isOnlyNumbers(phoneNumber.value)) {
-            message.value = 'PhoneNumber can only contain numbers';
-            return;
-        }
-        if (!isOnlyNumbers(id.value)) {
-            message.value = 'Id can only contain numbers';
-            return;
-        }
-        const idExists = await checkId(id.value);
-        if (idExists) {
-          message.value = 'Id already in use';
-          return;
-        }
-        
+async function handleCreateClient() {
     try {
 
         // Creazione dell'oggetto JSON con i dati del cliente
@@ -89,18 +55,11 @@ async function handleCreateCourse() {
             dateOfBirth: dateOfBirth.value,
             fiscalCode: fiscalCode.value,
             address: address.value,
-            id: id.value,
         }
 
 
         // Effettua la richiesta POST per creare il cliente
-        const response = await fetch('/clients', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(request)
-        });
+        const response = await client.addUser(request);
 
         if (response.status === 201) {
             message.value = "Client successfully created!";
@@ -111,70 +70,57 @@ async function handleCreateCourse() {
         console.error("Error during client creation:", error);
         message.value = "Error during client creation";
     }
-    
+
 }
-
-
-
 </script>
 <template>
-     <form id="clientForm">
-     <h2>Creazione di {{ firstName === "" ? "un nuovo cliente" : firstName }}</h2>
-   <div class="mb-3">
-    <label class="form-label"for="username">Username:</label>
-    <input :aria-invalid="!usernameValid" class="form-control"type="text" id="username" v-model="username">
-    <div v-if="!usernameValid" class="form-text text-danger">Lo username può contenere solo lettere.</div>
-   </div>
-   
-   <div class="mb-3">
-   <label class="form-label"for="password">Password:</label>
-   <input class="form-control"type="password" id="password" v-model="password">
-   </div>
-   
-   <div class="mb-3">
-   <label class="form-label"for="firstName">firstName:</label>
-   <input class="form-control"type="text" id="firstName" v-model="firstName">
-   </div>
-   
-   <div class="mb-3">
-   <label class="form-label"for="lastName">lastName:</label>
-   <input class="form-control"type="text" id="lastName" v-model="lastName">
-   </div>
-   
-   <div class="mb-3">
-   <label class="form-label"for="email">email:</label>
-   <input class="form-control"type="email" id="email" v-model="email">
-   </div>
-   
-   <div class="mb-3">
-   <label class="form-label"for="phoneNumber">phoneNumber:</label>
-   <input class="form-control"type="number" id="phoneNumber" v-model="phoneNumber">
-   </div>
+    <Header>
+        <h2>Creating {{ firstName === "" ? "a new customer" : `${firstName} ${lastName}` }}</h2>
+    </Header>
+    <form>
 
-   <div class="mb-3">
-   <label class="form-label"for="dateOfBirth">date of birth:</label>
-   <input class="form-control"type="date" id="dateOfBirth" v-model="dateOfBirth">
-   </div>
+        <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
+            :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
+            Username
+        </ValidatingGenericInput>
 
-   <div class="mb-3">
-   <label class="form-label"for="fiscalCode">fiscal code:</label>
-   <input class="form-control"type="text" id="fiscalCode" v-model="fiscalCode">
-   </div>
+        <ValidatingGenericInput type="password" id="password"
+            error-message="The password must be at least 7 characters long"
+            :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="passwordValid">
+            Password
+        </ValidatingGenericInput>
 
-   <div class="mb-3">
-   <label class="form-label"for="address">address:</label>
-   <input class="form-control"type="text" id="address" v-model="address">
-   </div>
-   
-   <div class="mb-3">
-   <label class="form-label"for="id">ID:</label>
-   <input class="form-control"type="number" id="id" v-model="id">
-   </div>
-   
-  
-   
-   <button class="btn btn-primary" type="button" @click="handleCreateCourse()" :disabled="!submitButtonEnabled">Create Client {{firstName }}</button>
-   
-   </form>
-   
-   </template>
+        <ValidatingGenericInput type="text" id="firstName" error-message="The name can only contain letters"
+            :validation-function="isOnlyLetters" v-model="firstName" v-model:valid="firstNameValid">
+            Name
+        </ValidatingGenericInput>
+
+        <ValidatingGenericInput error-message="The surname can only be made of letters"
+            :validation-function="isOnlyLetters" type="text" id="lastName" v-model="lastName"
+            v-model:valid="lastNameValid">Surname
+        </ValidatingGenericInput>
+
+        <GenericInput type="email" id="email" v-model="email">Email
+            address</GenericInput>
+
+        <ValidatingGenericInput :validation-function="isPhoneNumber" error-message="Invalid phone number" type="tel"
+            id="phoneNumber" v-model="phoneNumber">
+            Phone number
+        </ValidatingGenericInput>
+
+        <GenericInput type="date" id="dateOfBirth" v-model="dateOfBirth">Date of birth</GenericInput>
+
+        <GenericInput type="text" id="fiscalCode" v-model="fiscalCode">CF</GenericInput>
+
+        <GenericInput type="text" id="address" v-model="address">Address</GenericInput>
+
+        <button class="btn btn-primary" type="button" @click="handleCreateClient()"
+            :disabled="!submitButtonEnabled">Create Client {{ firstName }}</button>
+
+        <p v-if="message">
+            {{ message }}
+        </p>
+
+    </form>
+
+</template>

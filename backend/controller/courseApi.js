@@ -16,28 +16,13 @@ module.exports = class API {
         }
     }
 
-    static async isCourseIdPresent(req, res) {
-        console.log("isCourseIdPresent");
-        const id = req.params.id;
-        try {
-            const course = await Course.findOne({ id: id }, null, null).exec();
-            if(course) {
-                res.status(200).json(true);
-            }
-            else {
-                res.status(200).json(false);
-            }
-        } catch (error) {
-            res.status(404).json({message: error.message});
-        } finally {
-        }
-    }
+ 
 
-    static async fetchCourse_IdById(req, res) {
-        console.log("fetchCourse_IdById");
-        const id = req.params.id;
+    static async fetchCourse_IdByName(req, res) {
+        console.log("fetchCourse_IdByName");
+        const name = req.params.courseName;
         try {
-            const course = await Course.findOne({id: id}, null, null).exec();
+            const course = await Course.findOne({name: name}, null, null).exec();
             res.status(200).json(course._id);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -45,19 +30,6 @@ module.exports = class API {
         }
     }
 
-
-
-    static async fetchCourseById(req, res) {
-        console.log("fetchCourseById");
-        const id = req.params.id;
-        try {
-            const course = await Course.findOne({id: id}, null, null).exec();
-            res.status(200).json(course);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
 
     static async fetchCourseBy_Id(req, res) {
         console.log("fetchCourseBy_Id");
@@ -74,7 +46,7 @@ module.exports = class API {
     // returns all courses in the database that match the specified name
     static async fetchCoursesByName(req, res) {
         console.log("fetchCourseByName");
-        const name = req.params.name;
+        const name = req.params.courseName;
         try {
             const course = await Course.find({name: name}, null, null).exec();
             res.status(200).json(course);
@@ -100,14 +72,14 @@ module.exports = class API {
 
         const course = req.body;
         try {
-            const courseAlreadyPresent= await Course.findOne({ id: req.body.id }, null, null).exec();
+            const courseAlreadyPresent= await Course.findOne({ name: req.body.name }, null, null).exec();
             if (!courseAlreadyPresent) {
                 await Course.create(course, null);
                 res.status(201).json({ message: 'Course created successfully' });
 
             }
             else {
-                res.status(500).json({ message: "Course id already present" });
+                res.status(500).json({ message: "Course already present" });
             }
         } catch (error) {
             res.status(400).json({ message: error.message });
@@ -145,9 +117,9 @@ module.exports = class API {
 
 
     static async deleteCourse(req, res) {
-        const courseId = req.body.id;
+        const courseName = req.params.courseName;
         try {
-            await Course.findOneAndDelete({id:courseId}, null);
+            await Course.findOneAndDelete({name:courseName}, null);
             res.status(200).json({ message: 'Course deleted successfully' });
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -155,21 +127,11 @@ module.exports = class API {
         }
     }
 
-    static async deleteCourseBy_Id(req, res) {
-        const courseId = req.params.id;
-        try {
-            await Course.findOneAndDelete({_id:courseId}, null);
-            res.status(200).json({ message: 'Course deleted successfully' });
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
 
     static async fetchCourseTrainer(req, res) {
         try {
-            const id = req.params.id;
-            const course = await Course.findOne({id: id}, null, null).populate('trainer').exec();
+            const name = req.params.courseName;
+            const course = await Course.findOne({name: name}, null, null).populate('trainer').exec();
             if (!course) {
                 return res.status(404).json({ message: 'Course not found' });
             }
@@ -183,8 +145,8 @@ module.exports = class API {
 
     static async fetchCourseParticipants(req, res) {
         try {
-            const id = req.params.id;
-            const course = await Course.findOne({id: id}, null, null).populate('participants').exec();
+            const name = req.params.courseName;
+            const course = await Course.findOne({name: name}, null, null).populate('participants').exec();
             if (!course) {
                 return res.status(404).json({ message: 'Course not found' });
             }
@@ -199,9 +161,9 @@ module.exports = class API {
 
     static async removeParticipantByUsername(req, res) {
         try {
-            const courseId = req.params.id;
+            const courseName = req.params.courseName;
             const username = req.params.username;
-            const course = await Course.findOne({id: courseId}, null, null).populate('participants').exec();
+            const course = await Course.findOne({name: courseName}, null, null).populate('participants').exec();
             if (!course) {
                 res.status(404).json({ message: 'Session not found' });
             }
@@ -211,7 +173,7 @@ module.exports = class API {
             }
             course.participants.splice(indexToRemove, 1);
             course.capacity++;
-            await Course.updateOne({id:courseId}, { $set:{ participants: course.participants, capacity: course.capacity }}, null);
+            await Course.updateOne({name:courseName}, { $set:{ participants: course.participants, capacity: course.capacity }}, null);
             res.status(200).json({ message: 'Participant deleted successfully' });
 
         } catch (error) {
@@ -223,11 +185,11 @@ module.exports = class API {
     static async addParticipantById(req, res) {
 
         try {
-            const courseId = req.params.id;
+            const courseName = req.params.courseName;
             const clientId = req.params.clientId;
 
             let full = false;
-            const course = await Course.findOne({id: courseId}, null, null).populate('participants').exec();
+            const course = await Course.findOne({name: courseName}, null, null).populate('participants').exec();
             if (!course) {
                 res.status(404).json({ message: 'Course not found' });
             }
@@ -239,7 +201,7 @@ module.exports = class API {
              if(course.capacity>0) {
                         course.participants.push(clientId);
                         course.capacity--;
-                        await Course.updateOne({id:courseId}, { $set:{ capacity: course.capacity, participants: course.participants }}, null);
+                        await Course.updateOne({name:courseName}, { $set:{ capacity: course.capacity, participants: course.participants }}, null);
                         res.status(200).json(full);
              }
              else {
@@ -255,9 +217,9 @@ module.exports = class API {
 
     static async checkParticipantsByUsername(req, res) {
         try {
-            const courseId = req.params.id;
+            const courseName = req.params.courseName;
             const username = req.params.username;
-            const course = await Course.findOne({id: courseId}, null, null).populate('participants').exec();
+            const course = await Course.findOne({name: courseName}, null, null).populate('participants').exec();
             if (!course) {
                 return res.status(404).json({ message: 'Course not found' });
             }

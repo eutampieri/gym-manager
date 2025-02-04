@@ -43,21 +43,27 @@ const clientSchema = new mongoose.Schema({
         required: true
     },
     courses: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course',
-        required: false
+        course: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Course',
+            required: false
+        },
+        dayOfWeek: {
+            type: String,
+            enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+            required: true
+        },
+        startTime: {
+            type: String,
+            required: true,
+            match: /^(09|1[0-8]):00$/ // Regex per il formato "HH:00", tra 09 e 18
+        }
     }],
     sessions: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Session',
         required: false
-    }],
-    id: {
-        type: Number,
-        required: true
-    }
-
-
+    }]
 });
 
 /* Here are some of the main functions offered by Mongoose:
