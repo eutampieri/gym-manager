@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { CourseScheduleEntry } from '@gym-manager/models';
 import { useUserStore } from '@/store/user';
+import { useNotificationsStore } from '@/store/notifications';
 import { ref } from 'vue';
 
 const store = useUserStore();
+const notifications = useNotificationsStore();
 
 const props = defineProps<{ courseId: string, schedule: CourseScheduleEntry, booked: boolean }>();
 const isBooked = ref(props.booked);
@@ -11,7 +13,18 @@ const availableSpots = ref(props.schedule.availableSpots);
 
 async function bookCourse(courseId: string, dayOfWeek: string, startTime: string) {
     isBooked.value = await store.client.bookCourse(courseId, dayOfWeek, startTime);
-    availableSpots.value--;
+    if (isBooked.value) {
+        availableSpots.value--;
+        notifications.fire({
+            body: 'Course booked succesfully!',
+            background: 'success'
+        });
+    } else {
+        notifications.fire({
+            body: 'There was an error while booking.',
+            background: 'error-subtle'
+        });
+    }
 }
 
 </script>
