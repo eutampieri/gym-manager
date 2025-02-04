@@ -33,9 +33,6 @@ function cancelSession(sessionId: string) {
             .then(id => myOneOnOne.value = myOneOnOne.value?.filter(x => x.info.id != id));
     }
 }
-function trainerProfilePath(trainerId: string) {
-    return '/trainer/profile/' + trainerId;
-}
 
 const bookCourse = '/user/bookCourse'
 const bookOneonOne = '/user/bookSession'
@@ -60,7 +57,7 @@ const contactSupport = '/support/chat'
                     <dd>{{ course.course.description }}</dd>
                     <dt>Trainer</dt>
                     <dd>
-                        <NameLink :path="trainerProfilePath(course.course.trainer)">{{ course.course.trainer }}</NameLink>
+                        <NameLink :path="store.client.trainerProfilePath(course.course.trainer)">{{ course.course.trainer }}</NameLink>
                     </dd>
                 </dl>
                 <button type="button" class="btn btn-primary m-2"
@@ -77,7 +74,7 @@ const contactSupport = '/support/chat'
                 <dl>
                     <dt>Trainer</dt>
                     <dd>
-                        <NameLink :path="trainerProfilePath(session.trainer.id)">{{ session.trainer.firstName + ' ' + session.trainer }}</NameLink>
+                        <NameLink :path="store.client.trainerProfilePath(session.trainer.id)">{{ session.trainer.firstName + ' ' + session.trainer }}</NameLink>
                     </dd>
                 </dl>
                 <button type="button" class="btn btn-primary m-2" @click="() => cancelSession(session.info.id)">Cancel

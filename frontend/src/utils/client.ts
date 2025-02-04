@@ -92,6 +92,12 @@ export class Client {
             }
         ];
     }
+    public trainerProfilePath(trainerId: string) {
+        return '/trainer/profile/' + trainerId;
+    }
+    public customerProfilePath(trainerId: string) {
+        return '/user/profile/' + trainerId;
+    }
 
     public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
         return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
