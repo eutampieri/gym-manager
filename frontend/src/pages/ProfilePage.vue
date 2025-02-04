@@ -92,7 +92,7 @@ function logout() {
                         <dd class="text-center" v-else>{{ item.value }}</dd>
                     </template>
                 </dl>
-                <button type="button" class="btn btn-secondary m-2 mx-auto" @click="logout">Logout</button>
+                <button v-if="logged" type="button" class="btn btn-secondary m-2 mx-auto" @click="logout">Logout</button>
             </div>
         </SectionContainerItem>
     </SectionContainer>
