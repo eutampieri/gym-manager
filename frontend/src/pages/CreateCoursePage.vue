@@ -3,24 +3,24 @@ import { isValidCapacity, isOnlyLetters } from '@/utils/validation';
 import { computed, onMounted, ref, watch } from 'vue';
 import { CourseScheduleEntry, CreateCourseRequest } from "@gym-manager/models/course";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
-import SelectInput from '@/components/SelectInput.vue';
+import SelectInput, { SelectInputValue } from '@/components/SelectInput.vue';
 import Header from '@/components/Header.vue';
 import { useUserStore } from '@/store/user';
 
 const name = ref("");
 const description = ref("");
-const capacityString = ref("0");
+const capacityString = ref("");
 const capacity = computed(() => parseInt(capacityString.value));
 const trainer = ref("");
 const message = ref("");
-const trainerId = ref("");
-const trainersList = ref<string[]>([]);
+const trainersList = ref<SelectInputValue[]>([]);
 const scheduleEntries = ref<CourseScheduleEntry[]>([]);
 
 const nameValid = ref(false);
 const descriptionValid = ref(false);
 const capacityValid = ref(false);
 
+const client = useUserStore().client;
 
 const submitButtonEnabled = computed(() => {
     return (
@@ -29,7 +29,6 @@ const submitButtonEnabled = computed(() => {
         scheduleEntries.value.length > 0 &&
         capacity.value > 0 &&
         trainer.value !== "" &&
-        trainerId.value !== "" &&
         descriptionValid.value &&
         capacityValid.value &&
         nameValid.value
@@ -39,62 +38,38 @@ const submitButtonEnabled = computed(() => {
 // Giorni della settimana
 const daysOfWeek = ref(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]);
 
-// Orari disponibili (9:00 - 18:00)
+// Orari disponibili (09:00 - 18:00)
 const timeSlots = computed(() => {
     const times = [];
     for (let hour = 9; hour <= 18; hour++) {
-        times.push(`${hour}:00`);
+        times.push(`${hour.toString().padStart(2, '0')}:00`); //padding iniziale per avere 09:00
     }
     return times;
 });
 // Aggiungi un nuovo giorno/orario
 const addScheduleEntry = () => {
-    scheduleEntries.value.push({ dayOfWeek: "", startTime: "", participants: [] });
+    scheduleEntries.value.push({ dayOfWeek: "", startTime: "", participants: [], availableSpots: 0 });
 };
+
 // Rimuovi un giorno/orario
 const removeScheduleEntry = (index: number) => {
     scheduleEntries.value.splice(index, 1);
 };
-
-watch(trainer, async (newTrainer) => {
-    if (!newTrainer) {
-        trainerId.value = ""; // Resetta trainerId se trainer è vuoto
-        return;
+// Watch per aggiornare availableSpots quando cambia capacity
+watch(capacity, (newCapacity) => {
+    const numericCapacity = Number(newCapacity);
+    if (!isNaN(numericCapacity)) {
+        scheduleEntries.value = scheduleEntries.value.map(entry => ({
+            ...entry,
+            availableSpots: numericCapacity
+        }));
     }
-
-    // Chiama fetchTrainerId per ottenere il trainerId
-    await fetchTrainerId();
 });
 
+client.listTrainers()
+    .then(x => x.map((y => { return { id: y._id, label: `${y.firstName} ${y.lastName}` }; })))
+    .then(x => trainersList.value = x);
 
-async function fetchAllTrainers() {
-    try {
-        const response = await fetch(`/trainers`);
-        if (!response.ok) throw new Error("Error retrieving trainers");
-        const trainers = await response.json();
-        // Estrai gli username e aggiorna la lista dei trainer
-        trainersList.value = trainers.map((trainer: { username: string; }) => trainer.username);
-    } catch (error) {
-        console.error('Error retrieving trainers:', error);
-        message.value = "Error retrieving trainers";
-    }
-}
-async function fetchTrainerId() {
-    try {
-        const response = await fetch(`/trainers/trainerId/${trainer.value}`);
-        if (!response.ok) throw new Error("Error retrieving trainer id");
-        const id = await response.json();
-        // Estrai gli username e aggiorna la lista dei trainer
-        trainerId.value = id;
-    } catch (error) {
-        console.error('Error retrieving trainer id:', error);
-        message.value = "Error retrieving trainer id";
-    }
-}
-onMounted(() => {
-    fetchAllTrainers(); // Recupera i trainer quando il form si carica
-});
-const client = useUserStore().client;
 async function handleCreateCourse() {
     try {
 
@@ -103,8 +78,8 @@ async function handleCreateCourse() {
             name: name.value,
             description: description.value,
             schedule: scheduleEntries.value,
-            capacity: capacity.value,
-            trainer: trainerId.value,
+            capacity: Number(capacity.value),
+            trainer: trainer.value,
         }
         // Effettua la richiesta POST per creare il cliente
         const response = await client.addCourse(request);
@@ -157,7 +132,7 @@ async function handleCreateCourse() {
         <br>
         <ValidatingGenericInput type="text" id="capacity" error-message="The course must have at least one participant"
             :validation-function="isValidCapacity" v-model="capacityString" v-model:valid="capacityValid">
-            Spots Available
+            Capacity
         </ValidatingGenericInput>
 
         <SelectInput id="trainer" v-model="trainer" :options="trainersList">

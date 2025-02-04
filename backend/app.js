@@ -84,8 +84,9 @@ const auth = require('./routes/authRoutes');
 //saranno raggiungibili attraverso l'URL base /trainers.
 app.use('/api/courses', courses);
 app.use('/api/trainers', trainers);
-app.use('/api/clients', clients);
+app.use('/api/customers', clients);
 app.use('/api/sessions', sessions);
+app.use('/api/admins', admins);
 app.use('/api/auth', auth);
 
 
