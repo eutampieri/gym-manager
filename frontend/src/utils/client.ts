@@ -1,4 +1,4 @@
-import { Admin, Course, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -93,15 +93,28 @@ export class Client {
         ];
     }
 
-    public getUserCourses(): Promise<Array<Course>> {
-        return this.listCourses()
-        if (this.getRole == Role.User) {
-            return Promise.resolve([]);
-        } else if (this.getRole == Role.Trainer) {
-            return Promise.resolve([]);
-        } else {
-            return Promise.resolve([]);
-        }
+    public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
+        return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
+    }
+    public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, schedule: CourseScheduleEntry }>> {
+        return this.apiRequest("GET", `/trainers/${userId}/courses`)
+                .then(r => r.json())
+                .then((r : Array<Course>) => 
+                    r.flatMap((c: Course) => 
+                        c.schedule.map((s: CourseScheduleEntry) => 
+                            ({
+                                course : {
+                                    id: c.id,
+                                    name: c.name,
+                                    description: c.description,
+                                    capacity: c.capacity,
+                                    trainer: c.trainer,
+                                },
+                                schedule: s
+                            })
+                        )
+                    )
+                );
     }
 
     public unsubscribeFromCourse(courseId: string): Promise<string> {
