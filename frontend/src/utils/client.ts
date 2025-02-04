@@ -27,7 +27,7 @@ export class Client {
         return true;
     }
 
-    public get getUserDetails(): undefined | User | Trainer | Admin {
+    public get userDetails(): undefined | User | Trainer | Admin {
         // TODO
         const result: User = {
             username: 'Rox09',
@@ -49,7 +49,7 @@ export class Client {
 
     public getUserById(id: string): undefined | User | Trainer | Admin {
         // TODO
-        return this.getUserDetails;
+        return this.userDetails;
     }
 
     public addUser(user: CreateUserRequest) {
@@ -121,7 +121,7 @@ export class Client {
         if (this.getRole != Role.User) {
             return Promise.reject();
         }
-        const user = this.getUserDetails
+        const user = this.userDetails
         // unsubscribe
         // ... TODO
     }
