@@ -89,16 +89,36 @@ module.exports = class API {
     static async deleteTrainer(req, res) {
         const id = req.params.id;
         try {
-            const trainer = await Trainer.findOneAndDelete({_id:id}, null);
+            // Trova il trainer e i suoi corsi
+            const trainer = await Trainer.findById(id);
             if (!trainer) {
-                return res.status(404).json({message: 'Trainer not found'});
+                return res.status(404).json({ message: 'Trainer not found' });
             }
-            res.status(200).json({ message: 'Trainer deleted successfully' });
+    
+            // Trova tutti i corsi che il trainer possiede
+            const trainerCourses = await Course.find({ _id: { $in: trainer.courses } });
+    
+            if (trainerCourses.length > 0) {
+                // Rimuove tutti i corsi del trainer dal Client
+                await Client.updateMany(
+                    { 'courses.course': { $in: trainer.courses } },
+                    { $pull: { courses: { course: { $in: trainer.courses } } } }
+                );
+    
+                // Elimina tutti i corsi assegnati al trainer
+                await Course.deleteMany({ _id: { $in: trainer.courses } });
+            }
+    
+            // Infine, elimina il trainer dal database
+            await Trainer.findOneAndDelete({ _id: id });
+    
+            res.status(200).json({ message: 'Trainer and all associated courses deleted successfully' });
+    
         } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
+            res.status(500).json({ message: error.message });
         }
     }
+    
 
     static async fetchAllTrainerCourses(req, res) {
         const id = req.params.id;
@@ -123,7 +143,15 @@ module.exports = class API {
     static async fetchAllTrainerSessions(req, res) {
         const id = req.params.id;
         try {
-            const trainer = await Trainer.findOne({_id: id}, null, null).exec();
+            const trainer = await Trainer.findOne({_id: id}, null, null)
+            .populate({
+                path: 'sessions',
+                populate: {
+                    path: 'trainer participant', // Popola trainer e participant se servono
+                    select: 'username firstName lastName' // Se vuoi solo alcune info di trainer e participant
+                }
+            })
+            .exec();
             if (!trainer) {
                 return res.status(404).json({message: 'Trainer not found'});
             }

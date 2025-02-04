@@ -90,13 +90,30 @@ module.exports = class API {
     static async deleteCustomer(req, res) {
         const id = req.params.id;
         try {
-            await Client.findOneAndDelete({_id:id}, null);
-            res.status(200).json({ message: 'Client deleted successfully' });
+            // Trova il cliente per ottenere i suoi corsi
+            const client = await Client.findById(id);
+            if (!client) {
+                return res.status(404).json({ message: 'Client not found' });
+            }
+    
+            // Rimuove il client dai participants dei corsi in cui è registrato
+            await Course.updateMany(
+                { 'schedule.participants': id },
+                { $pull: { 'schedule.$[].participants': id }, 
+                  $inc: { 'schedule.$[].availableSpots': 1 }
+                }
+            );
+    
+            // Elimina il cliente dal database
+            await Client.findOneAndDelete({ _id: id });
+    
+            res.status(200).json({ message: 'Client deleted successfully and removed from all courses' });
+    
         } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
+            res.status(500).json({ message: error.message });
         }
     }
+    
 
     static async fetchAllCustomerCourses(req, res) {
         try {
@@ -120,16 +137,28 @@ module.exports = class API {
     static async fetchAllCustomerSessions(req, res) {
         try {
             const id = req.params.id;
-            const client = await Client.findOne({_id: id}, null, null).exec();
+    
+            // Trova il cliente e popola le sessioni con tutti gli attributi
+            const client = await Client.findOne({ _id: id })
+                .populate({
+                    path: 'sessions',
+                    populate: {
+                        path: 'trainer participant', // Popola trainer e participant se servono
+                        select: 'username firstName lastName email phoneNumber' // Se vuoi solo alcune info di trainer e participant
+                    }
+                })
+                .exec();
+    
             if (!client) {
                 return res.status(404).json({ message: 'Client not found' });
             }
+    
             res.status(200).json(client.sessions);
         } catch (error) {
             res.status(500).json({ message: error.message });
-        } finally {
         }
     }
+    
 
 ///////////////////////////////////////////////////////////////////////////////////////
     static async deleteClientCourse(req, res) {

@@ -67,27 +67,43 @@ module.exports = class API {
     }
 
     static async updateCourse(req, res) {
-        const { description, schedule, capacity, trainer } = req.body;
+        const { _id, description, schedule, capacity, trainer } = req.body;
+    
         try {
-        
+            // Trova il corso esistente per confrontare il trainer originale
+            const existingCourse = await Course.findById(_id);
+            if (!existingCourse) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+    
             const updateFields = {};
-            // Aggiunge solo i campi presenti nel body
             if (description) updateFields.description = description;
             if (schedule) updateFields.schedule = schedule;
             if (capacity) updateFields.capacity = capacity;
-            //if (trainer) updateFields.trainer = trainer;
+            if (trainer) updateFields.trainer = trainer;
     
             // Se non ci sono campi da aggiornare, restituisci un errore
             if (Object.keys(updateFields).length === 0) {
                 return res.status(400).json({ message: 'No fields to update' });
             }
     
-            // Trova e aggiorna il corso
-            const updatedCourse = await Course.findByIdAndUpdate(req.body._id, updateFields, { new: true });
+            // Controlla se il trainer è cambiato
+            if (trainer && trainer !== existingCourse.trainer.toString()) {
+                // Rimuove il corso dall'array courses del trainer precedente
+                await Trainer.updateOne(
+                    { _id: existingCourse.trainer },
+                    { $pull: { courses: _id } }
+                );
     
-            if (!updatedCourse) {
-                return res.status(404).json({ message: "Course not found" });
+                // Aggiunge il corso all'array courses del nuovo trainer
+                await Trainer.updateOne(
+                    { _id: trainer },
+                    { $addToSet: { courses: _id } } // Evita duplicati con $addToSet
+                );
             }
+    
+            // Aggiorna il corso nel database
+            const updatedCourse = await Course.findByIdAndUpdate(_id, updateFields, { new: true });
     
             res.status(200).json({ message: 'Course updated successfully', course: updatedCourse });
     
@@ -95,27 +111,39 @@ module.exports = class API {
             res.status(500).json({ message: error.message });
         }
     }
+    
 
     static async deleteCourse(req, res) {
         const courseId = req.params.id;
         try {
-            // Trova la sessione prima di eliminarla per recuperare clientId e trainerId
+            // Trova il corso prima di eliminarlo per recuperare clientId e trainerId
             const course = await Course.findById(courseId);
-                if (!course) {
-                    return res.status(404).json({ message: "Course not found" });
-                }
-            await Course.findOneAndDelete({_id:courseId}, null);
-            // Rimuove la sessione dal Trainer
+            if (!course) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+    
+            // Rimuove l'intero oggetto dall'array courses dei Client che erano iscritti
+            await Client.updateMany(
+                { 'courses.course': courseId },
+                { $pull: { courses: { course: courseId } } } // Rimuove tutto l'oggetto con course, dayOfWeek e startTime
+            );
+    
+            // Rimuove il corso dall'array courses del Trainer
             await Trainer.updateOne(
                 { _id: course.trainer },
                 { $pull: { courses: courseId } }
             );
-            res.status(200).json({ message: 'Course deleted successfully' });
+    
+            // Elimina il corso dal database
+            await Course.findOneAndDelete({ _id: courseId });
+    
+            res.status(200).json({ message: 'Course deleted successfully, removed from clients and trainer' });
+    
         } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
+            res.status(500).json({ message: error.message });
         }
     }
+    
     static async createBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
