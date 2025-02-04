@@ -42,7 +42,7 @@ if (user) {
     // error
 }
 
-function getLinkPrefix(field: String): string | undefined {
+function getLinkPrefix(field: string): string | undefined {
     if (field == 'email') {
         return 'mailto:';
     } else if (field == 'phoneNumber') {

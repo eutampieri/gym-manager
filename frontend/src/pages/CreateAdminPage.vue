@@ -3,9 +3,9 @@ import { isOnlyLetters } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import CheckBox from '@/components/CheckBox.vue';
-import { useAdminStore } from '@/store/admin';
 import { CreateAdminRequest } from '@gym-manager/models/admin';
 import Header from '@/components/Header.vue';
+import { useUserStore } from '@/store/user';
 
 const username = ref("");
 const password = ref("");
@@ -25,7 +25,7 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
     lastNameValid.value
 );
 
-const admin = useAdminStore().admin;
+const client = useUserStore().client;
 
 async function handleCreateAdmin() {
     try {
@@ -41,7 +41,7 @@ async function handleCreateAdmin() {
 
 
         // Effettua la richiesta POST per creare il cliente
-        const response = await admin.addAdmin(request);
+        const response = await client.addAdmin(request);
 
         if (response.status === 201) {
             message.value = "Admin successfully created!";
