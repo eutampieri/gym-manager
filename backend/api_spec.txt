@@ -11,6 +11,8 @@ Course (/api/courses):
     GET /:id/bookings -> list bookings for a course
     POST /:id/bookings -> Create booking (body {dayOfWeek: "", startTime: ""})
     DELETE /:id/bookings -> Create booking (body {dayOfWeek: "", startTime: ""})
+    GET /with-trainer/:id List all courses (trainer)
+    GET /with-user/:id List all courses (user)
     
 Session (/api/sessions):
     POST / -> create Session (user initiated)
