@@ -1,17 +1,15 @@
 <script lang="ts" setup>
+import { computed } from 'vue';
 
 const { useVariant = false } = defineProps<{ useVariant?: boolean, path: string }>();
 
-function btnStyle(): string {
-    return useVariant ? 'btn-secondary' : 'btn-primary';
-}
+const btnStyle = computed(() => "btn m-2 btn-lg main-container mx-auto d-block " +
+    (useVariant ? 'btn-secondary' : 'btn-primary'));
 </script>
 
 <template>
-    <RouterLink :to="{ path: path }" class="nav-link">
-        <button type="button" :class="btnStyle() + ' btn m-2 btn-lg main-container mx-auto d-block'">
-            <slot></slot>
-        </button>
+    <RouterLink role="button" :to="{ path: path }" :class="btnStyle">
+        <slot></slot>
     </RouterLink>
 </template>
 
