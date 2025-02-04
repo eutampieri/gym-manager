@@ -1,4 +1,4 @@
-import { Admin, Course, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -47,6 +47,11 @@ export class Client {
         return Role.Admin;
     }
 
+    public getUserById(id: string): undefined | User | Trainer | Admin {
+        // TODO
+        return this.getUserDetails;
+    }
+
     public addUser(user: CreateUserRequest) {
         return this.apiRequest("POST", "/customers", user);
     }
@@ -86,6 +91,52 @@ export class Client {
                 }]
             }
         ];
+    }
+
+    public getUserCourses(): Promise<Array<Course>> {
+        return this.listCourses()
+        if (this.getRole == Role.User) {
+            return Promise.resolve([]);
+        } else if (this.getRole == Role.Trainer) {
+            return Promise.resolve([]);
+        } else {
+            return Promise.resolve([]);
+        }
+    }
+
+    public unsubscribeFromCourse(courseId: string): Promise<string> {
+        return Promise.resolve(courseId);
+        if (this.getRole != Role.User) {
+            return Promise.reject();
+        }
+        const user = this.getUserDetails
+        // unsubscribe
+        // ... TODO
+    }
+
+    public getUserSessions(): Promise<Array<Session>> {
+        return Promise.resolve(
+            [{
+                id: "1",
+                participant: "Rox",
+                dayOfWeek: "Tuesday",
+                startTime: "14:00",
+                trainer: "McBorro",
+            }]
+        )
+        if (this.getRole == Role.User) {
+            return Promise.resolve([]);
+        } else if (this.getRole == Role.Trainer) {
+            return Promise.resolve([]);
+        } else {
+            return Promise.resolve([]);
+        }
+    }
+
+    public cancelSession(sessionId: string): Promise<string> {
+        return Promise.resolve(sessionId);
+        // cancel one-on-one
+        // ... TODO
     }
 
     public addAdmin(admin: CreateAdminRequest) {
