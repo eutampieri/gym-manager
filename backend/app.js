@@ -82,13 +82,11 @@ const auth = require('./routes/authRoutes');
 // ad esempio app.use('/trainers', trainersRouter);
 //indica che tutte le route definite nel modulo trainersRouter
 //saranno raggiungibili attraverso l'URL base /trainers.
-app.use('/courses', courses);
-app.use('/trainers', trainers);
-app.use('/customers', clients);
-app.use('/sessions', sessions);
-app.use('/admins', admins);
-app.use('/auth', auth);
-
+app.use('/api/courses', courses);
+app.use('/api/trainers', trainers);
+app.use('/api/clients', clients);
+app.use('/api/sessions', sessions);
+app.use('/api/auth', auth);
 
 
 // Avviamo il server su una porta specifica
