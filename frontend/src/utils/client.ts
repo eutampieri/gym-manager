@@ -231,6 +231,13 @@ export class Client {
         // ... TODO
     }
 
+    public bookCourse(courseId: string, dayOfWeek: string, startTime: string): Promise<boolean> {
+        return Promise.resolve(true);
+
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: this.userDetails?.id, dayOfWeek, startTime })
+            .then(r => true);
+    }
+
     public addAdmin(admin: CreateAdminRequest) {
         return this.apiRequest("POST", "/admins", admin);
     }

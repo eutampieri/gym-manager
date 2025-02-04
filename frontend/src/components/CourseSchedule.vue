@@ -7,7 +7,7 @@ const store = useUserStore();
 const props = defineProps<{ courseId: string, schedule: CourseScheduleEntry, booked: boolean }>();
 
 async function bookCourse(courseId: string, dayOfWeek: string, startTime: string) {
-    // TODO
+    const res = await store.client.bookCourse(courseId, dayOfWeek, startTime);
 }
 
 </script>
