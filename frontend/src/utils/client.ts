@@ -88,6 +88,7 @@ export class Client {
                     dayOfWeek: "Wednesday",
                     startTime: "10:00",
                     participants: [],
+                    availableSpots: 0,
                 }]
             }
         ];
