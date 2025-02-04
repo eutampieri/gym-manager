@@ -26,6 +26,11 @@ export class Client {
         this.jwt = "";
         return true;
     }
+    public async logout(): Promise<boolean> {
+        const ret = this.isLoggedIn;
+        this.jwt = undefined;
+        return ret;
+    }
 
     public get userDetails(): undefined | User | Trainer | Admin {
         // TODO
@@ -47,9 +52,10 @@ export class Client {
         return Role.Admin;
     }
 
-    public getUserById(id: string): undefined | User | Trainer | Admin {
+    public getUserById(id: string): Promise<undefined | User | Trainer | Admin> {
         // TODO
-        return this.userDetails;
+        return Promise.resolve(this.userDetails);
+        return this.apiRequest("GET", "/customers/"+id).then(r => r.json());
     }
 
     public addUser(user: CreateUserRequest) {
@@ -75,7 +81,7 @@ export class Client {
     }
 
     public async listCourses(): Promise<Array<Course>> {
-        /*const x = await this.apiRequest("GET", "/customers");
+        /*const x = await this.apiRequest("GET", "/courses");
         return await x.json();*/
         return [
             {
@@ -83,15 +89,41 @@ export class Client {
                 name: "Zumba",
                 description: "Sad course description, nothing to see here...",
                 capacity: 20,
-                trainer: "McMuscle",
+                trainer: "trainerID",
                 schedule: [{
                     dayOfWeek: "Wednesday",
                     startTime: "10:00",
                     participants: [],
                     availableSpots: 0,
+                },
+                {
+                    dayOfWeek: "Tuesday",
+                    startTime: "15:00",
+                    participants: [],
+                    availableSpots: 3,
                 }]
             }
         ];
+    }
+    public getTrainer(trainerId: string): Promise<Trainer> {
+        return Promise.resolve({
+            username: 'fsdigbohfigpdsb',
+            firstName: 'fsdigbohfigpdsb',
+            lastName: 'fsdigbohfigpdsb',
+            email: 'fsdigbohfigpdsb',
+            phoneNumber: 'fsdigbohfigpdsb',
+            id: 'trainerID'
+        })
+
+        return this.apiRequest("GET", "/trainers/" + trainerId)
+                .then(r => r.json());
+    }
+
+    public trainerProfilePath(trainerId: string) {
+        return '/trainer/profile/' + trainerId;
+    }
+    public customerProfilePath(trainerId: string) {
+        return '/user/profile/' + trainerId;
     }
 
     public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
@@ -203,6 +235,13 @@ export class Client {
         return Promise.resolve(sessionId);
         // cancel one-on-one
         // ... TODO
+    }
+
+    public bookCourse(courseId: string, dayOfWeek: string, startTime: string): Promise<boolean> {
+        return Promise.resolve(true);
+
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: this.userDetails?.id, dayOfWeek, startTime })
+            .then(r => true);
     }
 
     public addAdmin(admin: CreateAdminRequest) {

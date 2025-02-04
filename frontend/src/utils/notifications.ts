@@ -1,5 +1,5 @@
 export interface Notification {
-    title: string,
+    title?: string,
     when?: Date,
     body: string,
     background?: string,
