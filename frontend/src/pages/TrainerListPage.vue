@@ -31,9 +31,9 @@ const mobileHeader = (d: Trainer | RowData) =>
     `${d.firstName} ${d.lastName}`;
 
 const filter = (d: Trainer | RowData, s: string) =>
-    d.username.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
-    d.firstName.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
-    d.lastName.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0;
+    (d.username as string).toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
+    (d.firstName as string).toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
+    (d.lastName as string).toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0;
 
 </script>
 <template>

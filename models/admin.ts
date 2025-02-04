@@ -1,11 +1,11 @@
 interface BaseAdmin {
-    username: String
-    firstName: String
-    lastName: String
+    username: string
+    firstName: string
+    lastName: string
     hasFullPrivileges: boolean
 }
 
 
 export interface CreateAdminRequest extends BaseAdmin {
-    password: String
+    password: string
 }

@@ -1,4 +1,4 @@
-import { Admin, Course, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -77,13 +77,26 @@ export class Client {
                 id: "1",
                 name: "Zumba",
                 description: "Sad course description, nothing to see here...",
-                dayOfWeek: "Wednesday",
-                startTime: "10:00",
-                endTime: "11:00",
                 capacity: 20,
                 trainer: "McMuscle",
-                participants: []
+                schedule: [{
+                    dayOfWeek: "Wednesday",
+                    startTime: "10:00",
+                    participants: [],
+                }]
             }
         ];
+    }
+
+    public addAdmin(admin: CreateAdminRequest) {
+        return this.apiRequest("POST", "/admins", admin);
+    }
+
+    public addCourse(course: CreateCourseRequest) {
+        return this.apiRequest("POST", "/courses", course);
+    }
+
+    public addTrainer(trainer: CreateTrainerRequest) {
+        return this.apiRequest("POST", "/trainers", trainer);
     }
 }

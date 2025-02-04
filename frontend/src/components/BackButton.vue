@@ -21,4 +21,3 @@ const goBack = () => {
         <i class="bi bi-arrow-left"></i> {{ buttonText }}
     </button>
 </template>
-
