@@ -6,12 +6,12 @@ import ModalArea from './components/ModalArea.vue';
 import { useModalsStore } from './store/modals';
 
 const notifications = useNotificationsStore().notifications;
-const modals = useModalsStore().modals;
+const confirmModals = useModalsStore().confirmModals;
 </script>
 
 <template>
     <Header></Header>
     <RouterView />
     <NotificationArea :notifications="notifications"></NotificationArea>
-    <ModalArea :confirms="modals"></ModalArea>
+    <ModalArea :confirms="confirmModals"></ModalArea>
 </template>
