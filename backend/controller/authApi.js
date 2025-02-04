@@ -5,10 +5,10 @@ const jose = require('jose');
 
 const JWT_KEY = createSecretKey(process.env.JWT_KEY || "secret");
 
-async function lookupUsername(username, password) {
+async function lookupUsername(username) {
     let result = { kind: null, data: null };
     const customer = await Client.findOne({ username: username }, null, null).exec();
-    if (customer && customer.password === password) {
+    if (customer) {
         result.kind = "customer";
         result.data = customer;
         return result;
@@ -16,7 +16,7 @@ async function lookupUsername(username, password) {
 
     // Check if the username matches a trainer
     const trainer = await Trainer.findOne({ username: username }, null, null).exec();
-    if (trainer && trainer.password === password) {
+    if (trainer) {
         result.kind = "trainer";
         result.data = trainer;
         return result;
@@ -38,8 +38,7 @@ exports.authenticate = async (req, res) => {
     const token = {};
 
     try {
-        const user = await lookupUsername(username, password);
-        console.log(user);
+        const user = await lookupUsername(username);
         if (user.kind === null || user.data.password !== password) { // TODO salt and hash
             res.status(401).send("Unauthorized");
         } else {
