@@ -1,5 +1,6 @@
 const Client = require('../models/clientModel');
 const Trainer = require('../models/trainerModel');
+const Admin = require('../models/adminModel');
 const { createSecretKey } = require('crypto');
 const jose = require('jose');
 
@@ -22,15 +23,12 @@ async function lookupUsername(username) {
         return result;
     }
 
-    if (username === 'admin') {
+    const admin = await Admin.findOne({ username: username }, null, null).exec();
+    if (admin) {
         result.kind = "admin";
-        result.data = {
-            username: "admin",
-            password: "admin"
-        };
+        result.data = admin;
         return result;
     }
-    return result;
 }
 
 exports.authenticate = async (req, res) => {
