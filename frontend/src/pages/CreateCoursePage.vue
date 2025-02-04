@@ -13,7 +13,6 @@ const capacityString = ref("");
 const capacity = computed(() => parseInt(capacityString.value));
 const trainer = ref("");
 const message = ref("");
-const trainerId = ref("");
 const trainersList = ref<SelectInputValue[]>([]);
 const scheduleEntries = ref<CourseScheduleEntry[]>([]);
 
@@ -30,7 +29,6 @@ const submitButtonEnabled = computed(() => {
         scheduleEntries.value.length > 0 &&
         capacity.value > 0 &&
         trainer.value !== "" &&
-        trainerId.value !== "" &&
         descriptionValid.value &&
         capacityValid.value &&
         nameValid.value
@@ -69,7 +67,7 @@ watch(capacity, (newCapacity) => {
 });
 
 client.listTrainers()
-    .then(x => x.map((y => { return { id: y.id, label: `${y.firstName} ${y.lastName}` }; })))
+    .then(x => x.map((y => { return { id: y._id, label: `${y.firstName} ${y.lastName}` }; })))
     .then(x => trainersList.value = x);
 
 async function handleCreateCourse() {
@@ -81,7 +79,7 @@ async function handleCreateCourse() {
             description: description.value,
             schedule: scheduleEntries.value,
             capacity: Number(capacity.value),
-            trainer: trainerId.value,
+            trainer: trainer.value,
         }
         // Effettua la richiesta POST per creare il cliente
         const response = await client.addCourse(request);

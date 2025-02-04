@@ -11,7 +11,8 @@ const props = defineProps<{
 }>();
 
 const fixedOptions = computed(() => props.options.map((x): SelectInputValue => {
-    if ((x as SelectInputValue).id === undefined) {
+    console.log(x);
+    if ((x as SelectInputValue).id === undefined) {        
         let value = x as string;
         return { id: value, label: value };
     } else {
