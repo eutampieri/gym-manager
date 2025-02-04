@@ -3,7 +3,7 @@ import { isValidCapacity, isOnlyLetters } from '@/utils/validation';
 import { computed, onMounted, ref, watch } from 'vue';
 import { CourseScheduleEntry, CreateCourseRequest } from "@gym-manager/models/course";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
-import SelectInput from '@/components/SelectInput.vue';
+import SelectInput, { SelectInputValue } from '@/components/SelectInput.vue';
 import Header from '@/components/Header.vue';
 import { useUserStore } from '@/store/user';
 
@@ -14,13 +14,14 @@ const capacity = computed(() => parseInt(capacityString.value));
 const trainer = ref("");
 const message = ref("");
 const trainerId = ref("");
-const trainersList = ref<string[]>([]);
+const trainersList = ref<SelectInputValue[]>([]);
 const scheduleEntries = ref<CourseScheduleEntry[]>([]);
 
 const nameValid = ref(false);
 const descriptionValid = ref(false);
 const capacityValid = ref(false);
 
+const client = useUserStore().client;
 
 const submitButtonEnabled = computed(() => {
     return (
@@ -66,48 +67,14 @@ watch(capacity, (newCapacity) => {
         }));
     }
 });
-watch(trainer, async (newTrainer) => {
-    if (!newTrainer) {
-        trainerId.value = ""; // Resetta trainerId se trainer è vuoto
-        return;
-    }
 
-    // Chiama fetchTrainerId per ottenere il trainerId
-    await fetchTrainerId();
-});
+client.listTrainers()
+    .then(x => x.map((y => { return { id: y.id, label: `${y.firstName} ${y.lastName}` }; })))
+    .then(x => trainersList.value = x);
 
-
-async function fetchAllTrainers() {
-    try {
-        const response = await fetch(`/trainers`);
-        if (!response.ok) throw new Error("Error retrieving trainers");
-        const trainers = await response.json();
-        // Estrai gli username e aggiorna la lista dei trainer
-        trainersList.value = trainers.map((trainer: { username: string; }) => trainer.username);
-    } catch (error) {
-        console.error('Error retrieving trainers:', error);
-        message.value = "Error retrieving trainers";
-    }
-}
-async function fetchTrainerId() {
-    try {
-        const response = await fetch(`/trainers/trainerId/${trainer.value}`);
-        if (!response.ok) throw new Error("Error retrieving trainer id");
-        const id = await response.json();
-        // Estrai gli username e aggiorna la lista dei trainer
-        trainerId.value = id;
-    } catch (error) {
-        console.error('Error retrieving trainer id:', error);
-        message.value = "Error retrieving trainer id";
-    }
-}
-onMounted(() => {
-    fetchAllTrainers(); // Recupera i trainer quando il form si carica
-});
-const client = useUserStore().client;
 async function handleCreateCourse() {
     try {
-    
+
         // Creazione dell'oggetto JSON con i dati del cliente
         const request: CreateCourseRequest = {
             name: name.value,
