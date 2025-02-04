@@ -1,8 +1,7 @@
 <script setup lang="ts">
-defineProps<{
-    message: string,
-    sentByCurrentUser: boolean,
-}>();
+import { Message } from '@/utils/chat';
+
+defineProps<Message>();
 </script>
 <template>
     <p :class="'rounded p-2 text-bg-' + (sentByCurrentUser ? 'primary ms-auto' : 'tertiary')">{{ message }}</p>
