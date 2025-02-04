@@ -8,7 +8,7 @@ defineProps<{ data: ListData, accordionHeader: (d: RowData) => string }>();
     <div class="accordion">
         <div v-for="(row, index) in data.data" :key='index' class="accordion-item">
             <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     :data-bs-target="'#collapse' + index" aria-expanded="false" :aria-controls="'collapse' + index">
                     {{ accordionHeader(row) }}
                 </button>
