@@ -92,6 +92,20 @@ export class Client {
             }
         ];
     }
+    public getTrainer(trainerId: string): Promise<Trainer> {
+        return Promise.resolve({
+            username: 'fsdigbohfigpdsb',
+            firstName: 'fsdigbohfigpdsb',
+            lastName: 'fsdigbohfigpdsb',
+            email: 'fsdigbohfigpdsb',
+            phoneNumber: 'fsdigbohfigpdsb',
+            id: 'trainerID'
+        })
+
+        return this.apiRequest("GET", "/trainers/" + trainerId)
+                .then(r => r.json());
+    }
+
     public trainerProfilePath(trainerId: string) {
         return '/trainer/profile/' + trainerId;
     }

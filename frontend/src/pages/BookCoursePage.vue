@@ -41,7 +41,7 @@ if (user) {
                     <dd>{{ course.course.description }}</dd>
                     <dt>Trainer</dt>
                     <dd>
-                        <NameLink :path="store.client.trainerProfilePath(course.course.trainer)">{{ course.course.trainer }}</NameLink>
+                        <NameLink :path="store.client.trainerProfilePath(course.course.trainer)">{{ course.trainer.firstName + ' ' + course.trainer.lastName }}</NameLink>
                     </dd>
                     <dt>Date & Time</dt>
                     <dd class="d-flex flex-row justify-content-between">
