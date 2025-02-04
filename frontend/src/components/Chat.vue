@@ -25,8 +25,8 @@ function send() {
 }
 </script>
 <template>
-    <section v-if="isActive">
-        <section v-if="!minimised" class="d-flex flex-column">
+    <div v-if="isActive">
+        <div v-if="!minimised" class="d-flex flex-column">
             <section class="d-flex flex-row ">
                 <section class="flex-grow-1">
                     <h2>Support chat</h2>
@@ -40,27 +40,25 @@ function send() {
                     <FontAwesomeIcon :icon="faChevronDown"></FontAwesomeIcon>
                 </button>
             </section>
-            <div class="text-center m-2">
-                <button @click="close" role="button" class="btn btn-danger">
-                    <FontAwesomeIcon :icon="faCircleXmark"></FontAwesomeIcon>
-                    Close chat
-                </button>
-            </div>
+            <button @click="close" role="button" class="btn btn-danger mx-auto my-2">
+                <FontAwesomeIcon :icon="faCircleXmark"></FontAwesomeIcon>
+                Close chat
+            </button>
             <section class="flex-grow-1">
                 <Message v-for="message, index in messages" :key="index" :message="message.message"
                     :sent-by-current-user="message.sentByCurrentUser"></Message>
             </section>
-            <div class="input-group mb-3">
+            <section class="input-group mb-3">
                 <input v-model="currentMessage" type="text" class="form-control" aria-label="Search">
                 <button class="btn btn-primary" @click="send">
                     <FontAwesomeIcon :icon="faPaperPlane"></FontAwesomeIcon>
                 </button>
-            </div>
-        </section>
+            </section>
+        </div>
         <div v-else class="d-grid gap-2">
             <button class="btn btn-primary btn-lg" @click="expand">
                 Resume chat with {{ otherParty[0].firstName }} {{ otherParty[0].lastName }}
             </button>
         </div>
-    </section>
+    </div>
 </template>
