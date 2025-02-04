@@ -6,8 +6,10 @@ import NameLink from '@/components/NameLink.vue';
 import MainButton from '@/components/MainButton.vue';
 import { CourseInfo, SessionInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
+import { useModalsStore } from '@/store/modals';
 
 const store = useUserStore();
+const confirm = useModalsStore().confirm;
 
 const user = store.client.userDetails;
 
@@ -21,14 +23,14 @@ if (user) {
         .then(sessions => myOneOnOne.value = sessions);
 }
 
-function unsubscribeFromCourse(courseId: string, courseName: string) {
-    if (confirm('Do you want to unsubscribe from ' + courseName + '?')) {
+async function unsubscribeFromCourse(courseId: string, courseName: string) {
+    if (await confirm('Do you want to unsubscribe from ' + courseName + '?')) {
         store.client.unsubscribeFromCourse(courseId)
             .then(id => myCourses.value = myCourses.value?.filter(x => x.course.id != id));
     }
 }
-function cancelSession(sessionId: string) {
-    if (confirm('Do you want to cancel the private session?')) {
+async function cancelSession(sessionId: string) {
+    if (await confirm('Do you want to cancel the private session?')) {
         store.client.cancelSession(sessionId)
             .then(id => myOneOnOne.value = myOneOnOne.value?.filter(x => x.info.id != id));
     }
@@ -53,14 +55,15 @@ const contactSupport = '/support/chat'
         <h2>My Courses</h2>
         <Dropdown id="my-courses-dropdown">
             <DropdownItem v-for="(course, i) in myCourses" :key="i"
-                :header="[course.dayOfWeek + ' ' + course.startTime, course.course.name]"
-                :id-prefix="'course'" :index="i" :dropdown-id="'my-courses-dropdown'">
+                :header="[course.dayOfWeek + ' ' + course.startTime, course.course.name]" :id-prefix="'course'"
+                :index="i" :dropdown-id="'my-courses-dropdown'">
                 <dl>
                     <dt>{{ course.course.name }}</dt>
                     <dd>{{ course.course.description }}</dd>
                     <dt>Trainer</dt>
                     <dd>
-                        <NameLink :path="trainerProfilePath(course.course.trainer)">{{ course.course.trainer }}</NameLink>
+                        <NameLink :path="trainerProfilePath(course.course.trainer)">{{ course.course.trainer }}
+                        </NameLink>
                     </dd>
                 </dl>
                 <button type="button" class="btn btn-primary m-2"
@@ -72,12 +75,13 @@ const contactSupport = '/support/chat'
         <h2>My One-on-one</h2>
         <Dropdown id="my-oo-dropdown">
             <DropdownItem v-for="(session, i) in myOneOnOne" :key="i"
-                :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.trainer.firstName + ' ' + session.trainer]" :id-prefix="'one-on-one'"
-                :index="i" :dropdown-id="'my-oo-dropdown'">
+                :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.trainer.firstName + ' ' + session.trainer]"
+                :id-prefix="'one-on-one'" :index="i" :dropdown-id="'my-oo-dropdown'">
                 <dl>
                     <dt>Trainer</dt>
                     <dd>
-                        <NameLink :path="trainerProfilePath(session.trainer.id)">{{ session.trainer.firstName + ' ' + session.trainer }}</NameLink>
+                        <NameLink :path="trainerProfilePath(session.trainer.id)">{{ session.trainer.firstName + ' ' +
+                            session.trainer }}</NameLink>
                     </dd>
                 </dl>
                 <button type="button" class="btn btn-primary m-2" @click="() => cancelSession(session.info.id)">Cancel
