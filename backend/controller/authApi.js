@@ -5,7 +5,7 @@ const jose = require('jose');
 
 const JWT_KEY = createSecretKey(process.env.JWT_KEY || "secret");
 
-async function lookupUsername(username) {
+async function lookupUsername(username, password) {
     let result = { kind: null, data: null };
     const customer = await Client.findOne({ username: username }, null, null).exec();
     if (customer && customer.password === password) {
@@ -38,13 +38,14 @@ exports.authenticate = async (req, res) => {
     const token = {};
 
     try {
-        const user = await lookupUsername(username);
+        const user = await lookupUsername(username, password);
         console.log(user);
         if (user.kind === null || user.data.password !== password) { // TODO salt and hash
             res.status(401).send("Unauthorized");
         } else {
             token.role = user.kind;
             token.username = user.data.username;
+            token.profile = user.data;
             const jwt = await new jose.SignJWT(token) // details to  encode in the token
                 .setProtectedHeader({
                     alg: 'HS256'
