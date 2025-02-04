@@ -9,7 +9,7 @@ import { useUserStore } from '@/store/user';
 
 const name = ref("");
 const description = ref("");
-const capacityString = ref("0");
+const capacityString = ref("");
 const capacity = computed(() => parseInt(capacityString.value));
 const trainer = ref("");
 const message = ref("");
@@ -134,7 +134,7 @@ async function handleCreateCourse() {
         <br>
         <ValidatingGenericInput type="text" id="capacity" error-message="The course must have at least one participant"
             :validation-function="isValidCapacity" v-model="capacityString" v-model:valid="capacityValid">
-            Spots Available
+            Capacity
         </ValidatingGenericInput>
 
         <SelectInput id="trainer" v-model="trainer" :options="trainersList">
