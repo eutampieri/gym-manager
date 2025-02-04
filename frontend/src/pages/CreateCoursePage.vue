@@ -3,7 +3,7 @@ import { isValidCapacity, isOnlyLetters } from '@/utils/validation';
 import { computed, onMounted, ref, watch } from 'vue';
 import { CourseScheduleEntry, CreateCourseRequest } from "@gym-manager/models/course";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
-import SelectInputValue from '@/components/SelectInput.vue';
+import { SelectInputValue } from '@/components/SelectInput.vue';
 import { useUserStore } from '@/store/user';
 
 const name = ref("");
