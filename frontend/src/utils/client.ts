@@ -1,4 +1,4 @@
-import { Admin, Course, CreateAdminRequest, CreateCourseRequest, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -96,5 +96,7 @@ export class Client {
         return this.apiRequest("POST", "/courses", course);
     }
 
-
+    public addTrainer(course: CreateTrainerRequest) {
+        return this.apiRequest("POST", "/trainers", course);
+    }
 }
