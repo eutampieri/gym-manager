@@ -1,4 +1,4 @@
-import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -116,6 +116,43 @@ export class Client {
                     )
                 );
     }
+    public getCustomerSessions(userId: string): Promise<Array<{ info: SessionInfo, trainer: Trainer }>> {
+        return this.apiRequest("GET", `/customers/${userId}/sessions`)
+                .then(r => r.json())
+                .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string, username: string; firstName: string; lastName: string; email: string; phoneNumber: string; }; }) => ({
+                    info: {
+                        dayOfWeek: s.dayOfWeek,
+                        startTime: s.startTime,
+                        id: s.id,
+                    },
+                    trainer: {
+                        id: s.trainer.id,
+                        username: s.trainer.username,
+                        firstName: s.trainer.firstName,
+                        lastName: s.trainer.lastName,
+                        email: s.trainer.email,
+                        phoneNumber: s.trainer.phoneNumber,
+                    }
+                })));
+    }
+    public getTrainerSessions(userId: string): Promise<Array<{ info: SessionInfo, participant: Admin }>> {
+        return this.apiRequest("GET", `/trainers/${userId}/sessions`)
+                .then(r => r.json())
+                .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string; username: string; firstName: string; lastName: string; }; }) => ({
+                    info: {
+                        dayOfWeek: s.dayOfWeek,
+                        startTime: s.startTime,
+                        id: s.id,
+                    },
+                    participant: {
+                        id: s.trainer.id,
+                        username: s.trainer.username,
+                        firstName: s.trainer.firstName,
+                        lastName: s.trainer.lastName,
+                    }
+                })));
+    }
+
 
     public unsubscribeFromCourse(courseId: string): Promise<string> {
         return Promise.resolve(courseId);
@@ -125,25 +162,6 @@ export class Client {
         const user = this.userDetails
         // unsubscribe
         // ... TODO
-    }
-
-    public getUserSessions(): Promise<Array<Session>> {
-        return Promise.resolve(
-            [{
-                id: "1",
-                participant: "Rox",
-                dayOfWeek: "Tuesday",
-                startTime: "14:00",
-                trainer: "McBorro",
-            }]
-        )
-        if (this.getRole == Role.User) {
-            return Promise.resolve([]);
-        } else if (this.getRole == Role.Trainer) {
-            return Promise.resolve([]);
-        } else {
-            return Promise.resolve([]);
-        }
     }
 
     public cancelSession(sessionId: string): Promise<string> {
