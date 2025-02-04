@@ -4,12 +4,12 @@ const API = require('../controller/trainerApi')
 
 router.post("/", API.createTrainer)
 router.get("/", API.fetchAllTrainers)
-router.get("/username/:username", API.fetchTrainerByUsername)
+router.get("/:username/username", API.fetchTrainerByUsername)
 router.get("/:id", API.fetchTrainerBy_Id)
 router.put("/", API.updateTrainer)
 router.delete("/:id", API.deleteTrainer)
-router.get("/courses/:id", API.fetchAllTrainerCourses)
-router.get("/sessions/:id", API.fetchAllTrainerSessions)
+router.get("/:id/courses", API.fetchAllTrainerCourses)
+router.get("/:id/sessions", API.fetchAllTrainerSessions)
 
 // in the path, before these, there must be /trainers
 router.get("/courses/add/:trainerId/:courseId", API.addTrainerCourse)

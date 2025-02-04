@@ -4,12 +4,12 @@ const API = require('../controller/clientApi')
 
 router.post("/", API.createCustomer)
 router.get("/", API.fetchAllCustomers)
-router.get("/username/:username", API.fetchCustomerByUsername)
+router.get("/:username/username", API.fetchCustomerByUsername)
 router.get("/:id", API.fetchCustomerBy_Id)
 router.put("/", API.updateCustomer)
 router.delete("/:id", API.deleteCustomer)
-router.get("/sessions/:id", API.fetchAllCustomerSessions)
-router.get("/courses/:id", API.fetchAllCustomerCourses)
+router.get("/:id/sessions", API.fetchAllCustomerSessions)
+router.get("/:id/courses", API.fetchAllCustomerCourses)
 
 // in the path, before these, there must be /customers
 router.get("/courses/delete/:username/:courseName", API.deleteClientCourse)
