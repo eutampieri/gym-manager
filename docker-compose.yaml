@@ -62,8 +62,6 @@ services:
     command: [ "--bind_ip_all", "--port", "27017" ]
     volumes:
      - mongodata:/data/db
-    ports:
-     - "27017:27017"
 
 # username is admin and password is pass
   mongoexpress:
