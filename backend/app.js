@@ -57,7 +57,7 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
-const uri = process.env.DB_URI || 'mongodb://localhost:27017/gym';
+const uri = 'mongodb://localhost:27017/gym';
 // Connessione al database
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -73,6 +73,7 @@ const clients = require('./routes/clientRoutes');
 const courses = require('./routes/courseRoutes');
 const trainers = require('./routes/trainerRoutes');
 const sessions = require('./routes/sessionRoutes');
+const admins = require('./routes/adminRoutes');
 const auth = require('./routes/authRoutes');
 
 
@@ -81,12 +82,12 @@ const auth = require('./routes/authRoutes');
 // ad esempio app.use('/trainers', trainersRouter);
 //indica che tutte le route definite nel modulo trainersRouter
 //saranno raggiungibili attraverso l'URL base /trainers.
-app.use('/courses', courses);
-app.use('/trainers', trainers);
-app.use('/customers', clients);
-app.use('/sessions', sessions);
-app.use('/auth', auth);
-
+app.use('/api/courses', courses);
+app.use('/api/trainers', trainers);
+app.use('/api/customers', clients);
+app.use('/api/sessions', sessions);
+app.use('/api/admins', admins);
+app.use('/api/auth', auth);
 
 
 // Avviamo il server su una porta specifica

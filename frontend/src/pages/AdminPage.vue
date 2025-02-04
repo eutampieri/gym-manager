@@ -1,56 +1,34 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import UiNavigationButton from '@/components/UiNavigationButton.vue';
-import ListView from '@/components/ListView.vue';
-import { ListData, RowData } from '@/utils/lists';
+import MainButton from '@/components/MainButton.vue';
+import { useUserStore } from '@/store/user'; 
 
-const buttons = [
-    { text: "Create Trainer", route: "/admin/createTrainer", },
-    { text: "Delete Trainer", route: "/admin", },
-    { text: "Update Trainer", route: "/admin", },
-    { text: "Create Client", route: "/admin/createClient", },
-    { text: "Delete Client", route: "/admin", },
-    { text: "Update Client", route: "/admin", },
-    { text: "Create Course", route: "/admin/createCourse", },
-    { text: "Delete Course", route: "/admin", },
-    { text: "Update Course", route: "/admin", },
-];
+const store = useUserStore();
+const admin = store.client.userDetails;
 
-const data: ListData = {
-    headers: [
-        {
-            key: 'name',
-            name: 'Name'
-        },
-        {
-            key: 'description',
-            name: 'Description'
-        }
-    ],
-    actions: [],
-    data: [
-        {
-            name: "Zumba",
-            description: "A bad course description :("
-        },
-        {
-            name: "Zumba1",
-            description: "A bad course description :("
-        }
-    ]
-};
-function mobileHeader(d: RowData): string {
-    return d.name
-}
 </script>
+
 <template>
-    <h1>Admin Page</h1>
-    <div class="d-flex justify-content-center">
-        <div class="mt-5 d-flex flex-wrap justify-content-evenly col-md-8">
-            <UiNavigationButton :path="b.route" v-for="b in buttons">
-                {{ b.text }}
-            </UiNavigationButton>
-        </div>
+    <div class="d-flex flex-column">
+        <h1 class="mx-auto mb-5">Hello {{ admin?.username }}!</h1>
     </div>
-    <ListView :data="data" :mobile-header="mobileHeader"></ListView>
+    <section class="d-flex flex-column mt-4">
+        <h2 class="mx-auto">Courses</h2>
+        <MainButton :path="'/admin/createCourse'">Create course</MainButton>
+        <MainButton :path="'/admin/listCourses'">View courses</MainButton>
+    </section>
+    <section class="d-flex flex-column mt-4">
+        <h2 class="mx-auto">Users</h2>
+        <MainButton :path="'/admin/createClient'">Create user</MainButton>
+        <MainButton :path="'/admin/listCustomers'">View users</MainButton>
+    </section>
+    <section class="d-flex flex-column mt-4">
+        <h2 class="mx-auto">Trainers</h2>
+        <MainButton :path="'/admin/createTrainer'">Create trainer</MainButton>
+        <MainButton :path="'/admin/listTrainers'">View trainers</MainButton>
+    </section>
+    <section class="d-flex flex-column mt-4">
+        <h2 class="mx-auto">Admins</h2>
+        <MainButton :path="'/admin/createAdmin'">Create admin</MainButton>
+        <MainButton :path="'/admin/listAdmins'">View admins</MainButton>
+    </section>
 </template>

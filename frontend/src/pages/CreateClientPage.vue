@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { isOnlyLetters, isOnlyLettersSpaceInclusive, isOnlyNumbers, phoneNumber as isPhoneNumber } from '@/utils/validation';
+import { isOnlyLetters, isPhoneNumber } from '@/utils/validation';
 import { computed, ref } from 'vue';
-import { CreateUserRequest } from "@gym-manager/models";
+import { CreateUserRequest } from "@gym-manager/models/user";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
 import { useUserStore } from '../store/user';
+import Header from '@/components/Header.vue';
 
 const username = ref("");
 const password = ref("");
@@ -40,7 +41,7 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
 
 const client = useUserStore().client;
 
-async function handleCreateCourse() {
+async function handleCreateClient() {
     try {
 
         // Creazione dell'oggetto JSON con i dati del cliente
@@ -73,27 +74,29 @@ async function handleCreateCourse() {
 }
 </script>
 <template>
-    <form id="clientForm">
+    <Header>
         <h2>Creating {{ firstName === "" ? "a new customer" : `${firstName} ${lastName}` }}</h2>
+    </Header>
+    <form>
 
-        <ValidatingGenericInput type="text" id="username" error-message="Lo username può contenere solo lettere."
+        <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
             :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
             Username
         </ValidatingGenericInput>
 
         <ValidatingGenericInput type="password" id="password"
-            error-message="The password must be at least 7 characters long."
+            error-message="The password must be at least 7 characters long"
             :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="passwordValid">
             Password
         </ValidatingGenericInput>
 
-        <ValidatingGenericInput type="text" id="firstName" error-message="Il nome può contenere solo lettere."
-            :validation-function="isOnlyLettersSpaceInclusive" v-model="firstName" v-model:valid="firstNameValid">
+        <ValidatingGenericInput type="text" id="firstName" error-message="The name can only contain letters"
+            :validation-function="isOnlyLetters" v-model="firstName" v-model:valid="firstNameValid">
             Name
         </ValidatingGenericInput>
 
-        <ValidatingGenericInput error-message="Surname can only be made of letters."
-            :validation-function="isOnlyLettersSpaceInclusive" type="text" id="lastName" v-model="lastName"
+        <ValidatingGenericInput error-message="The surname can only be made of letters"
+            :validation-function="isOnlyLetters" type="text" id="lastName" v-model="lastName"
             v-model:valid="lastNameValid">Surname
         </ValidatingGenericInput>
 
@@ -111,8 +114,12 @@ async function handleCreateCourse() {
 
         <GenericInput type="text" id="address" v-model="address">Address</GenericInput>
 
-        <button class="btn btn-primary" type="button" @click="handleCreateCourse()"
+        <button class="btn btn-primary" type="button" @click="handleCreateClient()"
             :disabled="!submitButtonEnabled">Create Client {{ firstName }}</button>
+
+        <p v-if="message">
+            {{ message }}
+        </p>
 
     </form>
 
