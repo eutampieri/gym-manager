@@ -4,12 +4,9 @@ import PageTitle from '@/components/PageTitle.vue';
 import { useUserStore } from '@/store/user';
 import { getProfileIcon } from '@gym-manager/models/user';
 
-// Recupero dei dati dell'utente dallo store Vuex/Pinia
 const store = useUserStore();
 const user = store.client.userDetails; // Verifica se ci sono dettagli utente
 const profileIcon = user ? getProfileIcon(user) : ''; // Calcola l'icona profilo solo se user esiste
-console.log("profileIcon: " + profileIcon);
-console.log("user: " + user);
 </script>
 
 <template>
