@@ -6,10 +6,13 @@ import NameLink from '@/components/NameLink.vue';
 import MainButton from '@/components/MainButton.vue';
 import { CourseInfo, SessionInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
+import { useModalsStore } from '@/store/modals';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 
+
 const store = useUserStore();
+const confirm = useModalsStore().confirm;
 
 const user = store.client.userDetails;
 
@@ -23,14 +26,14 @@ if (user) {
         .then(sessions => myOneOnOne.value = sessions);
 }
 
-function unsubscribeFromCourse(courseId: string, courseName: string) {
-    if (confirm('Do you want to unsubscribe from ' + courseName + '?')) {
+async function unsubscribeFromCourse(courseId: string, courseName: string) {
+    if (await confirm('Do you want to unsubscribe from ' + courseName + '?')) {
         store.client.unsubscribeFromCourse(courseId)
             .then(id => myCourses.value = myCourses.value?.filter(x => x.course.id != id));
     }
 }
-function cancelSession(sessionId: string) {
-    if (confirm('Do you want to cancel the private session?')) {
+async function cancelSession(sessionId: string) {
+    if (await confirm('Do you want to cancel the private session?')) {
         store.client.cancelSession(sessionId)
             .then(id => myOneOnOne.value = myOneOnOne.value?.filter(x => x.info.id != id));
     }
