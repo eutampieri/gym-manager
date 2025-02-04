@@ -6,6 +6,7 @@ import router from '@/routes/router';
 import { useUserStore } from '@/store/user';
 import { ref } from 'vue';
 import { Role } from '@gym-manager/models';
+import WeeklyCalendar from '@/components/WeeklyCalendar.vue';
 
 const store = useUserStore();
 const username = ref<string>();
@@ -45,4 +46,5 @@ const notifications = ref<Array<INotification>>([]);
         <button class="btn btn-primary" type="button" @click="login()">Login</button>
     </form>
     <NotificationArea :notifications="notifications"></NotificationArea>
+    <WeeklyCalendar></WeeklyCalendar>
 </template>
