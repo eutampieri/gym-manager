@@ -55,8 +55,8 @@ function send() {
                 </button>
             </section>
         </div>
-        <div v-else class="d-grid gap-2">
-            <button class="btn btn-primary btn-lg" @click="expand">
+        <div v-else class="fixed-bottom m-md-4 mb-md-5 d-grid d-md-block">
+            <button class="btn btn-primary btn-lg float-md-end pt-2 pb-5 py-md-5 fs-6 text-decoration-underline" @click="expand">
                 Resume chat with {{ otherParty[0].firstName }} {{ otherParty[0].lastName }}
             </button>
         </div>
