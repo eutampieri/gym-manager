@@ -47,9 +47,10 @@ export class Client {
         return Role.Admin;
     }
 
-    public getUserById(id: string): undefined | User | Trainer | Admin {
+    public getUserById(id: string): Promise<undefined | User | Trainer | Admin> {
         // TODO
-        return this.userDetails;
+        return Promise.resolve(this.userDetails);
+        return this.apiRequest("GET", "/customers/"+id).then(r => r.json());
     }
 
     public addUser(user: CreateUserRequest) {
