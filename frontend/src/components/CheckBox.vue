@@ -20,13 +20,7 @@ const toggleCheck = (event: Event) => {
 
 <template>
   <div class="form-check">
-    <input
-      class="form-check-input"
-      type="checkbox"
-      :id="id"
-      :checked="modelValue"
-      @change="toggleCheck"
-    />
+    <input class="form-check-input" type="checkbox" :id="id" :checked="modelValue" @change="toggleCheck" />
     <label class="form-check-label" :for="id">
       <slot></slot>
     </label>

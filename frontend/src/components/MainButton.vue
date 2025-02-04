@@ -1,14 +1,15 @@
 <script lang="ts" setup>
 
-const props = defineProps<{
-    path: string
-}>();
+const {useVariant = false} = defineProps<{ useVariant?: boolean, path: string }>();
 
+function btnStyle(): string {
+    return useVariant ? 'btn-secondary' : 'btn-primary';
+}
 </script>
 
 <template>
     <RouterLink :to="{ path: path }" class="nav-link">
-        <button type="button" class="btn-primary btn m-2 p-3 main-container mx-auto d-block">
+        <button type="button" :class="btnStyle() + ' btn m-2 p-3 main-container mx-auto d-block'">
             <slot></slot>
         </button>
     </RouterLink>

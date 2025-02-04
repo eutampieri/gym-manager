@@ -1,4 +1,4 @@
-import { Admin, Course, CreateUserRequest, LoginRequest, Role, Session, Trainer, User } from "@gym-manager/models";
+import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
 
 export class Client {
     private jwt?: string = undefined;
@@ -27,7 +27,7 @@ export class Client {
         return true;
     }
 
-    public get getUserDetails(): undefined | User | Trainer | Admin {
+    public get userDetails(): undefined | User | Trainer | Admin {
         // TODO
         const result: User = {
             username: 'Rox09',
@@ -49,7 +49,7 @@ export class Client {
 
     public getUserById(id: string): undefined | User | Trainer | Admin {
         // TODO
-        return this.getUserDetails;
+        return this.userDetails;
     }
 
     public addUser(user: CreateUserRequest) {
@@ -82,62 +82,103 @@ export class Client {
                 id: "1",
                 name: "Zumba",
                 description: "Sad course description, nothing to see here...",
-                schedule: [
-                    {
-                        dayOfWeek: "Wednesday",
-                        startTime: "10:00",
-                        participants: []
-                    }
-                ],
                 capacity: 20,
                 trainer: "McMuscle",
+                schedule: [{
+                    dayOfWeek: "Wednesday",
+                    startTime: "10:00",
+                    participants: [],
+                }]
             }
         ];
     }
 
-    public getUserCourses(): Promise<Array<Course>> {
-        return this.listCourses()
-        if (this.getRole == Role.User) {
-            return Promise.resolve([]);
-        } else if (this.getRole == Role.Trainer) {
-            return Promise.resolve([]);
-        } else {
-            return Promise.resolve([]);
-        }
+    public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
+        return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
     }
+    public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, schedule: CourseScheduleEntry }>> {
+        return this.apiRequest("GET", `/trainers/${userId}/courses`)
+                .then(r => r.json())
+                .then((r : Array<Course>) => 
+                    r.flatMap((c: Course) => 
+                        c.schedule.map((s: CourseScheduleEntry) => 
+                            ({
+                                course : {
+                                    id: c.id,
+                                    name: c.name,
+                                    description: c.description,
+                                    capacity: c.capacity,
+                                    trainer: c.trainer,
+                                },
+                                schedule: s
+                            })
+                        )
+                    )
+                );
+    }
+    public getCustomerSessions(userId: string): Promise<Array<{ info: SessionInfo, trainer: Trainer }>> {
+        return this.apiRequest("GET", `/customers/${userId}/sessions`)
+                .then(r => r.json())
+                .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string, username: string; firstName: string; lastName: string; email: string; phoneNumber: string; }; }) => ({
+                    info: {
+                        dayOfWeek: s.dayOfWeek,
+                        startTime: s.startTime,
+                        id: s.id,
+                    },
+                    trainer: {
+                        id: s.trainer.id,
+                        username: s.trainer.username,
+                        firstName: s.trainer.firstName,
+                        lastName: s.trainer.lastName,
+                        email: s.trainer.email,
+                        phoneNumber: s.trainer.phoneNumber,
+                    }
+                })));
+    }
+    public getTrainerSessions(userId: string): Promise<Array<{ info: SessionInfo, participant: Admin }>> {
+        return this.apiRequest("GET", `/trainers/${userId}/sessions`)
+                .then(r => r.json())
+                .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string; username: string; firstName: string; lastName: string; }; }) => ({
+                    info: {
+                        dayOfWeek: s.dayOfWeek,
+                        startTime: s.startTime,
+                        id: s.id,
+                    },
+                    participant: {
+                        id: s.trainer.id,
+                        username: s.trainer.username,
+                        firstName: s.trainer.firstName,
+                        lastName: s.trainer.lastName,
+                    }
+                })));
+    }
+
 
     public unsubscribeFromCourse(courseId: string): Promise<string> {
         return Promise.resolve(courseId);
         if (this.getRole != Role.User) {
             return Promise.reject();
         }
-        const user = this.getUserDetails
+        const user = this.userDetails
         // unsubscribe
         // ... TODO
-    }
-
-    public getUserSessions(): Promise<Array<Session>> {
-        return Promise.resolve(
-            [{
-                id: "1",
-                participant: "Rox",
-                dayOfWeek: "Tuesday",
-                startTime: "14:00",
-                trainer: "McBorro",
-            }]
-        )
-        if (this.getRole == Role.User) {
-            return Promise.resolve([]);
-        } else if (this.getRole == Role.Trainer) {
-            return Promise.resolve([]);
-        } else {
-            return Promise.resolve([]);
-        }
     }
 
     public cancelSession(sessionId: string): Promise<string> {
         return Promise.resolve(sessionId);
         // cancel one-on-one
         // ... TODO
+    }
+
+    public addAdmin(admin: CreateAdminRequest) {
+        return this.apiRequest("POST", "/admins", admin);
+    }
+
+    public addCourse(course: CreateCourseRequest) {
+        return this.apiRequest("POST", "/courses", course);
+    }
+
+    public addTrainer(trainer: CreateTrainerRequest) {
+        return this.apiRequest("POST", "/trainers", trainer);
     }
 }

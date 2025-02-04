@@ -3,40 +3,47 @@ Auth (/api/auth):
     GET /impersonate/:id -> JWT
 
 Course (/api/courses):
-    POST / -> create Course
-    GET / -> list courses
-    GET /:id -> get course
-    PUT / -> update courses
-    DELETE /:id -> delete course
-    GET /:id/bookings -> list bookings for a course
-    POST /:id/bookings -> Create booking (body {dayOfWeek: "", startTime: ""})
-    DELETE /:id/bookings -> Create booking (body {dayOfWeek: "", startTime: ""})
+  POST / -> createCourse  (prende come body un course, crea il course)      
+  GET / -> fetchAllCourses   (non ha input, ritorna l'elenco dei course)    
+  GET /:id -> fetchCourseBy_Id (prende come parametro l'_id del corso, ritorna il course)
+  GET /name/:name -> fetchCourseByName (prende come parametro il name del corso, ritorna il course)
+  PUT / -> updateCourse  (prende come body un course, aggiorna il corso)
+  DELETE /:id -> deleteCourse (prende come parametri l'_id del corso, elimina il corso)
+  GET /:id/bookings -> fetchCourseBookings (prende come parametro l'_id del corso, ritorna l'array di schedule del corso (dayOfWeek, startTime, participants, availableSpots))
+  POST /:id/bookings -> createBooking (prende come parametro l'_id del corso e come body { clientId, dayOfWeek, startTime }, aggiunge il corso ai corsi del client e il client ai participant del corso) 
+  DELETE /:id/bookings -> deleteBooking (prende come parametro l'_id del corso e come body { clientId, dayOfWeek, startTime }, elimina il corso dai corsi del client e il client dai participant del corso)  
     
 Session (/api/sessions):
-    POST / -> create Session (user initiated)
-    GET / -> list sessions
-    GET /with-trainer/:id List all sessions (trainer)
-    GET /with-user/:id List all sessions (user)
-    GET /:id -> get course
-    DELETE /:id -> delete session
+  POST / -> createSession (prende come body una session, crea la session, aggiunge la session al client e al trainer) 
+  GET / -> fetchAllSessions   (non ha input, ritorna l'elenco dei session)    
+  GET /:id -> fetchSessionBy_Id (prende come parametro l'_id della session, ritorna la session)
+  DELETE /:id -> deleteSession (prende come parametri l'_id della session, elimina la session, elimina la session dal client e dal trainer) 
 
 Customer (/api/customers)
-    POST / Create a customer
-    GET / Get all customers
-    GET /:id Get a customer by _id
-    PUT / Update a customer
-    DELETE /:id Delete a customer
+  POST / createCustomer  (prende come body un client, crea il client) 
+  GET / fetchAllCustomers   (non ha input, ritorna l'elenco dei client)
+  GET /:username/username fetchCustomerByUsername (prende come parametro lo username del client, ritorna il client)
+  GET /:id  fetchCustomerBy_Id (prende come parametro l'_id del client, ritorna il client)
+  PUT / updateCustomer (prende come body un client, aggiorna il client)
+  DELETE /:id deleteCustomer (prende come parametri l'_id del client, elimina il client)
+  GET /:id/sessions fetchAllCustomerSessions (prende come parametro l'_id del client, ritorna le session del client)
+  GET /:id/courses fetchAllCustomerCourses (prende come parametro l'_id del client, ritorna i courses del client (course (popolato), dayOfWeek, startTime)) 
 
 Trainer (/api/trainers)
-    POST /
-    GET /
-    GET /:id
-    PUT /
-    DELETE /:id
+  POST /  createTrainer  (prende come body un trainer, crea il trainer)
+  GET /    fetchAllTrainers (non ha input, ritorna l'elenco dei trainer)
+  GET /:username/username fetchTrainerByUsername (prende come parametro lo username del trainer, ritorna il trainer)
+  GET /:id fetchTrainerBy_Id (prende come parametro l'_id del trainer, ritorna il trainer)
+  PUT /  updateTrainer (prende come body un trainer, aggiorna il trainer)
+  DELETE /:id   deleteTrainer (prende come parametri l'_id del trainer, elimina il trainer)
+  GET /:id/sessions fetchAllTrainerSessions (prende come parametro l'_id del trainer, ritorna le session del trainer)
+  GET /:id/courses fetchAllTrainerCourses  (prende come parametro l'_id del trainer, ritorna i courses del trainer (popolati)) 
 
 Admin (/api/admins)
-    POST /
-    GET /
-    GET /:id
-    PUT /
-    DELETE /:id
+  POST /  createAdmin  (prende come body un admin, crea l'admin)
+  GET /   fetchAllAdmins (non ha input, ritorna l'elenco degli amministratori)
+  GET /username/:username fetchAdminByUsername (prende come parametro lo username dell'admin, ritorna l'admin)
+  GET /:id fetchAdminBy_Id (prende come parametro l'_id dell'admin, ritorna l'admin)
+  PUT /  updateAdmin (prende come body un admin, aggiorna l'admin)
+  DELETE /:id  deleteAdmin (prende come parametro l'_id dell'admin, elimina l'admin)
+
