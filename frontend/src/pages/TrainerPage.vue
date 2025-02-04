@@ -23,10 +23,6 @@ if (user) {
         .then(sessions => myOneOnOne.value = sessions);
 }
 
-function customerProfilePath(customerId: string) {
-    return '/user/profile/' + customerId;
-}
-
 const contactSupport = '/support/chat'
 
 </script>
@@ -45,7 +41,7 @@ const contactSupport = '/support/chat'
                         <dt>{{ course.course.name }}</dt>
                         <dd>{{ course.course.description }}</dd>
                         <dt>Partecipants</dt>
-                        <dd><NameLink v-for="u in course.participants" :path="customerProfilePath(u.id)">{{ u.firstName + ' ' + u.lastName }}</NameLink></dd>
+                        <dd><NameLink v-for="u in course.participants" :path="store.client.customerProfilePath(u.id)">{{ u.firstName + ' ' + u.lastName }}</NameLink></dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
@@ -57,7 +53,7 @@ const contactSupport = '/support/chat'
                     :id-prefix="'one-on-one'" :index="i" :dropdown-id="'my-oo-dropdown'">
                     <dl>
                         <dt>Partecipant</dt>
-                        <dd><NameLink :path="customerProfilePath(session.participant.id)">{{ session.participant.firstName + ' ' + session.participant.lastName }}</NameLink></dd>
+                        <dd><NameLink :path="store.client.customerProfilePath(session.participant.id)">{{ session.participant.firstName + ' ' + session.participant.lastName }}</NameLink></dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
