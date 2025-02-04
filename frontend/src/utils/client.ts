@@ -127,25 +127,24 @@ export class Client {
         //         firstName: "string", lastName: "string", id: "string"
         //     }]
         // }])
-        
+
         return this.apiRequest("GET", `/trainers/${userId}/courses`)
-                .then(r => r.json())
-                .then(r => 
-                    r.flatMap((c: { schedule: any[]; id: string; name: string; description: string; capacity: string; trainer: string; }) => 
-                        c.schedule.map((s: { startTime: string; dayOfWeek: string; participants: any[]; }) => 
-                            ({
-                                course: {
-                                    id: c.id,
-                                    name: c.name,
-                                    description: c.description,
-                                    capacity: c.capacity,
-                                    trainer: c.trainer,
-                                },
-                                startTime: s.startTime,
-                                dayOfWeek: s.dayOfWeek,
-                                participants: s.participants
-                            })
-                        )
+            .then(r => r.json())
+            .then(r =>
+                r.flatMap((c: { schedule: any[]; id: string; name: string; description: string; capacity: string; trainer: string; }) =>
+                    c.schedule.map((s: { startTime: string; dayOfWeek: string; participants: any[]; }) =>
+                    ({
+                        course: {
+                            id: c.id,
+                            name: c.name,
+                            description: c.description,
+                            capacity: c.capacity,
+                            trainer: c.trainer,
+                        },
+                        startTime: s.startTime,
+                        dayOfWeek: s.dayOfWeek,
+                        participants: s.participants
+                    })
                     )
                 )
             );
