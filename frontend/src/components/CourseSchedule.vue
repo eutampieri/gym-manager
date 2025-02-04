@@ -30,7 +30,7 @@ async function bookCourse(courseId: string, dayOfWeek: string, startTime: string
 </script>
 
 <template>
-    <div class="d-flex flex-row justify-content-between my-3 main-container mx-auto">
+    <div class="d-flex flex-row justify-content-between my-3 mx-auto">
         <div class="w-50 container">
             <p class="m-0">{{ schedule.dayOfWeek + ' ' + schedule.startTime }}</p>
             <p class="text-muted m-0">Available spots: {{ availableSpots }}</p>
@@ -41,10 +41,3 @@ async function bookCourse(courseId: string, dayOfWeek: string, startTime: string
         </div>
     </div>
 </template>
-
-<style>
-.main-container {
-    max-width: 500px;
-    width: 100%;
-}
-</style>
