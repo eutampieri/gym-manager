@@ -1,8 +1,10 @@
 <script lang="ts" setup>
-import { getProfileIcon } from '@gym-manager/models';
+import { getProfileIcon, User, Trainer, Admin } from '@gym-manager/models';
 import { useUserStore } from '../store/user';
 import { ref } from 'vue';
 import Header from '@/components/Header.vue';
+
+const props = defineProps<{id: string}>();
 
 interface ProfileEntry {
     label: string,
@@ -14,8 +16,15 @@ const client = useUserStore().client;
 const profileData = ref<Array<ProfileEntry>>();
 const profileIcon = ref('');
 
+function getUser(): undefined | User | Trainer | Admin {
+    if (props.id) {
+        return client.getUserById(props.id);
+    } else {
+        return client.getUserDetails;
+    }
+}
 // get the logged user info
-const user = client.getUserDetails;
+const user = getUser();
 const fieldNameMapper = {
     username: 'Username',
     firstName: 'First Name',
@@ -42,7 +51,7 @@ if (user) {
     // error
 }
 
-function getLinkPrefix(field: String): string | undefined {
+function getLinkPrefix(field: string): string | undefined {
     if (field == 'email') {
         return 'mailto:';
     } else if (field == 'phoneNumber') {
