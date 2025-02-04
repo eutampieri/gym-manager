@@ -1,4 +1,8 @@
 const Admin = require('../models/adminModel');
+const Client = require('../models/clientModel');
+const Course = require('../models/courseModel');
+const Trainer = require('../models/trainerModel');
+const Session = require('../models/sessionModel');
 module.exports = class API {
     static async createAdmin(req, res) {
         const admin = req.body;

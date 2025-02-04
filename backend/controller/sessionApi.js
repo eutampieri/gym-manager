@@ -1,6 +1,7 @@
-const Session = require('../models/sessionModel');
-const Trainer = require('../models/trainerModel');
 const Client = require('../models/clientModel');
+const Course = require('../models/courseModel');
+const Trainer = require('../models/trainerModel');
+const Session = require('../models/sessionModel');
 
 
 // RESTful CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT

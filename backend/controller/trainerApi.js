@@ -1,6 +1,7 @@
+const Client = require('../models/clientModel');
+const Course = require('../models/courseModel');
 const Trainer = require('../models/trainerModel');
-
-const Client = require("../models/clientModel");
+const Session = require('../models/sessionModel');
 
 //API RESTFUL CRUD CON LOCK PER LA GESTIONE DELLA MUTUA ESCLUSIONE
 // le funzioni di Mongoose sono CRUD
@@ -123,12 +124,16 @@ module.exports = class API {
     static async fetchAllTrainerCourses(req, res) {
         const id = req.params.id;
         try {
-              // Trova il trainer e popola i corsi con il nome
-             const trainer = await Trainer.findOne({ _id: id })
-            .populate({
-            path: "courses", // Popola il campo `courses`
-            select: "name description schedule capacity trainer" // Seleziona solo i campi necessari
-            })
+            // Trova il trainer e popola i corsi con i dettagli dei partecipanti
+            const trainer = await Trainer.findOne({ _id: id })
+           .populate({
+            path: "courses",
+            select: "name description schedule capacity trainer", // Seleziona i campi necessari del corso
+            populate: { 
+                path: "schedule.participants", // Popola l'array `participants` dentro `schedule`
+                select: "firstName lastName" // Seleziona solo nome e cognome del partecipante
+            }
+           })
             .exec();
             if (!trainer) {
                 return res.status(404).json({message: 'Trainer not found'});
