@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import * as bootstrap from 'bootstrap';
-import { onMounted } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 import { Notification as INotification } from '@/utils/notifications';
 defineProps<INotification>();
+let toast = useTemplateRef("toast");
 
-const id = new Date().getTime().toString();
-onMounted(() => { bootstrap.Toast.getOrCreateInstance(document.getElementById(id)!).show(); });
+onMounted(() => {
+    bootstrap.Toast.getOrCreateInstance(toast.value!).show();
+});
 </script>
 <template>
-    <div :id="id" class="toast" :class="'text-bg-' + background" role="alert" aria-live="assertive" aria-atomic="true">
+    <div ref="toast" class="toast" :class="'text-bg-' + background" role="alert" aria-live="assertive"
+        aria-atomic="true">
         <div class="toast-header">
             <strong class="me-auto">{{ title }}</strong>
             <small v-if="when" class="text-body-secondary">{{ when.toLocaleTimeString() }}</small>
