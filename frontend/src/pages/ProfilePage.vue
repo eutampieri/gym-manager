@@ -3,6 +3,8 @@ import { getProfileIcon, User, Trainer, Admin, Role } from '@gym-manager/models'
 import { useUserStore } from '../store/user';
 import { ref } from 'vue';
 import Header from '@/components/Header.vue';
+import SectionContainer from '@/components/SectionContainer.vue';
+import SectionContainerItem from '@/components/SectionContainerItem.vue';
 
 const props = defineProps<{ id: string, role: Role }>();
 
@@ -71,22 +73,18 @@ function getLinkPrefix(field: string): string | undefined {
 </script>
 
 <template>
-    <section class="container ">
-        <Header>
-            <h2>User Profile</h2>
-        </Header>
-
-        <div class="d-flex justify-content-center">
-        </div>
-        <div class="d-flex flex-column justify-content-center">
-            <img :src="profileIcon" class="rounded mx-auto d-block" :alt="userName + 's profile picture'" />
-            <dl class="mx-auto w-75">
+    <SectionContainer>
+        <SectionContainerItem id="profile">
+            <div class="d-flex flex-column justify-content-center">
+            <img :src="profileIcon" class="rounded mx-auto d-block my-5" :alt="userName + 's profile picture'" />
+            <dl>
                 <template v-for="item in profileData">
-                    <dt>{{ item.label }}</dt>
-                    <dd v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
-                    <dd v-else>{{ item.value }}</dd>
+                    <dt class="text-center">{{ item.label }}</dt>
+                    <dd class="text-center" v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
+                    <dd class="text-center" v-else>{{ item.value }}</dd>
                 </template>
             </dl>
         </div>
-    </section>
+        </SectionContainerItem>
+    </SectionContainer>
 </template>
