@@ -5,6 +5,7 @@ import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
 import { Course, CourseInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
+import CourseSchedule from '@/components/CourseSchedule.vue';
 
 const store = useUserStore();
 
@@ -44,8 +45,8 @@ if (user) {
                         <NameLink :path="store.client.trainerProfilePath(course.course.trainer)">{{ course.trainer.firstName + ' ' + course.trainer.lastName }}</NameLink>
                     </dd>
                     <dt>Date & Time</dt>
-                    <dd class="d-flex flex-row justify-content-between">
-                        <!-- TODO -->
+                    <dd class="container">
+                        <CourseSchedule v-for="schedule in course.course.schedule" :course-id="course.course.id" :schedule="schedule" :booked="false"/>
                     </dd>
                 </dl>
             </DropdownItem>
