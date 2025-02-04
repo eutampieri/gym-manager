@@ -1,22 +1,48 @@
 version: '3.8'
 # per vedere le image e i container andare su docker desktop oppure usare comando docker ... ps o ls
 services:
-  web:
+  traefik:
+    image: traefik:v3.3
+    restart: always
+    command: --api.insecure=true --providers.docker --log.level=DEBUG
+    ports:
+      - "8080:80"
+      - "8081:8080"
+    depends_on:
+      - backend
+      - frontend
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      # Add Docker as a mounted volume, so that Traefik can read the labels of other services
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+  frontend:
+    image: frontend # attenzione ho creato la image con docker image build -t applicazione .
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: always
+    depends_on:
+      - backend
+    deploy:
+      replicas: 2
+    labels:
+     - "traefik.http.services.frontend.loadbalancer.server.port=80"
+
+  backend:
     image: applicazione # attenzione ho creato la image con docker image build -t applicazione .
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: backend/Dockerfile
     restart: always
-    ports:
-      - "3000:3000"
     environment:
-      NODE_ENV: development
       MONGO_HOST: mongodb #il client (la parte web dell'app) deve sapere l'indirizzo del server mongoDB
       MONGO_PORT: 27017
-      #DB_URI: mongodb://mongodb1:27017/gym
-      DB_URI: mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/gym?replicaSet=rs0
+      DB_URI: mongodb://mongodb:27017/gym
     depends_on:
-      - mongodb1
+      - mongodb
     deploy:
       replicas: 2 # se voglio scalabilità e elevate prestazioni,
       # e se voglio che l'app continui a essere disponibile anche se il nodo sul quale è in esecuzione fallisce
@@ -24,42 +50,18 @@ services:
       # così vengono creati due container stackApplicazione_web.1 e stackApplicazione_web.2
       # per vedere se sono in running o no guardare su docker desktop
       # se salta un nodo il container si restarta
-
+    labels:
+     - "traefik.http.services.backend.loadbalancer.server.port=3000"
+     - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"
       # se vado in docker desktop nella sezione volumes vedo che ha creato stackApplicazione_test (applicazione è il nome dello stack)
-# PER REPLICA DEL DATABASE per fault tollerance
+# PER REPLICA DEL DATABASE per fault tolerance
 
-  mongodb1:
+  mongodb:
     image: mongo
     restart: always
-    command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
+    command: [ "--bind_ip_all", "--port", "27017" ]
     volumes:
-     - mongodata1:/data/db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-     - "27017:27017"
-
-  mongodb2:
-    image: mongo
-    restart: always
-    command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
-    volumes:
-      - mongodata2:/data/db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "27018:27017"
-
-  mongodb3:
-    image: mongo
-    restart: always
-    command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
-    volumes:
-      - mongodata3:/data/db
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "27019:27017"
+     - mongodata:/data/db
 
 # username is admin and password is pass
   mongoexpress:
@@ -67,21 +69,12 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: pass
-      ME_CONFIG_MONGODB_URL: mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/gym?replicaSet=rs0
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/gym
     restart: always
-    #command: [ "--replSet", "rs0", "--bind_ip_all", "--port", "27017" ]
     ports:
-      - "8081:8081"
+      - "8082:8081"
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
 volumes:
-  mongodata1:
-  mongodata2:
-  mongodata3:
-
-
-
-
-
-
+  mongodata:

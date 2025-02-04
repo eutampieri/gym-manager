@@ -29,7 +29,11 @@ const courseSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Client',
             required: false
-        }]
+        }],
+        availableSpots: {
+            type: Number,
+            required: false
+        }
     }],
 
     capacity: {

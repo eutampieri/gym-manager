@@ -4,7 +4,7 @@ import { useUserStore } from '../store/user';
 import { ref } from 'vue';
 import Header from '@/components/Header.vue';
 
-const props = defineProps<{id: string}>();
+const props = defineProps<{ id: string }>();
 
 interface ProfileEntry {
     label: string,
@@ -20,7 +20,7 @@ function getUser(): undefined | User | Trainer | Admin {
     if (props.id) {
         return client.getUserById(props.id);
     } else {
-        return client.getUserDetails;
+        return client.userDetails;
     }
 }
 // get the logged user info

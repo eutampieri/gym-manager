@@ -3,7 +3,7 @@ import MainButton from '@/components/MainButton.vue';
 import { useUserStore } from '@/store/user'; 
 
 const store = useUserStore();
-const admin = store.client.getUserDetails;
+const admin = store.client.userDetails;
 
 </script>
 
