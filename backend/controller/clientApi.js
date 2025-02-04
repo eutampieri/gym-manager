@@ -101,7 +101,12 @@ module.exports = class API {
     static async fetchAllCustomerCourses(req, res) {
         try {
             const id = req.params.id;
-            const client = await Client.findOne({_id: id}, null, null).exec();
+            const client = await Client.findOne({ _id: id })
+            .populate({
+                path: 'courses.course',
+                select: 'name description capacity trainer'
+            })
+            .exec();
             if (!client) {
                 return res.status(404).json({message: 'Client not found'});
             }
