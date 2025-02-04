@@ -73,7 +73,7 @@ async function fetchAllTrainers() {
         if (!response.ok) throw new Error("Error retrieving trainers");
         const trainers = await response.json();
         // Estrai gli username e aggiorna la lista dei trainer
-        trainersList.value = trainers.map((trainer: { username: String; }) => trainer.username);
+        trainersList.value = trainers.map((trainer: { username: string; }) => trainer.username);
     } catch (error) {
         console.error('Error retrieving trainers:', error);
         message.value = "Error retrieving trainers";

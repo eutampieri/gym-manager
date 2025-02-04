@@ -96,7 +96,7 @@ export class Client {
         return this.apiRequest("POST", "/courses", course);
     }
 
-    public addTrainer(course: CreateTrainerRequest) {
-        return this.apiRequest("POST", "/trainers", course);
+    public addTrainer(trainer: CreateTrainerRequest) {
+        return this.apiRequest("POST", "/trainers", trainer);
     }
 }
