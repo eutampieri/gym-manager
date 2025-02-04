@@ -75,7 +75,7 @@ export class Client {
     }
 
     public async listCourses(): Promise<Array<Course>> {
-        /*const x = await this.apiRequest("GET", "/customers");
+        /*const x = await this.apiRequest("GET", "/courses");
         return await x.json();*/
         return [
             {
@@ -83,7 +83,7 @@ export class Client {
                 name: "Zumba",
                 description: "Sad course description, nothing to see here...",
                 capacity: 20,
-                trainer: "McMuscle",
+                trainer: "trainerID",
                 schedule: [{
                     dayOfWeek: "Wednesday",
                     startTime: "10:00",

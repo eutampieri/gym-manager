@@ -3,7 +3,7 @@ import { useUserStore } from '@/store/user';
 import Dropdown from '@/components/Dropdown.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
-import { Course, CourseInfo } from '@gym-manager/models';
+import { Course, CourseInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
 
 const store = useUserStore();
@@ -11,7 +11,21 @@ const store = useUserStore();
 const user = store.client.userDetails;
 
 const myCourses = ref<{ course: CourseInfo; dayOfWeek: string; startTime: string; }[]>();
-const allCourses = ref<Course[]>();
+const allCourses = ref<{ course: Course; trainer: Trainer }[]>();
+
+// get all courses and trainers
+store.client.listCourses()
+    .then(courses => Promise.all(courses.map(c => 
+            store.client.getTrainer(c.trainer)
+                .then(t => ({ course: c, trainer: t }))
+            ))
+    ).then(d => allCourses.value = d);
+
+//get user courses
+if (user) {
+    store.client.getCustomerCourses(user.id)
+        .then(courses => myCourses.value = courses);
+}
 
 </script>
 
@@ -19,8 +33,8 @@ const allCourses = ref<Course[]>();
     <section id="my-courses" class="my-3">
         <h2>My Courses</h2>
         <Dropdown id="my-courses-dropdown">
-            <DropdownItem v-for="(course, i) in myCourses" :key="i"
-                :header="[course.dayOfWeek + ' ' + course.startTime, course.course.name]"
+            <DropdownItem v-for="(course, i) in allCourses" :key="i"
+                :header="[course.course.name, course.trainer.firstName + ' ' + course.trainer.lastName]"
                 :id-prefix="'course'" :index="i" :dropdown-id="'my-courses-dropdown'">
                 <dl>
                     <dt>{{ course.course.name }}</dt>
