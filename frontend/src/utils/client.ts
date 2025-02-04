@@ -94,38 +94,38 @@ export class Client {
     }
 
     public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
-        return Promise.resolve([{
-            course: {
-                id: "c.id",
-                name: "c.name",
-                description: "c.description",
-                capacity: 43,
-                trainer: "c.trainer",
-            },
-            startTime: "s.startTime",
-            dayOfWeek: "s.dayOfWeek",
-            participants: [{
-                firstName: "string", lastName: "string", id: "string"
-            }]
-        }])
+        // return Promise.resolve([{
+        //     course: {
+        //         id: "c.id",
+        //         name: "c.name",
+        //         description: "c.description",
+        //         capacity: 43,
+        //         trainer: "c.trainer",
+        //     },
+        //     startTime: "s.startTime",
+        //     dayOfWeek: "s.dayOfWeek",
+        //     participants: [{
+        //         firstName: "string", lastName: "string", id: "string"
+        //     }]
+        // }])
 
         return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
     }
     public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string }[] }>> {
-        return Promise.resolve([{
-            course: {
-                id: "c.id",
-                name: "c.name",
-                description: "c.description",
-                capacity: 43,
-                trainer: "c.trainer",
-            },
-            startTime: "s.startTime",
-            dayOfWeek: "s.dayOfWeek",
-            participants: [{
-                firstName: "string", lastName: "string", id: "string"
-            }]
-        }])
+        // return Promise.resolve([{
+        //     course: {
+        //         id: "c.id",
+        //         name: "c.name",
+        //         description: "c.description",
+        //         capacity: 43,
+        //         trainer: "c.trainer",
+        //     },
+        //     startTime: "s.startTime",
+        //     dayOfWeek: "s.dayOfWeek",
+        //     participants: [{
+        //         firstName: "string", lastName: "string", id: "string"
+        //     }]
+        // }])
         
         return this.apiRequest("GET", `/trainers/${userId}/courses`)
                 .then(r => r.json())
@@ -149,7 +149,7 @@ export class Client {
                 );
     }
     public getCustomerSessions(userId: string): Promise<Array<{ info: SessionInfo, trainer: Trainer }>> {
-        return Promise.resolve([])
+        // return Promise.resolve([])
 
         return this.apiRequest("GET", `/customers/${userId}/sessions`)
                 .then(r => r.json())
