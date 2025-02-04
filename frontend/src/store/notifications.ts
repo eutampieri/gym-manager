@@ -10,8 +10,7 @@ export const useNotificationsStore = defineStore('notifications', () => {
     return {
         notifications,
         fire: (n: INotification) => {
-            const i = notifications.value.push(n) - 1;
-            console.log(i, notifications.value);
+            notifications.value.push(n) - 1;
             setTimeout(() => notifications.value.splice(0, 1), NOTIFICATION_DURATION);
         },
     };
