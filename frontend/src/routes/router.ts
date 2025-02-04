@@ -26,7 +26,7 @@ const routes = [
   { path: '/admin/createAdmin', name: "createAdmin", component: CreateAdminPage, meta: { role: "admin" } },
   { path: '/trainer/profile/:id', name: "trainerProfile", component: ProfilePage, meta: { role: "trainer" }, props: true },
   { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
-  { path: '/user/profile', name: "userProfile", component: ProfilePage, meta: { role: "user" } },
+  { path: '/user/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },
 ];
 
 const router = createRouter({

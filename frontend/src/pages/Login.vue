@@ -42,7 +42,11 @@ const notifications = ref<Array<INotification>>([]);
     <form>
         <GenericInput v-model="username" type="text" id="username">Username</GenericInput>
         <GenericInput v-model="password" type="password" id="password">Password</GenericInput>
-        <button class="btn btn-primary" type="button" @click="login()">Login</button>
+        <button :disabled="loginInProgress" class="btn btn-primary" type="button" @click="login()">
+            <div v-if="loginInProgress" class="spinner-border spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div> Login
+        </button>
     </form>
     <NotificationArea :notifications="notifications"></NotificationArea>
 </template>
