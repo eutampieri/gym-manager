@@ -5,7 +5,6 @@ import { CreateUserRequest } from "@gym-manager/models/user";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
 import { useUserStore } from '../store/user';
-import Header from '@/components/Header.vue';
 
 const username = ref("");
 const password = ref("");
@@ -74,9 +73,9 @@ async function handleCreateClient() {
 }
 </script>
 <template>
-    <Header>
-        <h2>Creating {{ firstName === "" ? "a new customer" : `${firstName} ${lastName}` }}</h2>
-    </Header>
+    
+    <h2>Creating {{ firstName === "" ? "a new customer" : `${firstName} ${lastName}` }}</h2>
+    
     <form>
 
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"

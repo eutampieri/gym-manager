@@ -4,7 +4,6 @@ import { computed, ref } from 'vue';
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import CheckBox from '@/components/CheckBox.vue';
 import { CreateAdminRequest } from '@gym-manager/models/admin';
-import Header from '@/components/Header.vue';
 import { useUserStore } from '@/store/user';
 
 const username = ref("");
@@ -56,9 +55,9 @@ async function handleCreateAdmin() {
 }
 </script>
 <template>
-    <Header>
-        <h2>Creating {{ firstName === "" ? "a new admin" : `${firstName} ${lastName}` }}</h2>
-    </Header>
+    
+    <h2>Creating {{ firstName === "" ? "a new admin" : `${firstName} ${lastName}` }}</h2>
+   
 
     <form>
 
