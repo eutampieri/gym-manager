@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import UserPage from './pages/UserPage.vue';
+
 </script>
 
 <template>
