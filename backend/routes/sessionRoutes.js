@@ -3,13 +3,14 @@ const express = require('express');
 const router = express.Router();
 const API = require('../controller/sessionApi');
 
-// in the path, before these, there must be /sessions
-router.get('/', API.fetchAllSessions);
-router.get('/:id', API.fetchSessionById);
-router.get("/_id/:id", API.fetchSessionBy_Id)
-router.get("/_id/id/:id", API.fetchSession_IdById)
 router.post('/', API.createSession);
-router.delete('/delete/:id', API.deleteSession);
+router.get('/', API.fetchAllSessions);
+router.get("/:id", API.fetchSessionBy_Id)
+router.delete('/:id', API.deleteSession);
+
+
+// in the path, before these, there must be /sessions
+router.get("/_id/id/:id", API.fetchSession_IdById)
 router.get("/delete/deleteBy_Id/:id", API.deleteSessionBy_Id)
 router.get("/trainer/:id", API.fetchSessionTrainer);
 router.get("/participant/:id", API.fetchSessionParticipant);

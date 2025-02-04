@@ -88,6 +88,7 @@ export class Client {
                     dayOfWeek: "Wednesday",
                     startTime: "10:00",
                     participants: [],
+                    availableSpots: 0,
                 }]
             }
         ];
@@ -114,63 +115,97 @@ export class Client {
     }
 
     public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
+        // return Promise.resolve([{
+        //     course: {
+        //         id: "c.id",
+        //         name: "c.name",
+        //         description: "c.description",
+        //         capacity: 43,
+        //         trainer: "c.trainer",
+        //     },
+        //     startTime: "s.startTime",
+        //     dayOfWeek: "s.dayOfWeek",
+        //     participants: [{
+        //         firstName: "string", lastName: "string", id: "string"
+        //     }]
+        // }])
+
         return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
     }
-    public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, schedule: CourseScheduleEntry }>> {
+    public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string }[] }>> {
+        // return Promise.resolve([{
+        //     course: {
+        //         id: "c.id",
+        //         name: "c.name",
+        //         description: "c.description",
+        //         capacity: 43,
+        //         trainer: "c.trainer",
+        //     },
+        //     startTime: "s.startTime",
+        //     dayOfWeek: "s.dayOfWeek",
+        //     participants: [{
+        //         firstName: "string", lastName: "string", id: "string"
+        //     }]
+        // }])
+
         return this.apiRequest("GET", `/trainers/${userId}/courses`)
-                .then(r => r.json())
-                .then((r : Array<Course>) => 
-                    r.flatMap((c: Course) => 
-                        c.schedule.map((s: CourseScheduleEntry) => 
-                            ({
-                                course : {
-                                    id: c.id,
-                                    name: c.name,
-                                    description: c.description,
-                                    capacity: c.capacity,
-                                    trainer: c.trainer,
-                                },
-                                schedule: s
-                            })
-                        )
+            .then(r => r.json())
+            .then(r =>
+                r.flatMap((c: { schedule: any[]; id: string; name: string; description: string; capacity: string; trainer: string; }) =>
+                    c.schedule.map((s: { startTime: string; dayOfWeek: string; participants: any[]; }) =>
+                    ({
+                        course: {
+                            id: c.id,
+                            name: c.name,
+                            description: c.description,
+                            capacity: c.capacity,
+                            trainer: c.trainer,
+                        },
+                        startTime: s.startTime,
+                        dayOfWeek: s.dayOfWeek,
+                        participants: s.participants
+                    })
                     )
-                );
+                )
+            );
     }
     public getCustomerSessions(userId: string): Promise<Array<{ info: SessionInfo, trainer: Trainer }>> {
+        // return Promise.resolve([])
+
         return this.apiRequest("GET", `/customers/${userId}/sessions`)
-                .then(r => r.json())
-                .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string, username: string; firstName: string; lastName: string; email: string; phoneNumber: string; }; }) => ({
-                    info: {
-                        dayOfWeek: s.dayOfWeek,
-                        startTime: s.startTime,
-                        id: s.id,
-                    },
-                    trainer: {
-                        id: s.trainer.id,
-                        username: s.trainer.username,
-                        firstName: s.trainer.firstName,
-                        lastName: s.trainer.lastName,
-                        email: s.trainer.email,
-                        phoneNumber: s.trainer.phoneNumber,
-                    }
-                })));
+            .then(r => r.json())
+            .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string, username: string; firstName: string; lastName: string; email: string; phoneNumber: string; }; }) => ({
+                info: {
+                    dayOfWeek: s.dayOfWeek,
+                    startTime: s.startTime,
+                    id: s.id,
+                },
+                trainer: {
+                    id: s.trainer.id,
+                    username: s.trainer.username,
+                    firstName: s.trainer.firstName,
+                    lastName: s.trainer.lastName,
+                    email: s.trainer.email,
+                    phoneNumber: s.trainer.phoneNumber,
+                }
+            })));
     }
     public getTrainerSessions(userId: string): Promise<Array<{ info: SessionInfo, participant: Admin }>> {
         return this.apiRequest("GET", `/trainers/${userId}/sessions`)
-                .then(r => r.json())
-                .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string; username: string; firstName: string; lastName: string; }; }) => ({
-                    info: {
-                        dayOfWeek: s.dayOfWeek,
-                        startTime: s.startTime,
-                        id: s.id,
-                    },
-                    participant: {
-                        id: s.trainer.id,
-                        username: s.trainer.username,
-                        firstName: s.trainer.firstName,
-                        lastName: s.trainer.lastName,
-                    }
-                })));
+            .then(r => r.json())
+            .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string; username: string; firstName: string; lastName: string; }; }) => ({
+                info: {
+                    dayOfWeek: s.dayOfWeek,
+                    startTime: s.startTime,
+                    id: s.id,
+                },
+                participant: {
+                    id: s.trainer.id,
+                    username: s.trainer.username,
+                    firstName: s.trainer.firstName,
+                    lastName: s.trainer.lastName,
+                }
+            })));
     }
 
 
@@ -200,5 +235,9 @@ export class Client {
 
     public addTrainer(trainer: CreateTrainerRequest) {
         return this.apiRequest("POST", "/trainers", trainer);
+    }
+
+    public listTrainers(): Promise<Trainer[]> {
+        return this.apiRequest("GET", "/trainers").then(x => x.json());
     }
 }

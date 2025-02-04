@@ -15,6 +15,7 @@ export interface CourseScheduleEntry {
     dayOfWeek: string,
     startTime: string,
     participants: string[],
+    availableSpots: number;
 }
 
 export interface CourseInfo extends CourseData, Identifiable { }
