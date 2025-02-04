@@ -3,9 +3,9 @@ import { isOnlyLetters, isPhoneNumber } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
-import { useTrainerStore } from '@/store/trainer';
 import { CreateTrainerRequest } from '@gym-manager/models/trainer';
 import Header from '@/components/Header.vue';
+import { useUserStore } from '@/store/user';
 
 const username = ref("");
 const password = ref("");
@@ -30,7 +30,7 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
     phoneNumberValid.value
 );
 
-const trainer = useTrainerStore().trainer;
+const client = useUserStore().client;
 
 async function handleCreateTrainer() {
     try {
@@ -47,7 +47,7 @@ async function handleCreateTrainer() {
 
 
         // Effettua la richiesta POST per creare il cliente
-        const response = await trainer.addTrainer(request);
+        const response = await client.addTrainer(request);
 
         if (response.status === 201) {
             message.value = "Trainer successfully created!";

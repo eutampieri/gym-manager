@@ -1,12 +1,12 @@
 interface BaseTrainer {
-    username: String
-    firstName: String
-    lastName: String
-    email: String
-    phoneNumber: String
+    username: string
+    firstName: string
+    lastName: string
+    email: string
+    phoneNumber: string
 }
 
 
 export interface CreateTrainerRequest extends BaseTrainer {
-    password: String
+    password: string
 }

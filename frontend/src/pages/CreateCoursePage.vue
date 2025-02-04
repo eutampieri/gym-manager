@@ -1,20 +1,21 @@
 <script lang="ts" setup>
 import { isValidCapacity, isOnlyLetters } from '@/utils/validation';
 import { computed, onMounted, ref, watch } from 'vue';
-import { CreateCourseRequest } from "@gym-manager/models/course";
+import { CourseScheduleEntry, CreateCourseRequest } from "@gym-manager/models/course";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import SelectInput from '@/components/SelectInput.vue';
-import { useCourseStore } from '../store/course';
 import Header from '@/components/Header.vue';
+import { useUserStore } from '@/store/user';
 
 const name = ref("");
 const description = ref("");
-const capacity = ref("");
+const capacityString = ref("0");
+const capacity = computed(() => parseInt(capacityString.value));
 const trainer = ref("");
 const message = ref("");
 const trainerId = ref("");
 const trainersList = ref<string[]>([]);
-const scheduleEntries = ref<{ dayOfWeek: string, startTime: string, availableSpots: number }[]>([]);
+const scheduleEntries = ref<CourseScheduleEntry[]>([]);
 
 const nameValid = ref(false);
 const descriptionValid = ref(false);
@@ -26,7 +27,7 @@ const submitButtonEnabled = computed(() => {
         name.value !== "" &&
         description.value !== "" &&
         scheduleEntries.value.length > 0 &&
-        capacity.value !== "" &&
+        capacity.value > 0 &&
         trainer.value !== "" &&
         trainerId.value !== "" &&
         descriptionValid.value &&
@@ -48,7 +49,7 @@ const timeSlots = computed(() => {
 });
 // Aggiungi un nuovo giorno/orario
 const addScheduleEntry = () => {
-    scheduleEntries.value.push({ dayOfWeek: "", startTime: "", availableSpots: 0 });
+    scheduleEntries.value.push({ dayOfWeek: "", startTime: "", participants: [], availableSpots: 0 });
 };
 
 // Rimuovi un giorno/orario
@@ -82,7 +83,7 @@ async function fetchAllTrainers() {
         if (!response.ok) throw new Error("Error retrieving trainers");
         const trainers = await response.json();
         // Estrai gli username e aggiorna la lista dei trainer
-        trainersList.value = trainers.map((trainer: { username: String; }) => trainer.username);
+        trainersList.value = trainers.map((trainer: { username: string; }) => trainer.username);
     } catch (error) {
         console.error('Error retrieving trainers:', error);
         message.value = "Error retrieving trainers";
@@ -103,7 +104,7 @@ async function fetchTrainerId() {
 onMounted(() => {
     fetchAllTrainers(); // Recupera i trainer quando il form si carica
 });
-const course = useCourseStore().course;
+const client = useUserStore().client;
 async function handleCreateCourse() {
     try {
     
@@ -116,7 +117,7 @@ async function handleCreateCourse() {
             trainer: trainerId.value,
         }
         // Effettua la richiesta POST per creare il cliente
-        const response = await course.addCourse(request);
+        const response = await client.addCourse(request);
 
         if (response.status === 201) {
             message.value = "Course successfully created!";
@@ -165,7 +166,7 @@ async function handleCreateCourse() {
 
         <br>
         <ValidatingGenericInput type="text" id="capacity" error-message="The course must have at least one participant"
-            :validation-function="isValidCapacity" v-model="capacity" v-model:valid="capacityValid">
+            :validation-function="isValidCapacity" v-model="capacityString" v-model:valid="capacityValid">
             Spots Available
         </ValidatingGenericInput>
 

@@ -46,3 +46,4 @@ Admin (/api/admins)
   GET /:id fetchAdminBy_Id (prende come parametro l'_id dell'admin, ritorna l'admin)
   PUT /  updateAdmin (prende come body un admin, aggiorna l'admin)
   DELETE /:id  deleteAdmin (prende come parametro l'_id dell'admin, elimina l'admin)
+
