@@ -1,10 +1,13 @@
 import { Identifiable } from ".";
 
-export interface CreateCourseRequest {
+interface CourseData {
     name: string,
     description: string,
     capacity: number,
     trainer: string,
+}
+
+export interface CreateCourseRequest extends CourseData {
     schedule: CourseScheduleEntry[],
 }
 
@@ -14,4 +17,5 @@ export interface CourseScheduleEntry {
     participants: string[],
 }
 
+export interface CourseInfo extends CourseData, Identifiable { }
 export interface Course extends CreateCourseRequest, Identifiable { }
