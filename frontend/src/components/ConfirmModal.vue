@@ -27,7 +27,7 @@ const actions: Action[] = [
 ];
 </script>
 <template>
-    <Modal :actions="actions" @disposed="() => emit('disposed')">
+    <Modal :actions="actions" @disposed="() => { props.resolve(false); emit('disposed'); }">
         <template #title>Warning</template>
         <template #body> {{ body }}</template>
     </Modal>

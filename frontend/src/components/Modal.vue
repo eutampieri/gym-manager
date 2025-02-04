@@ -2,7 +2,7 @@
 import { Action } from '@/utils/lists';
 import ActionButton from './ActionButton.vue';
 import { onMounted, useTemplateRef } from 'vue';
-import bootstrap from 'bootstrap';
+import * as bootstrap from 'bootstrap';
 
 defineProps<{
     dismissable?: boolean,
@@ -12,8 +12,10 @@ const emit = defineEmits(["disposed"]);
 
 const modal = useTemplateRef("modal");
 
+let m: bootstrap.Modal;
+
 onMounted(() => {
-    const m = bootstrap.Modal.getOrCreateInstance(modal.value!, {});
+    m = bootstrap.Modal.getOrCreateInstance(modal.value!, {});
     m.show();
     modal.value?.addEventListener("hidden.bs.modal", event => {
         m.dispose();
@@ -28,7 +30,7 @@ const id = (Math.random() * 10).toFixed(0);
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" :id="`modalLabel${id}`">
-                        <slot name="title"></slot>>
+                        <slot name="title"></slot>
                     </h1>
                     <button v-if="dismissable" type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
@@ -37,7 +39,8 @@ const id = (Math.random() * 10).toFixed(0);
                     <slot name="body"></slot>
                 </div>
                 <div class="modal-footer">
-                    <ActionButton v-for="(action, index) in actions" :key="index" :action="action"></ActionButton>
+                    <ActionButton v-for="(a, index) in actions" :key="index"
+                        :action="{ ...a, action: (x) => { m.hide(); a.action(x) } }"></ActionButton>
                 </div>
             </div>
         </div>
