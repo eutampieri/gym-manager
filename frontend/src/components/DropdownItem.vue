@@ -12,14 +12,14 @@ const itemId = props.idPrefix + props.index;
 
 <template>
     <div class="accordion-item">
-        <h2 class="accordion-header">
+        <div class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                 :data-bs-target="'#' + itemId" aria-expanded="false" :aria-controls="itemId">
                 <div class="d-flex d-row justify-content-between w-75">
-                    <span v-for="h in header">{{ h }}</span>
+                    <h3 v-for="h in header" class="fs-6 m-0">{{ h }}</h3>
                 </div>
             </button>
-        </h2>
+        </div>
         <div :id="itemId" class="accordion-collapse collapse" :data-bs-parent="'#' + dropdownId">
             <div class="accordion-body">
                 <slot></slot>
