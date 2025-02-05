@@ -148,6 +148,7 @@ module.exports = class API {
     static async createBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
+            const safeClientId = req.user.role === "admin" ? clientId : req.user.id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato e popola i partecipanti
@@ -179,7 +180,7 @@ module.exports = class API {
             }
 
             // Aggiungi il cliente ai partecipanti e decrementa availableSpot
-            scheduleEntry.participants.push(clientId);
+            scheduleEntry.participants.push(safeClientId);
             scheduleEntry.availableSpots -= 1;
 
             // Aggiorna il corso con le nuove informazioni

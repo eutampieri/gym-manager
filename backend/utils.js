@@ -15,6 +15,7 @@ module.exports.createAuthMiddleware = (roles) => async function authMiddleware(r
         if (jwt_payload.error === undefined && roles.has(jwt_payload.role)) {
             // JWT is still valid
             req.user = jwt_payload.profile
+            req.user.role = jwt_payload.role;
         } else {
             res.contentType("text/plain").status(401).send(`Invalid token${jwt_payload.error === undefined ? "" : ": " + jwt_payload.error.code}`);
             return;
