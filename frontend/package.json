@@ -14,7 +14,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@gym-manager/models": "^1.0.0",
-    "@rollup/rollup-win32-x64-msvc": "^4.34.2",
+    "rollup": "^4.34.2",
     "@types/sha256": "^0.2.2",
     "bootstrap": "^5.3.3",
     "pinia": "^2.3.0",
