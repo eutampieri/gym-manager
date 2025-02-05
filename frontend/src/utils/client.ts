@@ -108,8 +108,8 @@ export class Client {
     public getTrainer(trainerId: string): Promise<Trainer> {
         return Promise.resolve({
             username: 'fsdigbohfigpdsb',
-            firstName: 'fsdigbohfigpdsb',
-            lastName: 'fsdigbohfigpdsb',
+            firstName: 'Boro',
+            lastName: 'McSboro',
             email: 'fsdigbohfigpdsb',
             phoneNumber: 'fsdigbohfigpdsb',
             id: 'trainerID'
