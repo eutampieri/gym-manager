@@ -13,7 +13,6 @@ const createAuthMiddleware = (roles) => async function authMiddleware(req, res, 
             audience: [AUDIENCE]
         }).catch((e) => { return { payload: { error: e }, protectedHeader: null }; });
         const jwt_payload = payload;
-        console.log(jwt_payload, roles);
         if (jwt_payload.error === undefined && roles.has(jwt_payload.role)) {
             // JWT is still valid
             req.user = jwt_payload.profile

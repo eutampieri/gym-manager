@@ -36,7 +36,6 @@ exports.authenticate = async (req, res) => {
 
     try {
         const user = await lookupUsername(username);
-        console.log(user);
         if (user.kind === null || user.data.password !== password) { // TODO salt and hash
             res.status(401).send("Unauthorized");
         } else {
