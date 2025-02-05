@@ -55,7 +55,7 @@ exports.authenticate = async (req, res) => {
                 .setAudience(AUDIENCE) // audience
                 .setExpirationTime("1 day") // FIXME sketchy
                 .sign(JWT_KEY);
-            res.send(jwt);
+            res.contentType("text/plain").send(jwt);
         }
     } catch (error) {
         console.error('Error during authentication:', error);
