@@ -5,6 +5,7 @@ import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
 import { CreateTrainerRequest } from '@gym-manager/models/trainer';
 import { useUserStore } from '@/store/user';
+import { useNotificationsStore } from '@/store/notifications';
 
 const username = ref("");
 const password = ref("");
@@ -30,6 +31,7 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
 );
 
 const client = useUserStore().client;
+const notificationStore = useNotificationsStore();
 
 async function handleCreateTrainer() {
     try {
@@ -49,13 +51,27 @@ async function handleCreateTrainer() {
         const response = await client.addTrainer(request);
 
         if (response.status === 201) {
-            message.value = "Trainer successfully created!";
+            notificationStore.fire({
+                title: 'Successo',
+                body: `Trainer ${firstName.value} ${lastName.value} creato con successo!`,
+                background: 'success',
+                when: new Date(),
+            });
         } else {
-            message.value = "Error during trainer creation";
+            notificationStore.fire({
+                title: 'Errore',
+                body: 'Si è verificato un errore durante la creazione del trainer.',
+                background: 'danger',
+                when: new Date(),
+            });
         }
     } catch (error) {
-        console.error("Error during trainer creation:", error);
-        message.value = "Error during trainer creation";
+        notificationStore.fire({
+            title: 'Errore',
+            body: 'Si è verificato un errore durante la creazione del trainer.',
+            background: 'danger',
+            when: new Date(),
+        });
     }
 
 }

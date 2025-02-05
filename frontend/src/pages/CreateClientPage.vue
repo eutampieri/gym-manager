@@ -5,6 +5,7 @@ import { CreateUserRequest } from "@gym-manager/models/user";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
 import { useUserStore } from '../store/user';
+import { useNotificationsStore } from '@/store/notifications';
 
 const username = ref("");
 const password = ref("");
@@ -39,6 +40,7 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
 );
 
 const client = useUserStore().client;
+const notificationStore = useNotificationsStore();
 
 async function handleCreateClient() {
     try {
@@ -61,13 +63,27 @@ async function handleCreateClient() {
         const response = await client.addUser(request);
 
         if (response.status === 201) {
-            message.value = "Client successfully created!";
+            notificationStore.fire({
+                title: 'Successo',
+                body: `Cliente ${firstName.value} ${lastName.value} creato con successo!`,
+                background: 'success',
+                when: new Date(),
+            });
         } else {
-            message.value = "Error during client creation";
+            notificationStore.fire({
+                title: 'Errore',
+                body: 'Si è verificato un errore durante la creazione del cliente.',
+                background: 'danger',
+                when: new Date(),
+            });
         }
     } catch (error) {
-        console.error("Error during client creation:", error);
-        message.value = "Error during client creation";
+        notificationStore.fire({
+            title: 'Errore',
+            body: 'Si è verificato un errore durante la creazione del cliente.',
+            background: 'danger',
+            when: new Date(),
+        });
     }
 
 }

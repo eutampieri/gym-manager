@@ -5,6 +5,7 @@ import { CourseScheduleEntry, CreateCourseRequest } from "@gym-manager/models/co
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import { SelectInputValue } from '@/components/SelectInput.vue';
 import { useUserStore } from '@/store/user';
+import { useNotificationsStore } from '@/store/notifications';
 
 const name = ref("");
 const description = ref("");
@@ -20,6 +21,7 @@ const descriptionValid = ref(false);
 const capacityValid = ref(false);
 
 const client = useUserStore().client;
+const notificationStore = useNotificationsStore();
 
 const submitButtonEnabled = computed(() => {
     return (
@@ -84,13 +86,27 @@ async function handleCreateCourse() {
         const response = await client.addCourse(request);
 
         if (response.status === 201) {
-            message.value = "Course successfully created!";
+            notificationStore.fire({
+                title: 'Successo',
+                body: `Corso "${name.value}" creato con successo!`,
+                background: 'success',
+                when: new Date(),
+            });
         } else {
-            message.value = "Error during course creation";
+            notificationStore.fire({
+                title: 'Errore',
+                body: 'Si è verificato un errore durante la creazione del corso.',
+                background: 'danger',
+                when: new Date(),
+            });
         }
     } catch (error) {
-        console.error("Error during course creation:", error);
-        message.value = "Error during course creation";
+        notificationStore.fire({
+            title: 'Errore',
+            body: 'Si è verificato un errore durante la creazione del corso.',
+            background: 'danger',
+            when: new Date(),
+        });
     }
 
 }
