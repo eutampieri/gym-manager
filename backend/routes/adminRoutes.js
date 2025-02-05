@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const API = require('../controller/adminApi')
+const { createAuthMiddleware } = require('../utils')
+
+router.use(createAuthMiddleware(new Set(["admin"])));
 
 router.post("/", API.createAdmin)
 router.get("/", API.fetchAllAdmins)
