@@ -1,26 +1,16 @@
 const express = require('express')
 const API = require('../controller/clientApi')
-const { createAuthMiddleware } = require('../utils')
-
-const customerRouter = express.Router();
-customerRouter.use(createAuthMiddleware(new Set(["admin", "customer"])));
-const adminRouter = express.Router();
-adminRouter.use(createAuthMiddleware(new Set(["admin"])));
-const trainerRouter = express.Router();
-trainerRouter.use(createAuthMiddleware(new Set(["admin", "trainer"])));
-
-adminRouter.post("/", API.createCustomer)
-adminRouter.get("/", API.fetchAllCustomers)
-adminRouter.put("/", API.updateCustomer)
-adminRouter.delete("/:id", API.deleteCustomer)
-trainerRouter.get("/:id", API.fetchCustomerBy_Id)
-customerRouter.get("/:id/sessions", API.fetchAllCustomerSessions)
-customerRouter.get("/:id/courses", API.fetchAllCustomerCourses)
-
+const { wrapMiddleware, adminAuth, trainerAuth, customerAuth } = require('../utils')
 
 const router = express.Router();
-router.use('/', adminRouter);
-router.use('/', trainerRouter);
-router.use('/', customerRouter);
+
+router.post("/", wrapMiddleware(adminAuth, API.createCustomer))
+router.get("/", wrapMiddleware(adminAuth, API.fetchAllCustomers))
+router.put("/", wrapMiddleware(adminAuth, API.updateCustomer))
+router.delete("/:id", wrapMiddleware(adminAuth, API.deleteCustomer))
+router.get("/:id", wrapMiddleware(trainerAuth, API.fetchCustomerBy_Id))
+router.get("/:id/sessions", wrapMiddleware(customerAuth, API.fetchAllCustomerSessions))
+router.get("/:id/courses", wrapMiddleware(customerAuth, API.fetchAllCustomerCourses))
+
 
 module.exports = router
