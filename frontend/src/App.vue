@@ -11,7 +11,7 @@ const confirmModals = useModalsStore().confirmModals;
 
 <template>
     <Header></Header>
-    <div class="container-md bg-white p-3 rounded" id="app">
+    <div class="container-md bg-body p-3 rounded" id="app">
         <RouterView />
     </div>
     <NotificationArea :notifications="notifications"></NotificationArea>
