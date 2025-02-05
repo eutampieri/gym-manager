@@ -1,23 +1,26 @@
 const express = require('express')
-const router = express.Router()
 const API = require('../controller/clientApi')
+const { createAuthMiddleware } = require('../utils')
 
-router.post("/", API.createCustomer)
-router.get("/", API.fetchAllCustomers)
-router.get("/:username/username", API.fetchCustomerByUsername)
-router.get("/:id", API.fetchCustomerBy_Id)
-router.put("/", API.updateCustomer)
-router.delete("/:id", API.deleteCustomer)
-router.get("/:id/sessions", API.fetchAllCustomerSessions)
-router.get("/:id/courses", API.fetchAllCustomerCourses)
+const customerRouter = express.Router();
+customerRouter.use(createAuthMiddleware(new Set(["admin", "customer"])));
+const adminRouter = express.Router();
+adminRouter.use(createAuthMiddleware(new Set(["admin"])));
+const trainerRouter = express.Router();
+trainerRouter.use(createAuthMiddleware(new Set(["admin", "trainer"])));
 
-// in the path, before these, there must be /customers
-router.get("/courses/delete/:username/:courseName", API.deleteClientCourse)
-router.get("/sessions/delete/:username/:sessionId", API.deleteClientSession)
-router.get("/courses/add/:username/:courseId", API.addClientCourseBy_Id)
-router.get("/sessions/add/:username/:sessionId", API.addClientSessionBy_Id)
-router.get("/sessions/:username/:id", API.checkClientSessions)
-router.get("/id/:username", API.fetchClient_IdByUsername)
+adminRouter.post("/", API.createCustomer)
+adminRouter.get("/", API.fetchAllCustomers)
+adminRouter.put("/", API.updateCustomer)
+adminRouter.delete("/:id", API.deleteCustomer)
+trainerRouter.get("/:id", API.fetchCustomerBy_Id)
+customerRouter.get("/:id/sessions", API.fetchAllCustomerSessions)
+customerRouter.get("/:id/courses", API.fetchAllCustomerCourses)
 
+
+const router = express.Router();
+router.use('/', adminRouter);
+router.use('/', trainerRouter);
+router.use('/', customerRouter);
 
 module.exports = router
