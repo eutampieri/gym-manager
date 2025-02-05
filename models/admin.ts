@@ -1,7 +1,6 @@
-interface BaseAdmin {
-    username: string
-    firstName: string
-    lastName: string
+import { BasicInfo } from "./user"
+
+export interface BaseAdmin extends BasicInfo {
     hasFullPrivileges: boolean
 }
 
