@@ -165,4 +165,35 @@ module.exports = class API {
         } finally {
         }
     }
+
+    static async listTrainerAvailability(req, res) {
+        const id = req.params.id;
+        try {
+            // FIXME use days array from UI
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            const times = [...Array(10).keys()]
+                .map(x => `${(x + 9).toString().padStart(2, '0')}:00`);
+
+            const availabilities = days.reduce((o, key) => Object.assign(o, { [key]: times.reduce((o, key) => Object.assign(o, { [key]: true }), {}) }), {})
+
+            const trainerSessions = await Trainer.findAll({
+                _id: id,
+            }, null, null);
+
+            const trainerCourses = await Trainer.findAll({
+                _id: id,
+            }, null, null);
+
+            trainerUnavailabilities = trainerSessions.concat(trainerCourses);
+
+            for (const t of trainerUnavailabilities) {
+                availabilities[t.dayOfWeek][t.startTime] = false;
+            }
+
+            res.status(200).json(availabilities);
+        } catch (error) {
+            res.status(404).json({ message: error.message });
+        }
+    }
+
 }
