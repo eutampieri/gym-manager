@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Notification from '@/components/Notification.vue';
+import Notification from '@/components/notifications/Notification.vue';
 import { Notification as INotification } from '@/utils/notifications';
 
 defineProps<{ notifications: Array<INotification> }>();
