@@ -4,7 +4,6 @@ import { computed, ref } from 'vue';
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
 import { CreateTrainerRequest } from '@gym-manager/models/trainer';
-import Header from '@/components/Header.vue';
 import { useUserStore } from '@/store/user';
 
 const username = ref("");
@@ -62,9 +61,9 @@ async function handleCreateTrainer() {
 }
 </script>
 <template>
-    <Header>
-        <h2>Creating {{ firstName === "" ? "a new trainer" : `${firstName} ${lastName}` }}</h2>
-    </Header>
+    
+    <h2>Creating {{ firstName === "" ? "a new trainer" : `${firstName} ${lastName}` }}</h2>
+    
     <form>
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
             :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
