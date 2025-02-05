@@ -5,7 +5,7 @@ import DropdownItem from '@/components/utils/DropdownItem.vue';
 import NameLink from '@/components/utils/NameLink.vue';
 import { Course, CourseInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
-import CourseSchedule from '@/components/CourseSchedule.vue';
+import CourseSchedule from '@/components/userpage/CourseSchedule.vue';
 import SectionContainer from '@/components/utils/SectionContainer.vue';
 import SectionContainerItem from '@/components/utils/SectionContainerItem.vue';
 
