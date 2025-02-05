@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ListView from '@/components/ListView.vue';
+import ListView from '@/components/views/ListView.vue';
 import { useUserStore } from '@/store/user';
 import { ListData, RowData } from '@/utils/lists';
 import { User } from '@gym-manager/models';

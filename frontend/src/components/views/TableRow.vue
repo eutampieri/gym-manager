@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Action, Headers, RowData } from '@/utils/lists';
-import ActionButton from './utils/ActionButton.vue';
+import ActionButton from '../utils/ActionButton.vue';
 
 const props = defineProps<{
     class?: string,
