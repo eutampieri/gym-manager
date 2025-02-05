@@ -12,13 +12,14 @@ module.exports = class API {
         const session = req.body;
         const idTrainer = req.body.trainer;
         const idParticipant = req.body.participant;
-        try {
-            const sessionAlreadyPresent = await Session.findOne({ id: req.body.id }, idProjection(Session), null).exec();
-            if (!sessionAlreadyPresent) {
+        const safeIdParticipant = req.user.role === "admin" ? idParticipant : req.user.id;
+        
+        try {            
+                session.participant = safeIdParticipant;
                 const newSession = await Session.create(session, null);
                 // Aggiunge la sessione al Client
                 await Client.updateOne(
-                    { _id: idParticipant },
+                    { _id: safeIdParticipant },
                     { $push: { sessions: newSession._id } }
                 );
 
@@ -28,10 +29,8 @@ module.exports = class API {
                     { $push: { sessions: newSession._id } }
                 );
                 res.status(201).json({ message: 'Session created successfully' });
-            }
-            else {
-                res.status(500).json({ message: "Session already present" });
-            }
+            
+           
         } catch (error) {
             res.status(400).json({ message: error.message });
         } finally {

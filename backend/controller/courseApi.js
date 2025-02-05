@@ -171,7 +171,7 @@ module.exports = class API {
             }
 
             // Controlla se il cliente è già iscritto al corso
-            if (scheduleEntry.participants.some(participant => participant._id.toString() === clientId)) {
+            if (scheduleEntry.participants.some(participant => participant._id.toString() === safeClientId)) {
                 return res.status(400).json({ message: 'Participant already exists in the course' });
             }
 
@@ -197,7 +197,7 @@ module.exports = class API {
 
 
             // Trova il client con l'ID specificato
-            const client = await Client.findOne({ _id: clientId }).populate('courses.course').exec();
+            const client = await Client.findOne({ _id: safeClientId }).populate('courses.course').exec();
 
             if (!client) {
                 return res.status(404).json({ message: 'Client not found' });
@@ -223,7 +223,7 @@ module.exports = class API {
 
             // Aggiorna il client con il nuovo corso
             await Client.updateOne(
-                { _id: clientId },
+                { _id: safeClientId },
                 { $set: { courses: client.courses } }
             );
 
@@ -240,6 +240,7 @@ module.exports = class API {
     static async deleteBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
+            const safeClientId = req.user.role === "admin" ? clientId : req.user.id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato
@@ -261,13 +262,13 @@ module.exports = class API {
             }
 
             // Controlla se il partecipante è registrato
-            if (!scheduleEntry.participants.some(participant => participant._id.toString() === clientId)) {
+            if (!scheduleEntry.participants.some(participant => participant._id.toString() === safeClientId)) {
                 return res.status(400).json({ message: 'Participant not found in this course' });
             }
 
             // Rimuove il partecipante manualmente e aggiorna availableSpot
             scheduleEntry.participants = scheduleEntry.participants.filter(
-                participant => participant._id.toString() !== clientId
+                participant => participant._id.toString() !== safeClientId
             );
             scheduleEntry.availableSpots += 1;
 
@@ -283,7 +284,7 @@ module.exports = class API {
             );
 
             // Trova il client e rimuove il corso dal suo elenco
-            const client = await Client.findById(clientId);
+            const client = await Client.findById(safeClientId);
             if (!client) {
                 return res.status(404).json({ message: 'Client not found' });
             }
@@ -297,7 +298,7 @@ module.exports = class API {
 
             // Aggiorna il client con il nuovo array `courses`
             await Client.updateOne(
-                { _id: clientId },
+                { _id: safeClientId },
                 { $set: { courses: client.courses } }
             );
 
