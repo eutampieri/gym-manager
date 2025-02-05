@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useTemplateRef } from 'vue';
+
 
 const props = defineProps<{
     header: Array<string>,
@@ -7,6 +9,10 @@ const props = defineProps<{
     dropdownId: string
 }>();
 const itemId = props.idPrefix + props.index;
+
+const emit = defineEmits<{ shown: [] }>();
+const collapsible = useTemplateRef('collapsible');
+collapsible.value?.addEventListener('shown.bs.collapse', () => emit('shown'));
 </script>
 
 <template>
@@ -19,7 +25,7 @@ const itemId = props.idPrefix + props.index;
                 </div>
             </button>
         </div>
-        <div :id="itemId" class="accordion-collapse collapse" :data-bs-parent="'#' + dropdownId">
+        <div ref="collapsible" :id="itemId" class="accordion-collapse collapse" :data-bs-parent="'#' + dropdownId">
             <div class="accordion-body">
                 <slot></slot>
             </div>
