@@ -3,7 +3,7 @@ import { isOnlyLetters } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import CheckBox from '@/components/CheckBox.vue';
-import { CreateAdminRequest } from '@gym-manager/models/admin';
+import { CreateAdminRequest } from '@gym-manager/models/user';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
 
@@ -71,9 +71,9 @@ async function handleCreateAdmin() {
 }
 </script>
 <template>
-    
+
     <h2>Creating {{ firstName === "" ? "a new admin" : `${firstName} ${lastName}` }}</h2>
-   
+
 
     <form>
 
