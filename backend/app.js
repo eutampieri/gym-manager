@@ -57,7 +57,7 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
-const uri = 'mongodb://localhost:27017/gym';
+const uri = process.env.MONGODB_URI || 'mongodb://mongodb:27017/gym';
 // Connessione al database
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

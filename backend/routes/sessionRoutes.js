@@ -1,21 +1,23 @@
 // Import modules
 const express = require('express');
-const router = express.Router();
+const { createAuthMiddleware } = require('../utils')
 const API = require('../controller/sessionApi');
 
-router.post('/', API.createSession);
-router.get('/', API.fetchAllSessions);
-router.get("/:id", API.fetchSessionBy_Id)
-router.delete('/:id', API.deleteSession);
+const customerRouter = express.Router();
+customerRouter.use(createAuthMiddleware(new Set(["admin", "customer"])));
+const customerAndTrainerRouter = express.Router();
+customerAndTrainerRouter.use(createAuthMiddleware(new Set(["admin", "customer", "trainer"])));
+const adminRouter = express.Router();
+adminRouter.use(createAuthMiddleware(new Set(["admin"])));
 
+customerRouter.post('/', API.createSession);
+adminRouter.get('/', API.fetchAllSessions);
+customerAndTrainerRouter.get("/:id", API.fetchSessionBy_Id)
+customerRouter.delete('/:id', API.deleteSession);
 
-// in the path, before these, there must be /sessions
-router.get("/_id/id/:id", API.fetchSession_IdById)
-router.get("/delete/deleteBy_Id/:id", API.deleteSessionBy_Id)
-router.get("/trainer/:id", API.fetchSessionTrainer);
-router.get("/participant/:id", API.fetchSessionParticipant);
-router.get("/checkId/:id", API.isSessionIdPresent)
-router.get("/calculate/nextId", API.nextAvailableId)
+const router = express.Router();
+router.use('/', adminRouter);
+router.use('/', customerRouter);
+router.use('/', customerAndTrainerRouter);
 
-// Export the router to make it available elsewhere in the application
 module.exports = router;

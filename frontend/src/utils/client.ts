@@ -237,10 +237,10 @@ export class Client {
         // ... TODO
     }
 
-    public bookCourse(courseId: string, dayOfWeek: string, startTime: string): Promise<boolean> {
-        return Promise.resolve(true);
+    public async bookCourse(courseId: string, dayOfWeek: string, startTime: string, clientId?: string): Promise<boolean> {
+        //return Promise.resolve(true);
 
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: this.userDetails?.id, dayOfWeek, startTime })
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: clientId, dayOfWeek, startTime })
             .then(r => true);
     }
 

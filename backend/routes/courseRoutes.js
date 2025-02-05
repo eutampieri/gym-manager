@@ -1,23 +1,17 @@
 const express = require('express')
-const router = express.Router()
 const API = require('../controller/courseApi')
+const { wrapMiddleware, adminAuth, trainerAuth, customerAuth, anyAuth } = require('../utils')
 
-router.post("/", API.createCourse)
-router.get("/", API.fetchAllCourses)
-router.get("/:id", API.fetchCourseBy_Id)
-router.get("/name/:name", API.fetchCourseByName)
-router.put("/", API.updateCourse)
-router.delete("/:id", API.deleteCourse)
-router.get("/:id/bookings", API.fetchCourseBookings)
-router.post("/:id/bookings", API.createBooking) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
-router.delete("/:id/bookings", API.deleteBooking) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
+const router = express.Router();
 
-// in the path, before these, there must be /courses
-router.get("/names", API.fetchAllCoursesNames)
-router.get("/_id/id/:courseName", API.fetchCourse_IdByName)
-router.get("/trainer/:courseName", API.fetchCourseTrainer)
-router.get("/participants/:courseName", API.fetchCourseParticipants)
-router.get("/removeParticipant/:courseName/:username", API.removeParticipantByUsername)
-router.get("/participants/:courseName/:username", API.checkParticipantsByUsername)
+router.post("/", wrapMiddleware(adminAuth, API.createCourse))
+router.get("/", wrapMiddleware(anyAuth, API.fetchAllCourses))
+router.get("/:id", wrapMiddleware(anyAuth, API.fetchCourseBy_Id))
+router.put("/", wrapMiddleware(adminAuth, API.updateCourse))
+router.delete("/:id", wrapMiddleware(adminAuth, API.deleteCourse))
+router.get("/:id/bookings", wrapMiddleware(trainerAuth, API.fetchCourseBookings))
+router.post("/:id/bookings", wrapMiddleware(customerAuth, API.createBooking)) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
+router.delete("/:id/bookings", wrapMiddleware(customerAuth, API.deleteBooking)) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
+
 
 module.exports = router

@@ -13,6 +13,7 @@
     "express": "~4.16.1",
     "express-openapi-generator": "^1.2.0",
     "http-errors": "~1.6.3",
+    "jose": "^5.9.6",
     "mongoose": "^8.1.1",
     "morgan": "~1.9.1",
     "pug": "2.0.0-beta11"
