@@ -9,8 +9,13 @@ import { computed } from 'vue';
 
 // Recupero del percorso corrente
 const route = useRoute();
+console.log(route.path);
 
 const isLoginPage = computed(() => route.path === '/login');
+const isAdminPage = computed(() => route.path === '/admin');
+const isUserPage = computed(() => route.path === '/user');
+const isTrainerPage = computed(() => route.path === '/trainer');
+const backHidden = computed(() => isAdminPage.value || isUserPage.value || isTrainerPage.value || isLoginPage.value);
 
 const store = useUserStore();
 const user = store.client.userDetails; // Verifica se ci sono dettagli utente
@@ -19,8 +24,10 @@ const profileIcon = user ? getProfileIcon(user) : ''; // Calcola l'icona profilo
 
 
 <template>
-    <header class="d-flex navbar bg-body-tertiary px-2 border-bottom">
-        <BackButton buttonText="Back" />
+    <header class="sticky-top d-flex navbar bg-body-tertiary px-2 border-bottom mb-2">
+        <span :class="backHidden ? 'invisible' : ''">
+            <BackButton buttonText="Back" />
+        </span>
 
         <PageTitle title="Gym Manager" class="header-title" />
 

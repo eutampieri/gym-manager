@@ -47,23 +47,24 @@ const contactSupport = '/support/chat'
 
 <template>
     <div class="d-flex flex-column">
-        <h1 class="mx-auto">Hello {{ user?.username }}!</h1>
+        <h2 class="mx-auto">Hello {{ user?.username }}!</h2>
         <MainButton :path="bookCourse">Book course</MainButton>
         <MainButton :path="bookOneonOne">Book one-on-one</MainButton>
     </div>
     <SectionContainer>
         <SectionContainerItem id="my-courses">
-            <h2>My Courses</h2>
+            <h3>My Courses</h3>
             <Dropdown id="my-courses-dropdown">
                 <DropdownItem v-for="(course, i) in myCourses" :key="i"
-                    :header="[course.dayOfWeek + ' ' + course.startTime, course.course.name]"
-                    :id-prefix="'course'" :index="i" :dropdown-id="'my-courses-dropdown'">
+                    :header="[course.dayOfWeek + ' ' + course.startTime, course.course.name]" :id-prefix="'course'"
+                    :index="i" :dropdown-id="'my-courses-dropdown'">
                     <dl>
                         <dt>{{ course.course.name }}</dt>
                         <dd>{{ course.course.description }}</dd>
                         <dt>Trainer</dt>
                         <dd>
-                            <NameLink :path="store.client.trainerProfilePath(course.course.trainer)">{{ course.course.trainer }}</NameLink>
+                            <NameLink :path="store.client.trainerProfilePath(course.course.trainer)">{{
+                                course.course.trainer }}</NameLink>
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
@@ -72,18 +73,20 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one">
-            <h2>My One-on-one</h2>
+            <h3>My One-on-one</h3>
             <Dropdown id="my-oo-dropdown">
                 <DropdownItem v-for="(session, i) in myOneOnOne" :key="i"
-                    :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.trainer.firstName + ' ' + session.trainer]" :id-prefix="'one-on-one'"
-                    :index="i" :dropdown-id="'my-oo-dropdown'">
+                    :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.trainer.firstName + ' ' + session.trainer]"
+                    :id-prefix="'one-on-one'" :index="i" :dropdown-id="'my-oo-dropdown'">
                     <dl>
                         <dt>Trainer</dt>
                         <dd>
-                            <NameLink :path="store.client.trainerProfilePath(session.trainer.id)">{{ session.trainer.firstName + ' ' + session.trainer }}</NameLink>
+                            <NameLink :path="store.client.trainerProfilePath(session.trainer.id)">{{
+                                session.trainer.firstName + ' ' + session.trainer }}</NameLink>
                         </dd>
                     </dl>
-                    <button type="button" class="btn btn-primary m-2" @click="() => cancelSession(session.info.id)">Cancel
+                    <button type="button" class="btn btn-primary m-2"
+                        @click="() => cancelSession(session.info.id)">Cancel
                         appointment</button>
                 </DropdownItem>
             </Dropdown>

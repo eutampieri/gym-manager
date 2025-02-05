@@ -40,7 +40,7 @@ async function login() {
 }
 </script>
 <template>
-    <h1>Login</h1>
+    <h2>Login</h2>
     <form>
         <GenericInput v-model="username" type="text" id="username">Username</GenericInput>
         <GenericInput v-model="password" type="password" id="password">Password</GenericInput>

@@ -29,31 +29,39 @@ const contactSupport = '/support/chat'
 
 <template>
     <div class="d-flex flex-column">
-        <h1 class="mx-auto">Hello {{ user?.username }}!</h1>
+        <h2 class="mx-auto">Hello {{ user?.username }}!</h2>
     </div>
-    <SectionContainer>  
+    <SectionContainer>
         <SectionContainerItem id="my-courses" class="my-3">
-            <h2>My Courses</h2>
+            <h3>My Courses</h3>
             <Dropdown id="my-courses-dropdown">
-                <DropdownItem v-for="(course, i) in myCourses" :key="i" :header="[course.dayOfWeek + ' ' + course.startTime, course.course.name]" 
-                    :id-prefix="'course'" :index="i" :dropdown-id="'my-courses-dropdown'">
+                <DropdownItem v-for="(course, i) in myCourses" :key="i"
+                    :header="[course.dayOfWeek + ' ' + course.startTime, course.course.name]" :id-prefix="'course'"
+                    :index="i" :dropdown-id="'my-courses-dropdown'">
                     <dl>
                         <dt>{{ course.course.name }}</dt>
                         <dd>{{ course.course.description }}</dd>
                         <dt>Partecipants</dt>
-                        <dd><NameLink v-for="u in course.participants" :path="store.client.customerProfilePath(u.id)">{{ u.firstName + ' ' + u.lastName }}</NameLink></dd>
+                        <dd>
+                            <NameLink v-for="u in course.participants" :path="store.client.customerProfilePath(u.id)">{{
+                                u.firstName + ' ' + u.lastName }}</NameLink>
+                        </dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one" class="my-3">
-            <h2>My One-on-one</h2>
+            <h3>My One-on-one</h3>
             <Dropdown id="my-oo-dropdown">
-                <DropdownItem v-for="(session, i) in myOneOnOne" :key="i" :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.participant.firstName + ' ' + session.participant.lastName]" 
+                <DropdownItem v-for="(session, i) in myOneOnOne" :key="i"
+                    :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.participant.firstName + ' ' + session.participant.lastName]"
                     :id-prefix="'one-on-one'" :index="i" :dropdown-id="'my-oo-dropdown'">
                     <dl>
                         <dt>Partecipant</dt>
-                        <dd><NameLink :path="store.client.customerProfilePath(session.participant.id)">{{ session.participant.firstName + ' ' + session.participant.lastName }}</NameLink></dd>
+                        <dd>
+                            <NameLink :path="store.client.customerProfilePath(session.participant.id)">{{
+                                session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
+                        </dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
