@@ -15,7 +15,39 @@ module.exports = class API {
         const safeIdParticipant = req.user.role === "admin" ? idParticipant : req.user.id;
         
         try {            
+
                 session.participant = safeIdParticipant;
+
+                /* check if session can be created */
+                // check in partecipant sessions
+                const overlappingParticipantSessions = await Client.find({
+                    _id: safeIdParticipant,
+                    'sessions.startTime': session.startTime,
+                    'sessions.dayOfWeek': session.dayOfWeek
+                }, null, null);
+                if (overlappingParticipantSessions) {
+                    return res.status(400).json({ message: 'Cannot create session' });
+                }
+                // check in trainer sessions
+                const overlappingTrainerSessions = await Trainer.find({
+                    _id: idTrainer,
+                    'sessions.startTime': session.startTime,
+                    'sessions.dayOfWeek': session.dayOfWeek
+                }, null, null);
+                if (overlappingTrainerSessions) {
+                    return res.status(400).json({ message: 'Cannot create session' });
+                }
+                // check in trainer courses
+                const overlappingTrainerCourses = await Trainer.find({
+                    _id: idTrainer,
+                    'courses.schedule.startTime': session.startTime,
+                    'courses.schedule.dayOfWeek': session.dayOfWeek
+                }, null, null);
+                if (overlappingTrainerCourses) {
+                    return res.status(400).json({ message: 'Cannot create session' });
+                }
+
+                /* Create session */
                 const newSession = await Session.create(session, null);
                 // Aggiunge la sessione al Client
                 await Client.updateOne(
