@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useRoute } from 'vue-router';
+import { RouterLink, useRoute } from 'vue-router';
 import BackButton from '@/components/BackButton.vue';
 import PageTitle from '@/components/PageTitle.vue';
 import { useUserStore } from '@/store/user';
@@ -24,7 +24,9 @@ const profileIcon = user ? getProfileIcon(user) : ''; // Calcola l'icona profilo
 
         <PageTitle title="Gym Manager" class="header-title" />
 
-        <img v-if="profileIcon" :src="profileIcon" alt="Profile Icon" class="profile-icon rounded-circle" />
+        <RouterLink :to="{ path: store.client.getProfilePath() }">
+            <img v-if="profileIcon" :src="profileIcon" alt="Profile Icon" class="profile-icon rounded-circle" />
+        </RouterLink>
     </header>
 </template>
 

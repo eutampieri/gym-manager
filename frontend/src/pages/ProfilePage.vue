@@ -2,12 +2,11 @@
 import { getProfileIcon, User, Trainer, Admin, Role } from '@gym-manager/models';
 import { useUserStore } from '../store/user';
 import { ref } from 'vue';
-import Header from '@/components/Header.vue';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 import router from '@/routes/router';
 
-const props = defineProps<{ id: string, role: Role }>();
+const props = defineProps<{ id?: string, role: string }>();
 
 interface ProfileEntry {
     label: string,
@@ -19,16 +18,18 @@ const client = useUserStore().client;
 const userName = ref('');
 const profileData = ref<Array<ProfileEntry>>();
 const profileIcon = ref('');
-const logged = props.id == undefined || props.id == '';
+const logged = props.id == undefined || props.id == '' || client.userDetails?.id == props.id;
 
 function getUser(): Promise<undefined | User | Trainer | Admin> {
+    console.log(props.role)
     if (props.id) {
-        if (props.role == Role.User) {
+        if (props.role == 'user') {
             return client.getUserById(props.id);
-        } else if (props.role == Role.Trainer) {
+        } else if (props.role == 'trainer') {
             return client.getTrainer(props.id);
+        } else if (props.role == 'admin') {
+            return client.getAdmin(props.id);
         } else {
-            // TODO
             return Promise.reject();
         }
     } else {

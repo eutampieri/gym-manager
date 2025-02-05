@@ -16,7 +16,6 @@ import UserPage from '@/pages/UserPage.vue';
 const routes = [
   { path: '/login', name: "Login", component: Login },
   { path: '/admin', name: "adminPage", component: AdminPage, meta: { role: "admin" } },
-  { path: '/admin/profile', name: "adminProfile", component: ProfilePage, meta: { role: "admin" } },
   { path: '/admin/createCourse', name: "createCourse", component: CreateCoursePage, meta: { role: "admin" } },
   { path: '/admin/createClient', name: "createClient", component: CreateClientPage, meta: { role: "admin" } },
   { path: '/admin/listCustomers', name: "listCustomers", component: UserListPage, meta: { role: "admin" } },
@@ -24,9 +23,8 @@ const routes = [
   { path: '/admin/listCourses', name: "listCourses", component: CourseListPage, meta: { role: "user" } },
   { path: '/admin/createTrainer', name: "createTrainer", component: CreateTrainerPage, meta: { role: "admin" } },
   { path: '/admin/createAdmin', name: "createAdmin", component: CreateAdminPage, meta: { role: "admin" } },
-  { path: '/trainer/profile/:id', name: "trainerProfile", component: ProfilePage, meta: { role: "trainer" }, props: true },
   { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
-  { path: '/user/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },
+  { path: '/:role/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },
 ];
 
 const router = createRouter({
