@@ -4,6 +4,13 @@ const API = require('../controller/adminApi')
 const { createAuthMiddleware } = require('../utils')
 
 router.use(createAuthMiddleware(new Set(["admin"])));
+router.use((req, res, next) => {
+    if(!req.user.hasFullPrivileges) {
+        res.status(401).json({ message: 'User not authorized' });
+    } else {
+        next();
+    }
+});
 
 router.post("/", API.createAdmin)
 router.get("/", API.fetchAllAdmins)

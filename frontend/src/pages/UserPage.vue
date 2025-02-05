@@ -39,8 +39,8 @@ async function cancelSession(sessionId: string) {
     }
 }
 
-const bookCourse = '/user/bookCourse'
-const bookOneonOne = '/user/bookSession'
+const bookCourse = '/user/book/course'
+const bookOneonOne = '/user/book/session'
 const contactSupport = '/support/chat'
 
 </script>

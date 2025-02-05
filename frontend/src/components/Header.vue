@@ -18,21 +18,22 @@ const isTrainerPage = computed(() => route.path === '/trainer');
 const backHidden = computed(() => isAdminPage.value || isUserPage.value || isTrainerPage.value || isLoginPage.value);
 
 const store = useUserStore();
-const user = store.client.userDetails; // Verifica se ci sono dettagli utente
-const profileIcon = user ? getProfileIcon(user) : ''; // Calcola l'icona profilo solo se user esiste
+
+const profileIcon = computed(() => store.client.userDetails ? getProfileIcon(store.client.userDetails) : '');
+
 </script>
 
 
 <template>
-    <header class="sticky-top d-flex navbar bg-body-tertiary px-2 border-bottom mb-2">
-        <span :class="backHidden ? 'invisible' : ''">
+    <header class="sticky-top d-flex justify-content-between navbar bg-body-tertiary px-2 border-bottom mb-2">
+        <span v-if="profileIcon != ''" :class="backHidden ? 'invisible' : ''">
             <BackButton buttonText="Back" />
         </span>
 
         <PageTitle title="Gym Manager" class="header-title" />
 
-        <RouterLink :to="{ path: store.client.getProfilePath() }">
-            <img v-if="profileIcon" :src="profileIcon" alt="Profile Icon" class="profile-icon rounded-circle" />
+        <RouterLink v-if="profileIcon != ''" :to="{ path: store.client.getProfilePath() }">
+            <img :src="profileIcon" alt="Profile Icon" class="profile-icon rounded-circle" />
         </RouterLink>
     </header>
 </template>
@@ -45,6 +46,8 @@ const profileIcon = user ? getProfileIcon(user) : ''; // Calcola l'icona profilo
 
 .profile-icon {
     height: 3em;
+    width: 3em;
+    max-width: 3em;
     transition: transform 0.2s ease-in-out;
 }
 </style>
