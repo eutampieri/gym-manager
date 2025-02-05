@@ -9,7 +9,6 @@ const idProjection = require('./idProjection');
 module.exports = class API {
     static async createTrainer(req, res) {
         const trainer = req.body;
-        console.log(req.body);
         try {
             const trainerAlreadyPresent = await Trainer.findOne({ username: req.body.username }, idProjection(Trainer), null).exec();
 
