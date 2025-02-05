@@ -42,7 +42,7 @@ function isAlreadyBooked(courseId: string, dayOfWeek: string, startTime: string)
             <h2>My courses</h2>
             <Dropdown id="my-courses-dropdown">
                 <DropdownItem v-for="(course, i) in allCourses" :key="i"
-                    :header="[course.course.name, course.trainer.firstName + ' ' + course.trainer.lastName]"
+                    :header="[`${course.course.name} (${course.trainer.firstName} ${course.trainer.lastName})`]"
                     :id-prefix="'course'" :index="i" :dropdown-id="'my-courses-dropdown'">
                     <dl>
                         <dt>{{ course.course.name }}</dt>
