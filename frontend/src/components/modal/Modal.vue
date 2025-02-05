@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Action } from '@/utils/lists';
-import ActionButton from './utils/ActionButton.vue';
+import ActionButton from '../utils/ActionButton.vue';
 import { onMounted, useTemplateRef } from 'vue';
 import * as bootstrap from 'bootstrap';
 

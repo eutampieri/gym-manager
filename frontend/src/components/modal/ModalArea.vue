@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ConfirmModal, { ConfirmModal as IConfirmModal } from '@/components/ConfirmModal.vue';
+import ConfirmModal, { ConfirmModal as IConfirmModal } from '@/components/modal/ConfirmModal.vue';
 
 defineProps<{ confirms: [IConfirmModal, () => void][] }>();
 

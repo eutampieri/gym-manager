@@ -1,4 +1,4 @@
-import { ConfirmModal } from '@/components/ConfirmModal.vue';
+import { ConfirmModal } from '@/components/modal/ConfirmModal.vue';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 

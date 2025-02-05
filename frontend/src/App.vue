@@ -2,7 +2,7 @@
 import Header from '@/components/header/Header.vue';
 import NotificationArea from '@/components/NotificationArea.vue';
 import { useNotificationsStore } from './store/notifications';
-import ModalArea from './components/ModalArea.vue';
+import ModalArea from './components/modal/ModalArea.vue';
 import { useModalsStore } from './store/modals';
 
 const notifications = useNotificationsStore().notifications;
