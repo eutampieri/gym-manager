@@ -3,12 +3,13 @@ const Trainer = require('../models/trainerModel');
 const Admin = require('../models/adminModel');
 const { createSecretKey } = require('crypto');
 const jose = require('jose');
+const idProjection = require('./idProjection');
 
 const JWT_KEY = createSecretKey(process.env.JWT_KEY || "secret");
 
 async function lookupUsername(username) {
     let result = { kind: null, data: null };
-    const customer = await Client.findOne({ username: username }, null, null).exec();
+    const customer = await Client.findOne({ username: username }, idProjection(Client), null).exec();
     if (customer) {
         result.kind = "customer";
         result.data = customer;
@@ -16,14 +17,14 @@ async function lookupUsername(username) {
     }
 
     // Check if the username matches a trainer
-    const trainer = await Trainer.findOne({ username: username }, null, null).exec();
+    const trainer = await Trainer.findOne({ username: username }, idProjection(Trainer), null).exec();
     if (trainer) {
         result.kind = "trainer";
         result.data = trainer;
         return result;
     }
 
-    const admin = await Admin.findOne({ username: username }, null, null).exec();
+    const admin = await Admin.findOne({ username: username }, idProjection(Admin), null).exec();
     if (admin) {
         result.kind = "admin";
         result.data = admin;
@@ -37,6 +38,7 @@ exports.authenticate = async (req, res) => {
 
     try {
         const user = await lookupUsername(username);
+        console.log(user);
         if (user.kind === null || user.data.password !== password) { // TODO salt and hash
             res.status(401).send("Unauthorized");
         } else {
