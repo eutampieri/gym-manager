@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Header from '@/components/Header.vue';
+import Header from '@/components/header/Header.vue';
 import NotificationArea from '@/components/NotificationArea.vue';
 import { useNotificationsStore } from './store/notifications';
 import ModalArea from './components/ModalArea.vue';

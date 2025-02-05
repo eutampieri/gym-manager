@@ -2,7 +2,7 @@
 import { getProfileIcon, User, Trainer, Admin, Role } from '@gym-manager/models';
 import { useUserStore } from '../store/user';
 import { ref } from 'vue';
-import Header from '@/components/Header.vue';
+import Header from '@/components/header/Header.vue';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 import router from '@/routes/router';

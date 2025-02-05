@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-import BackButton from '@/components/BackButton.vue';
-import PageTitle from '@/components/PageTitle.vue';
+import BackButton from '@/components/header/BackButton.vue';
+import PageTitle from '@/components/header/PageTitle.vue';
 import { useUserStore } from '@/store/user';
 import { getProfileIcon } from '@gym-manager/models/user';
 import router from '@/routes/router';
