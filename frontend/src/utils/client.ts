@@ -57,6 +57,10 @@ export class Client {
         return Promise.resolve(this.userDetails);
         return this.apiRequest("GET", "/customers/" + id).then(r => r.json());
     }
+    public getAdmin(id: string): Promise<Admin | undefined> {
+        // TODO
+        return Promise.resolve(this.userDetails);
+    }
 
     public addUser(user: CreateUserRequest) {
         return this.apiRequest("POST", "/customers", user);
@@ -119,6 +123,20 @@ export class Client {
             .then(r => r.json());
     }
 
+    public getProfilePath() {
+        const id = this.userDetails?.id || '';
+        switch (this.getRole) {
+            case Role.User: 
+                return this.customerProfilePath(id);
+            case Role.Trainer:
+                return this.trainerProfilePath(id);
+            case Role.Admin:
+                return this.adminProfilePath(id);
+        }
+    }
+    public adminProfilePath(adminId: string) {
+        return '/admin/profile/' + adminId;
+    }
     public trainerProfilePath(trainerId: string) {
         return '/trainer/profile/' + trainerId;
     }
