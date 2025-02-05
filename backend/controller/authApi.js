@@ -29,7 +29,7 @@ exports.authenticate = async (req, res) => {
 
     try {
         const user = await lookupUsername(username);
-        if (user.kind === null || !await verify(user.password, password)) {
+        if (user.kind === null || !await verify(user.data.password, password)) {
             res.status(401).send("Unauthorized");
         } else {
             token.role = user.kind;
