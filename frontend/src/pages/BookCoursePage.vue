@@ -26,12 +26,12 @@ store.client.listCourses()
 
 //get user courses
 if (user) {
-    store.client.getCustomerCourses(user.id)
+    store.client.getCustomerCourses(user._id)
         .then(courses => myCourses.value = courses);
 }
 
 function isAlreadyBooked(courseId: string, dayOfWeek: string, startTime: string): boolean {
-    return undefined != myCourses.value?.find(e => e.course.id == courseId && e.dayOfWeek == dayOfWeek && e.startTime == startTime)
+    return undefined != myCourses.value?.find(e => e.course._id == courseId && e.dayOfWeek == dayOfWeek && e.startTime == startTime)
 }
 
 </script>
@@ -53,8 +53,8 @@ function isAlreadyBooked(courseId: string, dayOfWeek: string, startTime: string)
                         </dd>
                         <dt>Date & Time</dt>
                         <dd class="container">
-                            <CourseSchedule v-for="schedule in course.course.schedule" :course-id="course.course.id" 
-                                :schedule="schedule" :booked="isAlreadyBooked(course.course.id, schedule.dayOfWeek, schedule.startTime)"/>
+                            <CourseSchedule v-for="schedule in course.course.schedule" :course-id="course.course._id" 
+                                :schedule="schedule" :booked="isAlreadyBooked(course.course._id, schedule.dayOfWeek, schedule.startTime)"/>
                         </dd>
                     </dl>
                 </DropdownItem>

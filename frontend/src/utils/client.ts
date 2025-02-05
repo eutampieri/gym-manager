@@ -144,7 +144,7 @@ export class Client {
 
         return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
     }
-    public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string }[] }>> {
+    public async getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string }[] }>> {
         // return Promise.resolve([{
         //     course: {
         //         id: "c.id",
@@ -202,7 +202,7 @@ export class Client {
                 }
             })));
     }
-    public getTrainerSessions(userId: string): Promise<Array<{ info: SessionInfo, participant: Admin }>> {
+    public async getTrainerSessions(userId: string): Promise<Array<{ info: SessionInfo, participant: Admin }>> {
         return this.apiRequest("GET", `/trainers/${userId}/sessions`)
             .then(r => r.json())
             .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string; username: string; firstName: string; lastName: string; }; }) => ({
@@ -260,6 +260,7 @@ export class Client {
         return this.apiRequest("GET", "/trainers").then(x => x.json());
     }
     public async createSession(trainer: string, dayOfWeek: string, startTime: string): Promise<boolean> {
+        //public async createSession(trainer: string, dayOfWeek: string, startTime: string, participant?: string): Promise<boolean> {
         /*if (!this.isLoggedIn || !this.userDetails) {
             return false; // L'utente deve essere loggato per creare una sessione
         }*/
