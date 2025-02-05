@@ -4,7 +4,7 @@ import { computed, ref } from 'vue';
 import { CreateUserRequest } from "@gym-manager/models/user";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
-import { useUserStore } from '../store/user';
+import { useUserStore } from '../../store/user';
 
 const username = ref("");
 const password = ref("");

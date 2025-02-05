@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useUserStore } from '@/store/user';
 import Login from '@/pages/Login.vue';
-import AdminPage from '@/pages/AdminPage.vue';
-import CreateCoursePage from '@/pages/CreateCoursePage.vue';
-import CreateClientPage from '@/pages/CreateClientPage.vue';
+import AdminPage from '@/pages/admin/AdminPage.vue';
+import CreateCoursePage from '@/pages/admin/CreateCoursePage.vue';
+import CreateClientPage from '@/pages/admin/CreateClientPage.vue';
 import ProfilePage from '@/pages/ProfilePage.vue';
-import UserListPage from '@/pages/UserListPage.vue';
-import TrainerListPage from '@/pages/TrainerListPage.vue';
-import CourseListPage from '@/pages/CourseListPage.vue';
-import CreateTrainerPage from '@/pages/CreateTrainerPage.vue';
-import CreateAdminPage from '@/pages/CreateAdminPage.vue';
-import UserPage from '@/pages/UserPage.vue';
+import UserListPage from '@/pages/admin/UserListPage.vue';
+import TrainerListPage from '@/pages/admin/TrainerListPage.vue';
+import CourseListPage from '@/pages/admin/CourseListPage.vue';
+import CreateTrainerPage from '@/pages/admin/CreateTrainerPage.vue';
+import CreateAdminPage from '@/pages/admin/CreateAdminPage.vue';
+import UserPage from '@/pages/user/UserPage.vue';
 
 
 const routes = [
