@@ -2,7 +2,7 @@
 import ListView from '@/components/ListView.vue';
 import { useUserStore } from '@/store/user';
 import { ListData, RowData } from '@/utils/lists';
-import { Course, User } from '@gym-manager/models';
+import { Course, Trainer, User } from '@gym-manager/models';
 import { computed, ref } from 'vue';
 
 function displayableCourseFormatter(c: Course): RowData {
@@ -19,7 +19,12 @@ const client = useUserStore().client;
 const courses = ref<Array<Course>>([]);
 const displayableCourses = computed(() => courses.value.map(displayableCourseFormatter));
 
-client.listCourses().then(x => courses.value = x);
+client.listCourses()
+    .then(courses => Promise.all(courses.map(c => 
+        client.getTrainer(c.trainer)
+            .then(t => ({ ...c, trainer: `${t.firstName} ${t.lastName}` }))
+        ))
+    ).then(x => courses.value = x);
 
 
 const data = computed<ListData>((): ListData => {
