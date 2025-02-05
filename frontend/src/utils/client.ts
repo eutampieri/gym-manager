@@ -1,4 +1,5 @@
 import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
+import { TrainerAvailabilities } from "@gym-manager/models/trainer";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface UserJwt extends JwtPayload {
@@ -281,6 +282,13 @@ export class Client {
         const response = await this.apiRequest("POST", "/sessions", sessionData);
 
         return response.status === 201; // Ritorna `true` se la sessione è stata creata con successo
+    }
+
+    public async getTrainerAvailabilities(trainer: string): Promise<TrainerAvailabilities> {
+        const response = await this.apiRequest("GET", `/trainers/${trainer}/availabilities`)
+            .then(x => x.json());
+
+        return response; // Ritorna `true` se la sessione è stata creata con successo
     }
 
 }
