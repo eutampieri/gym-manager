@@ -5,6 +5,7 @@ import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import CheckBox from '@/components/CheckBox.vue';
 import { CreateAdminRequest } from '@gym-manager/models/admin';
 import { useUserStore } from '@/store/user';
+import { useNotificationsStore } from '@/store/notifications';
 
 const username = ref("");
 const password = ref("");
@@ -25,6 +26,7 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
 );
 
 const client = useUserStore().client;
+const notificationStore = useNotificationsStore();
 
 async function handleCreateAdmin() {
     try {
@@ -43,13 +45,27 @@ async function handleCreateAdmin() {
         const response = await client.addAdmin(request);
 
         if (response.status === 201) {
-            message.value = "Admin successfully created!";
+            notificationStore.fire({
+                title: 'Success',
+                body: `Admin ${firstName.value} ${lastName.value} successfully created!`,
+                background: 'success',
+                when: new Date(),
+            });
         } else {
-            message.value = "Error during admin creation";
+            notificationStore.fire({
+                title: 'Error',
+                body: 'Error while creating the admin',
+                background: 'danger',
+                when: new Date(),
+            });
         }
     } catch (error) {
-        console.error("Error during admin creation:", error);
-        message.value = "Error during admin creation";
+        notificationStore.fire({
+            title: 'Error',
+            body: 'Error while creating the admin',
+            background: 'danger',
+            when: new Date(),
+        });
     }
 
 }
