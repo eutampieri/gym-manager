@@ -87,22 +87,4 @@ module.exports = class API {
         } finally {
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-    static async fetchAdmin_IdByUsername(req, res) {
-        try {
-            const username = req.params.username;
-            const admin = await Admin.findOne({ username: username }, idProjection(Admin), null).exec();
-            if (!admin) {
-                return res.status(404).json({ message: 'Admin not found' });
-            }
-            res.status(200).json(admin._id);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-
-        } finally {
-        }
-    }
-
 }
