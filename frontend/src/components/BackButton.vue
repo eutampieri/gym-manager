@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { useRouter } from 'vue-router';
 defineProps<{ buttonText?: string }>(); // Permette di personalizzare il testo
 
@@ -8,16 +10,8 @@ const goBack = () => {
 };
 </script>
 
-<style scoped>
-.back-button {
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-</style>
 <template>
-    <button class="btn btn-outline-primary back-button" @click="goBack">
-        <i class="bi bi-arrow-left"></i> {{ buttonText }}
+    <button class="btn" @click="goBack">
+        <FontAwesomeIcon :icon="faChevronLeft"></FontAwesomeIcon>
     </button>
 </template>

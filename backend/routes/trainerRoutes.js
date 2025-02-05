@@ -1,23 +1,15 @@
 const express = require('express')
-const router = express.Router()
+const { wrapMiddleware, adminAuth, trainerAuth, customerAuth, anyAuth } = require('../utils')
 const API = require('../controller/trainerApi')
 
-router.post("/", API.createTrainer)
-router.get("/", API.fetchAllTrainers)
-router.get("/:username/username", API.fetchTrainerByUsername)
-router.get("/:id", API.fetchTrainerBy_Id)
-router.put("/", API.updateTrainer)
-router.delete("/:id", API.deleteTrainer)
-router.get("/:id/courses", API.fetchAllTrainerCourses)
-router.get("/:id/sessions", API.fetchAllTrainerSessions)
+const router = express.Router();
 
-// in the path, before these, there must be /trainers
-router.get("/courses/add/:trainerId/:courseId", API.addTrainerCourse)
-router.get("/courses/delete/:trainerId/:courseId", API.deleteTrainerCourse)
-router.get("/trainerId/:username", API.fetchTrainerIdByUsername)
-router.get("/sessions/add/:username/:id", API.addTrainerSessionBy_Id)
-router.get("/sessions/delete/:username/:id", API.deleteTrainerSessionBy_Id)
-router.get("/trainerName/:id", API.fetchTrainerNameBy_Id)
-
+router.post("/", wrapMiddleware(adminAuth, API.createTrainer));
+router.get("/", wrapMiddleware(adminAuth, API.fetchAllTrainers));
+router.get("/:id", wrapMiddleware(customerAuth, API.fetchTrainerBy_Id));
+router.put("/", wrapMiddleware(adminAuth, API.updateTrainer));
+router.delete("/:id", wrapMiddleware(adminAuth, API.deleteTrainer));
+router.get("/:id/courses", wrapMiddleware(trainerAuth, API.fetchAllTrainerCourses));
+router.get("/:id/sessions", wrapMiddleware(trainerAuth, API.fetchAllTrainerSessions));
 
 module.exports = router

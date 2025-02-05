@@ -46,23 +46,23 @@ async function handleCreateAdmin() {
 
         if (response.status === 201) {
             notificationStore.fire({
-                title: 'Successo',
-                body: `Admin ${firstName.value} ${lastName.value} creato con successo!`,
+                title: 'Success',
+                body: `Admin ${firstName.value} ${lastName.value} successfully created!`,
                 background: 'success',
                 when: new Date(),
             });
         } else {
             notificationStore.fire({
-                title: 'Errore',
-                body: 'Si è verificato un errore durante la creazione dell\'admin.',
+                title: 'Error',
+                body: 'Error while creating the admin',
                 background: 'danger',
                 when: new Date(),
             });
         }
     } catch (error) {
         notificationStore.fire({
-            title: 'Errore',
-            body: 'Si è verificato un errore durante la creazione dell\'admin.',
+            title: 'Error',
+            body: 'Error while creating the admin',
             background: 'danger',
             when: new Date(),
         });

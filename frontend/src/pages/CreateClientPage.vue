@@ -64,23 +64,23 @@ async function handleCreateClient() {
 
         if (response.status === 201) {
             notificationStore.fire({
-                title: 'Successo',
-                body: `Cliente ${firstName.value} ${lastName.value} creato con successo!`,
+                title: 'Success',
+                body: `Customer ${firstName.value} ${lastName.value} successfully created!`,
                 background: 'success',
                 when: new Date(),
             });
         } else {
             notificationStore.fire({
-                title: 'Errore',
-                body: 'Si è verificato un errore durante la creazione del cliente.',
+                title: 'Error',
+                body: 'Error while creating customer',
                 background: 'danger',
                 when: new Date(),
             });
         }
     } catch (error) {
         notificationStore.fire({
-            title: 'Errore',
-            body: 'Si è verificato un errore durante la creazione del cliente.',
+            title: 'Error',
+            body: 'Error while creating customer',
             background: 'danger',
             when: new Date(),
         });

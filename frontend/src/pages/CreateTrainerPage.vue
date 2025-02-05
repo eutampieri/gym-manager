@@ -52,15 +52,15 @@ async function handleCreateTrainer() {
 
         if (response.status === 201) {
             notificationStore.fire({
-                title: 'Successo',
-                body: `Trainer ${firstName.value} ${lastName.value} creato con successo!`,
+                title: 'Success',
+                body: `Trainer ${firstName.value} ${lastName.value} successfully created`,
                 background: 'success',
                 when: new Date(),
             });
         } else {
             notificationStore.fire({
-                title: 'Errore',
-                body: 'Si è verificato un errore durante la creazione del trainer.',
+                title: 'Error',
+                body: 'Error while creating trainer',
                 background: 'danger',
                 when: new Date(),
             });
@@ -68,7 +68,7 @@ async function handleCreateTrainer() {
     } catch (error) {
         notificationStore.fire({
             title: 'Errore',
-            body: 'Si è verificato un errore durante la creazione del trainer.',
+            body: 'Error while creating trainer',
             background: 'danger',
             when: new Date(),
         });

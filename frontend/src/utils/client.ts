@@ -1,4 +1,10 @@
 import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
+interface UserJwt extends JwtPayload {
+    profile: Admin,
+    role: string,
+}
 
 export class Client {
     private jwt?: string = undefined;
@@ -23,7 +29,7 @@ export class Client {
             password: password
         }
         const response = await this.apiRequest("POST", "/auth/authenticate", request);
-        this.jwt = "";
+        this.jwt = await response.text();
         return true;
     }
     public async logout(): Promise<boolean> {
@@ -33,29 +39,37 @@ export class Client {
     }
 
     public get userDetails(): undefined | User | Trainer | Admin {
-        // TODO
-        const result: User = {
-            username: 'Rox09',
-            firstName: 'Rocco',
-            lastName: 'Siffredi',
-            _id: '1',
-            dateOfBirth: '10/10/2020',
-            fiscalCode: 'RVLMLJC987DH43',
-            address: 'Via sghemba 4',
-            email: 'rsiffr@g.com',
-            phoneNumber: '+399333444555',
+        if (this.jwt !== undefined) {
+            return jwtDecode<UserJwt>(this.jwt!).profile;
+        } else {
+            return undefined;
         }
-        return result;
     }
     public get getRole(): undefined | Role {
-        // TODO
-        return Role.Admin;
+        if (this.jwt !== undefined) {
+            const role = jwtDecode<UserJwt>(this.jwt!).role;
+            if (role === 'customer') {
+                return Role.User;
+            } else if (role === 'trainer') {
+                return Role.Trainer;
+            } else if (role === 'admin') {
+                return Role.Admin;
+            } else {
+                return undefined;
+            }
+        } else {
+            return undefined;
+        }
     }
 
     public getUserById(id: string): Promise<undefined | User | Trainer | Admin> {
         // TODO
         return Promise.resolve(this.userDetails);
-        return this.apiRequest("GET", "/customers/"+id).then(r => r.json());
+        return this.apiRequest("GET", "/customers/" + id).then(r => r.json());
+    }
+    public getAdmin(id: string): Promise<Admin | undefined> {
+        // TODO
+        return Promise.resolve(this.userDetails);
     }
 
     public addUser(user: CreateUserRequest) {
@@ -67,7 +81,7 @@ export class Client {
         return await x.json();*/
         return [
             {
-                _id: "1",
+                id: "1",
                 dateOfBirth: "2021-01-01",
                 fiscalCode: "mockCF",
                 address: "Abbey Road 21, SW234E1 London",
@@ -81,44 +95,36 @@ export class Client {
     }
 
     public async listCourses(): Promise<Array<Course>> {
-        /*const x = await this.apiRequest("GET", "/courses");
-        return await x.json();*/
-        return [
-            {
-                _id: "1",
-                name: "Zumba",
-                description: "Sad course description, nothing to see here...",
-                capacity: 20,
-                trainer: "trainerID",
-                schedule: [{
-                    dayOfWeek: "Wednesday",
-                    startTime: "10:00",
-                    participants: [],
-                    availableSpots: 0,
-                },
-                {
-                    dayOfWeek: "Tuesday",
-                    startTime: "15:00",
-                    participants: [],
-                    availableSpots: 3,
-                }]
-            }
-        ];
+        return this.apiRequest("GET", "/courses").then(x => x.json());
     }
     public getTrainer(trainerId: string): Promise<Trainer> {
         return Promise.resolve({
             username: 'fsdigbohfigpdsb',
-            firstName: 'fsdigbohfigpdsb',
-            lastName: 'fsdigbohfigpdsb',
+            firstName: 'Boro',
+            lastName: 'McSboro',
             email: 'fsdigbohfigpdsb',
             phoneNumber: 'fsdigbohfigpdsb',
-            _id: 'trainerID'
+            id: 'trainerID'
         })
 
         return this.apiRequest("GET", "/trainers/" + trainerId)
-                .then(r => r.json());
+            .then(r => r.json());
     }
 
+    public getProfilePath() {
+        const id = this.userDetails?.id || '';
+        switch (this.getRole) {
+            case Role.User:
+                return this.customerProfilePath(id);
+            case Role.Trainer:
+                return this.trainerProfilePath(id);
+            case Role.Admin:
+                return this.adminProfilePath(id);
+        }
+    }
+    public adminProfilePath(adminId: string) {
+        return '/admin/profile/' + adminId;
+    }
     public trainerProfilePath(trainerId: string) {
         return '/trainer/profile/' + trainerId;
     }
@@ -237,10 +243,10 @@ export class Client {
         // ... TODO
     }
 
-    public bookCourse(courseId: string, dayOfWeek: string, startTime: string): Promise<boolean> {
+    public async bookCourse(courseId: string, dayOfWeek: string, startTime: string, clientId?: string): Promise<boolean> {
         //return Promise.resolve(true);
 
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: this.userDetails?._id, dayOfWeek, startTime })
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: clientId, dayOfWeek, startTime })
             .then(r => true);
     }
 
@@ -264,17 +270,17 @@ export class Client {
         /*if (!this.isLoggedIn || !this.userDetails) {
             return false; // L'utente deve essere loggato per creare una sessione
         }*/
-        const participant = this.userDetails?._id;
+        const participant = this.userDetails?.id;
         const sessionData = {
             trainer,
             dayOfWeek,
             startTime,
             participant
         };
-    
+
         const response = await this.apiRequest("POST", "/sessions", sessionData);
-        
+
         return response.status === 201; // Ritorna `true` se la sessione è stata creata con successo
     }
-    
+
 }

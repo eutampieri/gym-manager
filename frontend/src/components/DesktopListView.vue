@@ -24,10 +24,10 @@ section.body>div {
 }
 
 section.body>div:nth-of-type(odd) {
-    background: #e0e0e0;
+    background: var(--bs-secondary-bg);
 }
 
 section.body>div:nth-of-type(even) {
-    background: #FFFFFF;
+    background: var(--bs-body-bg);
 }
 </style>
