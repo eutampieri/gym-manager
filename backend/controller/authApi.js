@@ -4,6 +4,7 @@ const Admin = require('../models/adminModel');
 const jose = require('jose');
 const idProjection = require('./idProjection');
 const { JWT_KEY, ISSUER, AUDIENCE } = require('../utils');
+const { verify } = require('@node-rs/argon2');
 
 async function lookupUsername(username) {
     let result = { kind: null, data: null };
@@ -36,7 +37,7 @@ exports.authenticate = async (req, res) => {
 
     try {
         const user = await lookupUsername(username);
-        if (user.kind === null || user.data.password !== password) { // TODO salt and hash
+        if (user.kind === null || !await verify(user.password, password)) { // TODO salt and hash
             res.status(401).send("Unauthorized");
         } else {
             token.role = user.kind;
