@@ -22,7 +22,7 @@ const logged = props.id == undefined || props.id == '' || client.userDetails?.id
 
 function getUser(): Promise<undefined | User | Trainer | Admin> {
     console.log(props.role)
-    if (props.id) {
+    if (!logged) {
         if (props.role == 'user') {
             return client.getUserById(props.id);
         } else if (props.role == 'trainer') {

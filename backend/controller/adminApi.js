@@ -3,6 +3,7 @@ const Client = require('../models/clientModel');
 const Course = require('../models/courseModel');
 const Trainer = require('../models/trainerModel');
 const Session = require('../models/sessionModel');
+const idProjection = require('./idProjection');
 module.exports = class API {
     static async createAdmin(req, res) {
         const admin = req.body;
