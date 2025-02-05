@@ -1,29 +1,17 @@
 const express = require('express')
 const API = require('../controller/courseApi')
-const { createAuthMiddleware } = require('../utils')
-
-const customerRouter = express.Router();
-customerRouter.use(createAuthMiddleware(new Set(["admin", "customer"])));
-const customerAndTrainerRouter = express.Router();
-customerAndTrainerRouter.use(createAuthMiddleware(new Set(["admin", "customer", "trainer"])));
-const adminRouter = express.Router();
-adminRouter.use(createAuthMiddleware(new Set(["admin"])));
-const trainerRouter = express.Router();
-trainerRouter.use(createAuthMiddleware(new Set(["admin", "trainer"])));
-
-adminRouter.post("/", API.createCourse)
-customerAndTrainerRouter.get("/", API.fetchAllCourses)
-customerAndTrainerRouter.get("/:id", API.fetchCourseBy_Id)
-adminRouter.put("/", API.updateCourse)
-adminRouter.delete("/:id", API.deleteCourse)
-trainerRouter.get("/:id/bookings", API.fetchCourseBookings)
-customerRouter.post("/:id/bookings", API.createBooking) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
-customerRouter.delete("/:id/bookings", API.deleteBooking) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
+const { wrapMiddleware, adminAuth, trainerAuth, customerAuth, anyAuth } = require('../utils')
 
 const router = express.Router();
-router.use('/', adminRouter);
-router.use('/', trainerRouter);
-router.use('/', customerRouter);
-router.use('/', customerAndTrainerRouter);
+
+router.post("/", wrapMiddleware(adminAuth, API.createCourse))
+router.get("/", wrapMiddleware(anyAuth, API.fetchAllCourses))
+router.get("/:id", wrapMiddleware(anyAuth, API.fetchCourseBy_Id))
+router.put("/", wrapMiddleware(adminAuth, API.updateCourse))
+router.delete("/:id", wrapMiddleware(adminAuth, API.deleteCourse))
+router.get("/:id/bookings", wrapMiddleware(trainerAuth, API.fetchCourseBookings))
+router.post("/:id/bookings", wrapMiddleware(customerAuth, API.createBooking)) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
+router.delete("/:id/bookings", wrapMiddleware(customerAuth, API.deleteBooking)) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
+
 
 module.exports = router

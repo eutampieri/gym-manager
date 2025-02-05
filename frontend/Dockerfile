@@ -1,4 +1,4 @@
-FROM node:22-alpine AS builder
+FROM node:22 AS builder
 COPY . /build
 WORKDIR /build/frontend
 RUN npm ci

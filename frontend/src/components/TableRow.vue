@@ -24,7 +24,7 @@ const props = defineProps<{
             </ul>
         </div>
         <div class="col">
-            <ActionButton v-for="(action, index) in actions" :key="index" :action="action" , :data="data">
+            <ActionButton v-for="(action, index) in actions" :key="index" :action="action" :data="data">
             </ActionButton>
         </div>
     </div>

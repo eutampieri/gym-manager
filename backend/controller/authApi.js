@@ -5,8 +5,6 @@ const jose = require('jose');
 const idProjection = require('./idProjection');
 const { JWT_KEY, ISSUER, AUDIENCE } = require('../utils');
 
-const JWT_KEY = JWT_KEY
-
 async function lookupUsername(username) {
     let result = { kind: null, data: null };
     const customer = await Client.findOne({ username: username }, idProjection(Client), null).exec();
