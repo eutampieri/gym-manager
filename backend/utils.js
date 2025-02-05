@@ -30,7 +30,7 @@ module.exports.JWT_KEY = JWT_KEY;
 module.exports.ISSUER = ISSUER;
 module.exports.AUDIENCE = AUDIENCE;
 module.exports.createAuthMiddleware = createAuthMiddleware
-module.exports.wrapMiddleware = (wrapping, wrapped) => (req, res) => wrapping(req, res, () => wrapped(req, res));
+module.exports.wrapMiddleware = (wrapping, wrapped) => (req, res, next) => wrapping(req, res, () => wrapped(req, res, next));
 module.exports.customerAuth = createAuthMiddleware(new Set(["admin", "customer"]));
 module.exports.adminAuth = createAuthMiddleware(new Set(["admin"]));
 module.exports.trainerAuth = createAuthMiddleware(new Set(["admin", "trainer"]));
