@@ -6,8 +6,8 @@ import NameLink from '@/components/utils/NameLink.vue';
 import { Course, CourseInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
 import CourseSchedule from '@/components/CourseSchedule.vue';
-import SectionContainer from '@/components/SectionContainer.vue';
-import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import SectionContainer from '@/components/utils/SectionContainer.vue';
+import SectionContainerItem from '@/components/utils/SectionContainerItem.vue';
 
 const store = useUserStore();
 

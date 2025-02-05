@@ -3,8 +3,8 @@ import { getProfileIcon, User, Trainer, Admin, Role } from '@gym-manager/models'
 import { useUserStore } from '../store/user';
 import { ref } from 'vue';
 import Header from '@/components/header/Header.vue';
-import SectionContainer from '@/components/SectionContainer.vue';
-import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import SectionContainer from '@/components/utils/SectionContainer.vue';
+import SectionContainerItem from '@/components/utils/SectionContainerItem.vue';
 import router from '@/routes/router';
 
 const props = defineProps<{ id: string, role: Role }>();
