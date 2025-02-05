@@ -1,12 +1,11 @@
 const Admin = require('../models/adminModel');
-const Client = require('../models/clientModel');
-const Course = require('../models/courseModel');
-const Trainer = require('../models/trainerModel');
-const Session = require('../models/sessionModel');
 const idProjection = require('./idProjection');
+const { hash } = require('@node-rs/argon2');
+
 module.exports = class API {
     static async createAdmin(req, res) {
         const admin = req.body;
+        admin.password = await hash(admin.password);
         try {
             const adminAlreadyPresent = await Admin.findOne({ username: req.body.username }, idProjection(Admin), null).exec();
             if (!adminAlreadyPresent) {
@@ -61,7 +60,7 @@ module.exports = class API {
             const updateFields = {}; // Object that will contain only the fields to update
 
             // Check and add non-empty fields to the update object
-            if (password) updateFields.password = password;
+            if (password) updateFields.password = await hash(password);
             if (hasFullPrivileges !== undefined) updateFields.hasFullPrivileges = hasFullPrivileges;
 
             // Perform the update only if there are fields to update
