@@ -55,7 +55,7 @@ export class Client {
     public getUserById(id: string): Promise<undefined | User | Trainer | Admin> {
         // TODO
         return Promise.resolve(this.userDetails);
-        return this.apiRequest("GET", "/customers/"+id).then(r => r.json());
+        return this.apiRequest("GET", "/customers/" + id).then(r => r.json());
     }
 
     public addUser(user: CreateUserRequest) {
@@ -83,7 +83,7 @@ export class Client {
     public async listCourses(): Promise<Array<Course>> {
         /*const x = await this.apiRequest("GET", "/courses");
         return await x.json();*/
-        return [
+        return Promise.resolve([
             {
                 id: "1",
                 name: "Zumba",
@@ -103,7 +103,7 @@ export class Client {
                     availableSpots: 3,
                 }]
             }
-        ];
+        ]);
     }
     public getTrainer(trainerId: string): Promise<Trainer> {
         return Promise.resolve({
@@ -116,7 +116,7 @@ export class Client {
         })
 
         return this.apiRequest("GET", "/trainers/" + trainerId)
-                .then(r => r.json());
+            .then(r => r.json());
     }
 
     public trainerProfilePath(trainerId: string) {
