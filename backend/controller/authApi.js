@@ -1,11 +1,11 @@
 const Client = require('../models/clientModel');
 const Trainer = require('../models/trainerModel');
 const Admin = require('../models/adminModel');
-const { createSecretKey } = require('crypto');
 const jose = require('jose');
 const idProjection = require('./idProjection');
+const { JWT_KEY, ISSUER, AUDIENCE } = require('../utils');
 
-const JWT_KEY = createSecretKey(process.env.JWT_KEY || "secret");
+const JWT_KEY = JWT_KEY
 
 async function lookupUsername(username) {
     let result = { kind: null, data: null };
@@ -53,8 +53,8 @@ exports.authenticate = async (req, res) => {
                     alg: 'HS256'
                 }) // algorithm
                 .setIssuedAt()
-                .setIssuer(process.env.JWT_ISSUER || "iss") // issuer
-                .setAudience(process.env.JWT_AUDIENCE || "aud") // audience
+                .setIssuer(ISSUER) // issuer
+                .setAudience(AUDIENCE) // audience
                 .setExpirationTime("1 day") // FIXME sketchy
                 .sign(JWT_KEY);
             res.send(jwt);
