@@ -10,7 +10,7 @@ export interface Header {
     name: string,
 }
 export interface Action {
-    action: (data: RowData) => void,
+    action: (data: any) => void,
     label: string,
     colour: string,
 }
