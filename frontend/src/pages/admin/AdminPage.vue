@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import MainButton from '@/components/MainButton.vue';
+import MainButton from '@/components/utils/MainButton.vue';
 import { useUserStore } from '@/store/user'; 
 
 const store = useUserStore();

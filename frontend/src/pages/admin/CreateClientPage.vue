@@ -2,8 +2,8 @@
 import { isOnlyLetters, isPhoneNumber } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import { CreateUserRequest } from "@gym-manager/models/user";
-import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
-import GenericInput from '@/components/GenericInput.vue';
+import ValidatingGenericInput from '@/components/utils/ValidatingGenericInput.vue';
+import GenericInput from '@/components/utils/GenericInput.vue';
 import { useUserStore } from '../../store/user';
 
 const username = ref("");

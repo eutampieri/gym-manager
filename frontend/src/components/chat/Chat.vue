@@ -2,7 +2,7 @@
 import { Message as IMessage } from '@/utils/chat';
 import { Admin, Role } from '@gym-manager/models';
 import { ref } from 'vue';
-import NameLink from '../NameLink.vue';
+import NameLink from '../utils/NameLink.vue';
 import Message from './Message.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCircleXmark, faChevronDown, faPaperPlane } from '@fortawesome/free-solid-svg-icons';

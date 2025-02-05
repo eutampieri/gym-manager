@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { isOnlyLetters } from '@/utils/validation';
 import { computed, ref } from 'vue';
-import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
-import CheckBox from '@/components/CheckBox.vue';
+import ValidatingGenericInput from '@/components/utils/ValidatingGenericInput.vue';
+import CheckBox from '@/components/utils/CheckBox.vue';
 import { CreateAdminRequest } from '@gym-manager/models/admin';
 import { useUserStore } from '@/store/user';
 

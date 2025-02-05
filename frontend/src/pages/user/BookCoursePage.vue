@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { useUserStore } from '@/store/user';
-import Dropdown from '@/components/Dropdown.vue';
-import DropdownItem from '@/components/DropdownItem.vue';
-import NameLink from '@/components/NameLink.vue';
+import Dropdown from '@/components/utils/Dropdown.vue';
+import DropdownItem from '@/components/utils/DropdownItem.vue';
+import NameLink from '@/components/utils/NameLink.vue';
 import { Course, CourseInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
 import CourseSchedule from '@/components/CourseSchedule.vue';

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import GenericInput from '@/components/GenericInput.vue';
+import GenericInput from '@/components/utils/GenericInput.vue';
 
 import router from '@/routes/router';
 import { useUserStore } from '@/store/user';

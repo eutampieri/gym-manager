@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { isOnlyLetters, isPhoneNumber } from '@/utils/validation';
 import { computed, ref } from 'vue';
-import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
-import GenericInput from '@/components/GenericInput.vue';
+import ValidatingGenericInput from '@/components/utils/ValidatingGenericInput.vue';
+import GenericInput from '@/components/utils/GenericInput.vue';
 import { CreateTrainerRequest } from '@gym-manager/models/trainer';
 import { useUserStore } from '@/store/user';
 
