@@ -10,7 +10,7 @@ const profileIcon = user ? getProfileIcon(user) : ''; // Calcola l'icona profilo
 </script>
 
 <template>
-    <header class="d-flex navbar bg-body-tertiary px-2 border-bottom">
+    <header class="d-flex navbar bg-body-tertiary px-2 border-bottom mb-2">
         <BackButton buttonText="Back" />
 
         <PageTitle title="Gym Manager" class="header-title" />
