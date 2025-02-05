@@ -18,7 +18,7 @@ const client = useUserStore().client;
 const userName = ref('');
 const profileData = ref<Array<ProfileEntry>>();
 const profileIcon = ref('');
-const logged = props.id == undefined || props.id == '';
+const logged = props.id == undefined || props.id == '' || client.userDetails?.id == props.id;
 
 function getUser(): Promise<undefined | User | Trainer | Admin> {
     console.log(props.role)
