@@ -12,7 +12,6 @@ function buildProjection(schema) {
     for (const f in schema.schema.obj) {
         p[f] = 1;
     }
-    console.log(p);
     return p;
 }
 
