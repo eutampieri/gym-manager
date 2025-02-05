@@ -11,6 +11,7 @@ import CourseListPage from '@/pages/CourseListPage.vue';
 import CreateTrainerPage from '@/pages/CreateTrainerPage.vue';
 import CreateAdminPage from '@/pages/CreateAdminPage.vue';
 import UserPage from '@/pages/UserPage.vue';
+import BookOneOnOnePage from '@/pages/BookOneOnOnePage.vue';
 
 
 const routes = [
@@ -27,6 +28,7 @@ const routes = [
   { path: '/trainer/profile/:id', name: "trainerProfile", component: ProfilePage, meta: { role: "trainer" }, props: true },
   { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
   { path: '/user/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },
+  { path: '/user/bookOneOnOne', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
 ];
 
 const router = createRouter({

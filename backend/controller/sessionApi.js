@@ -14,8 +14,8 @@ module.exports = class API {
         const idTrainer = req.body.trainer;
         const idParticipant = req.body.participant;
         try {
-            const sessionAlreadyPresent = await Session.findOne({id: req.body.id }, null, null).exec();
-            if (!sessionAlreadyPresent) {
+            //const sessionAlreadyPresent = await Session.findOne({id: req.body.id }, null, null).exec();
+            //if (!sessionAlreadyPresent) {
                 const newSession = await Session.create(session, null);
                 // Aggiunge la sessione al Client
                 await Client.updateOne(
@@ -29,10 +29,10 @@ module.exports = class API {
                { $push: { sessions: newSession._id } }
                );
                 res.status(201).json({ message: 'Session created successfully' });
-            }
+            /*}
             else {
                 res.status(500).json({ message: "Session already present" });
-            }
+            }*/
         } catch (error) {
             res.status(400).json({ message: error.message });
         } finally {

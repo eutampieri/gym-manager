@@ -31,4 +31,5 @@ const admin = store.client.userDetails;
         <MainButton :path="'/admin/createAdmin'">Create admin</MainButton>
         <MainButton :path="'/admin/listAdmins'">View admins</MainButton>
     </section>
+    <MainButton :path="'/user/bookOneOnOne'">Book One On One</MainButton>
 </template>

@@ -38,7 +38,7 @@ export class Client {
             username: 'Rox09',
             firstName: 'Rocco',
             lastName: 'Siffredi',
-            id: '1',
+            _id: '1',
             dateOfBirth: '10/10/2020',
             fiscalCode: 'RVLMLJC987DH43',
             address: 'Via sghemba 4',
@@ -67,7 +67,7 @@ export class Client {
         return await x.json();*/
         return [
             {
-                id: "1",
+                _id: "1",
                 dateOfBirth: "2021-01-01",
                 fiscalCode: "mockCF",
                 address: "Abbey Road 21, SW234E1 London",
@@ -85,7 +85,7 @@ export class Client {
         return await x.json();*/
         return [
             {
-                id: "1",
+                _id: "1",
                 name: "Zumba",
                 description: "Sad course description, nothing to see here...",
                 capacity: 20,
@@ -112,7 +112,7 @@ export class Client {
             lastName: 'fsdigbohfigpdsb',
             email: 'fsdigbohfigpdsb',
             phoneNumber: 'fsdigbohfigpdsb',
-            id: 'trainerID'
+            _id: 'trainerID'
         })
 
         return this.apiRequest("GET", "/trainers/" + trainerId)
@@ -238,9 +238,9 @@ export class Client {
     }
 
     public bookCourse(courseId: string, dayOfWeek: string, startTime: string): Promise<boolean> {
-        return Promise.resolve(true);
+        //return Promise.resolve(true);
 
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: this.userDetails?.id, dayOfWeek, startTime })
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: this.userDetails?._id, dayOfWeek, startTime })
             .then(r => true);
     }
 
@@ -256,7 +256,24 @@ export class Client {
         return this.apiRequest("POST", "/trainers", trainer);
     }
 
-    public listTrainers(): Promise<Trainer[]> {
+    public async listTrainers(): Promise<Trainer[]> {
         return this.apiRequest("GET", "/trainers").then(x => x.json());
     }
+    public async createSession(trainer: string, dayOfWeek: string, startTime: string): Promise<boolean> {
+        /*if (!this.isLoggedIn || !this.userDetails) {
+            return false; // L'utente deve essere loggato per creare una sessione
+        }*/
+        const participant = this.userDetails?._id;
+        const sessionData = {
+            trainer,
+            dayOfWeek,
+            startTime,
+            participant
+        };
+    
+        const response = await this.apiRequest("POST", "/sessions", sessionData);
+        
+        return response.status === 201; // Ritorna `true` se la sessione è stata creata con successo
+    }
+    
 }
