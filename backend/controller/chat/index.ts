@@ -39,7 +39,7 @@ export function createSocketIoServer(server: NodeServer) {
             if (userData !== undefined) {
                 const roomID = ulid();
                 socket.join(roomID);
-                io.to(ROOMS.admin).emit(EventType.ChatRequest.toString(), { user: userData.profile, kind: userData.kind, room: roomID });
+                io.to(ROOMS.admin).emit(EventType.ChatRequest.toString(), { user: userData.profile, kind: userData.role, room: roomID });
             }
         });
 
