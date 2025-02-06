@@ -127,6 +127,9 @@ export class Client {
     public updateTrainer(id: string, updated: CreateTrainerRequest): Promise<boolean> {
         return this.apiRequest("PUT", "/trainers/" + id, updated).then(r => r.status == 200);
     }
+    public updateCourse(id: string, updated: CreateCourseRequest): Promise<boolean> {
+        return this.apiRequest("PUT", "/courses/" + id, updated).then(r => r.status == 200);
+    }
 
     public listUsers(): Promise<User[]> {
         return this.apiRequest("GET", "/customers").then(x => x.json());
