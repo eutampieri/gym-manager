@@ -13,6 +13,7 @@ COPY . .
 
 # Install project dependencies
 RUN npm install
+RUN ../node_modules/typescript/bin/tsc 
 
 WORKDIR /app/backend
 
