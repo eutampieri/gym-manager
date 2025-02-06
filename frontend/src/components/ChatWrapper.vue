@@ -15,6 +15,7 @@ const socket = io({
 });
 
 const active = ref(false);
+const minimised = ref(false);
 const messages = ref<Message[]>([]);
 const otherParty: Ref<[BasicInfo, Role]> = ref([{
     username: "admin",
@@ -49,7 +50,7 @@ if (client.getRole === Role.Admin) {
                 otherParty.value[1] = parseRole(req.kind)!;
             },
             label: 'Start chat',
-            colour: 'info',
+            colour: 'primary',
         }],
     }));
 }
@@ -65,16 +66,30 @@ socket.on(
 
 socket.on(
     EventType.MessageDelivery.toString(),
-    ({message, sender}) => {
-        messages.value.push({message: message, sentByCurrentUser: sender === myId});
+    ({ message, sender }) => {
+        const sentByCurrentUser = sender === myId;
+        messages.value.push({ message: message, sentByCurrentUser });
+        if (minimised.value && !sentByCurrentUser) {
+            notifications.fire({
+                title: "New message",
+                body: message,
+                background: "info",
+                when: new Date(),
+                actions: [{
+                    action: () => minimised.value = false,
+                    label: 'Open chat',
+                    colour: 'primary',
+                }],
+            })
+        }
     }
 );
 
 function send(msg: string) {
-    socket.emit(EventType.Message.toString(), {message: msg, room: chatID});
+    socket.emit(EventType.Message.toString(), { message: msg, room: chatID });
 }
 
 </script>
 <template>
-    <Chat :is-active="active" :messages="messages" :other-party="otherParty" @send="send"></Chat>
+    <Chat v-model="minimised" :is-active="active" :messages="messages" :other-party="otherParty" @send="send"></Chat>
 </template>

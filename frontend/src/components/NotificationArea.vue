@@ -8,7 +8,7 @@ defineProps<{ notifications: Array<INotification> }>();
 <template>
     <div class="toast-container position-absolute bottom-0 end-0 p-3">
         <Notification v-for="n in notifications" :body="n.body" :title="n.title" :background="n.background"
-            :when="n.when">
+            :when="n.when" :actions="n.actions">
         </Notification>
     </div>
 </template>

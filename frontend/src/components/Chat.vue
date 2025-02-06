@@ -14,7 +14,7 @@ defineProps<{
     messages: IMessage[],
     otherParty: [BasicInfo, Role],
 }>();
-const minimised = ref(false);
+const minimised = defineModel<boolean>();
 const currentMessage = ref("");
 const minimise = () => minimised.value = true;
 const expand = () => minimised.value = false;
