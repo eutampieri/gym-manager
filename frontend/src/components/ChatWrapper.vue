@@ -1,26 +1,80 @@
 <script setup lang="ts">
 import { io } from 'socket.io-client';
 import Chat from './Chat.vue';
-import { EventType } from '@gym-manager/models';
+import { BasicInfo, EventType, parseRole, Role } from '@gym-manager/models';
 import { useUserStore } from '@/store/user';
-import { onMounted } from 'vue';
+import { onMounted, Ref, ref } from 'vue';
 import { useNotificationsStore } from '@/store/notifications';
+import { useChatStore } from '@/store/chat';
+import { Message } from '@/utils/chat';
 
 const notifications = useNotificationsStore();
+const client = useUserStore().client;
 const socket = io({
     path: "/api/socketio",
 });
 
+const active = ref(false);
+const messages = ref<Message[]>([]);
+const otherParty: Ref<[BasicInfo, Role]> = ref([{
+    username: "admin",
+    firstName: "Gym",
+    lastName: "Support"
+
+}, Role.Admin]);
+
+let chatID: string | null = null;
+const myId = client.userDetails!.id;
+
 onMounted(() => {
-    console.log("authenticationEvent")
-    socket.emit(EventType.Authenticate.toString(), useUserStore().client.authToken!);
+    socket.emit(EventType.Authenticate.toString(), client.authToken!);
+    useChatStore().registerHandler(() => socket.emit(EventType.ChatRequest.toString()));
 });
 
 socket.on(
     EventType.Error.toString(),
     (m) => notifications.fire({ body: m, title: "Chat error", background: "danger" })
 );
+
+if (client.getRole === Role.Admin) {
+    socket.on(EventType.ChatRequest.toString(), (req) => notifications.fire({
+        title: "Incoming chat request",
+        body: `${req.user.firstName} ${req.user.lastName} (${req.kind}) would like to start a chat.`,
+        background: "info",
+        when: new Date(),
+        actions: [{
+            action: () => {
+                socket.emit(EventType.AcceptChatRequest.toString(), req.room);
+                otherParty.value[0] = req.user;
+                otherParty.value[1] = parseRole(req.kind)!;
+            },
+            label: 'Start chat',
+            colour: 'info',
+        }],
+    }));
+}
+
+socket.on(
+    EventType.ChatEstablished.toString(),
+    (id) => {
+        chatID = id;
+        active.value = true;
+        messages.value = [];
+    }
+);
+
+socket.on(
+    EventType.MessageDelivery.toString(),
+    ({message, sender}) => {
+        messages.value.push({message: message, sentByCurrentUser: sender === myId});
+    }
+);
+
+function send(msg: string) {
+    socket.emit(EventType.Message.toString(), {message: msg, room: chatID});
+}
+
 </script>
 <template>
-
+    <Chat :is-active="active" :messages="messages" :other-party="otherParty" @send="send"></Chat>
 </template>

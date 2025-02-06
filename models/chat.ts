@@ -2,6 +2,10 @@ export enum EventType {
     Authenticate,
     ChatRequest,
     Error,
+    Message,
+    AcceptChatRequest,
+    ChatEstablished,
+    MessageDelivery,
 }
 
 

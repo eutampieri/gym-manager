@@ -1,4 +1,4 @@
-import { Admin, BookCourseRequest, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateSessionRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
+import { Admin, BookCourseRequest, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateSessionRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, parseRole, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
 import { TrainerAvailabilities } from "@gym-manager/models/trainer";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
@@ -64,15 +64,7 @@ export class Client {
     public get getRole(): undefined | Role {
         if (this.jwt !== undefined) {
             const role = jwtDecode<UserJwt>(this.jwt!).role;
-            if (role === 'customer') {
-                return Role.User;
-            } else if (role === 'trainer') {
-                return Role.Trainer;
-            } else if (role === 'admin') {
-                return Role.Admin;
-            } else {
-                return undefined;
-            }
+            return parseRole(role);
         } else {
             return undefined;
         }

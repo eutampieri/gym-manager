@@ -3,18 +3,10 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 export const useChatStore = defineStore('chat', () => {
-    const confirmModals = ref<[ConfirmModal, () => void][]>([]);
+    let startChat: (() => void) | undefined = undefined;
 
     return {
-        confirmModals: confirmModals,
-        confirm: (text: string) => {
-            const p = new Promise<boolean>((res, rej) => {
-                confirmModals.value.push([
-                    { body: text, resolve: res },
-                    () => { confirmModals.value.splice(0, 1) }
-                ]);
-            });
-            return p;
-        },
+        requestChat: () => { if (startChat !== undefined) { startChat() } },
+        registerHandler: (h: () => void) => startChat = h,
     };
 });
