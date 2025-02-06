@@ -7,10 +7,19 @@ interface UserJwt extends JwtPayload {
 }
 
 export class Client {
-    private jwt?: string = undefined;
+    private token_storage_name: string = 'gym-token';
+    private jwt?: string = localStorage.getItem(this.token_storage_name) || undefined;
 
     public get isLoggedIn(): boolean {
-        return this.jwt !== undefined;
+        // check if token is defined and valid
+        try {
+            const now = new Date();
+            const expDate = new Date(jwtDecode<UserJwt>(this.jwt!).exp! * 1000);
+
+            return now <= expDate;
+        } catch (e) {
+            return false;
+        }
     }
 
     private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
@@ -20,6 +29,7 @@ export class Client {
         }
         h.append("Content-Type", "application/json");
         return fetch(`/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
+        return fetch(`http://localhost:8080/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
     public async login(username: string, password: string): Promise<boolean> {
@@ -30,11 +40,13 @@ export class Client {
         }
         const response = await this.apiRequest("POST", "/auth/authenticate", request);
         this.jwt = await response.text();
+        localStorage.setItem(this.token_storage_name, this.jwt);
         return true;
     }
     public async logout(): Promise<boolean> {
         const ret = this.isLoggedIn;
         this.jwt = undefined;
+        localStorage.removeItem(this.token_storage_name);
         return ret;
     }
 
@@ -98,15 +110,6 @@ export class Client {
         return this.apiRequest("GET", "/courses").then(x => x.json());
     }
     public getTrainer(trainerId: string): Promise<Trainer> {
-        return Promise.resolve({
-            username: 'fsdigbohfigpdsb',
-            firstName: 'Boro',
-            lastName: 'McSboro',
-            email: 'fsdigbohfigpdsb',
-            phoneNumber: 'fsdigbohfigpdsb',
-            id: 'trainerID'
-        })
-
         return this.apiRequest("GET", "/trainers/" + trainerId)
             .then(r => r.json());
     }
