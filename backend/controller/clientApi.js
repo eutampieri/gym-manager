@@ -1,8 +1,7 @@
 const Client = require('../models/clientModel');
 const Course = require('../models/courseModel');
-const Trainer = require('../models/trainerModel');
-const Session = require('../models/sessionModel');
 const idProjection = require('./idProjection');
+const { hash } = require('@node-rs/argon2');
 
 // RESTFUL CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
 // Mongoose functions are CRUD
@@ -10,11 +9,12 @@ const idProjection = require('./idProjection');
 
 module.exports = class API {
     static async createCustomer(req, res) {
-        const client = req.body;
+        const customer = req.body;
+        customer.password = await hash(customer.password);
         try {
             const userAlreadyPresent = await Client.findOne({ username: req.body.username }, idProjection(Client), null).exec();
             if (!userAlreadyPresent) {
-                await Client.create(client, null);
+                await Client.create(customer, null);
                 res.status(201).json({ message: 'Client created successfully' });
             }
             else {
@@ -69,7 +69,7 @@ module.exports = class API {
             const updateFields = {}; // Object that will contain only the fields to update
 
             // Check and add non-empty fields to the update object
-            if (password) updateFields.password = password;
+            if (password) updateFields.password = await hash(password);
             if (email) updateFields.email = email;
             if (phoneNumber) updateFields.phoneNumber = phoneNumber;
             if (dateOfBirth) updateFields.dateOfBirth = dateOfBirth;

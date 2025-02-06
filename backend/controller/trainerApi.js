@@ -2,6 +2,7 @@ const Client = require('../models/clientModel');
 const Course = require('../models/courseModel');
 const Trainer = require('../models/trainerModel');
 const idProjection = require('./idProjection');
+const { hash } = require('@node-rs/argon2');
 
 //API RESTFUL CRUD CON LOCK PER LA GESTIONE DELLA MUTUA ESCLUSIONE
 // le funzioni di Mongoose sono CRUD
@@ -9,6 +10,7 @@ const idProjection = require('./idProjection');
 module.exports = class API {
     static async createTrainer(req, res) {
         const trainer = req.body;
+        trainer.password = await hash(trainer.password);
         try {
             const trainerAlreadyPresent = await Trainer.findOne({ username: req.body.username }, idProjection(Trainer), null).exec();
 
@@ -66,7 +68,7 @@ module.exports = class API {
         try {
             const updateFields = {}; // Object that will contain only the fields to update
             // Check and add non-empty fields to the update object
-            if (password) updateFields.password = password;
+            if (password) updateFields.password = await hash(password);
             if (email) updateFields.email = email;
             if (phoneNumber) updateFields.phoneNumber = phoneNumber;
             if (courses) updateFields.courses = courses;

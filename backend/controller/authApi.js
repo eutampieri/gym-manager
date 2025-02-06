@@ -4,30 +4,23 @@ const Admin = require('../models/adminModel');
 const jose = require('jose');
 const idProjection = require('./idProjection');
 const { JWT_KEY, ISSUER, AUDIENCE } = require('../utils');
+const { verify } = require('@node-rs/argon2');
 
 async function lookupUsername(username) {
-    let result = { kind: null, data: null };
-    const customer = await Client.findOne({ username: username }, idProjection(Client), null).exec();
-    if (customer) {
-        result.kind = "customer";
-        result.data = customer;
-        return result;
+    const models = [
+        { model: Client, kind: 'customer' },
+        { model: Trainer, kind: 'trainer' },
+        { model: Admin, kind: 'admin' },
+    ];
+
+    for (const { model, kind } of models) {
+        const result = await model.findOne({ username }, idProjection(model), null).exec();
+        if (result) {
+            return { kind, data: result };
+        }
     }
 
-    // Check if the username matches a trainer
-    const trainer = await Trainer.findOne({ username: username }, idProjection(Trainer), null).exec();
-    if (trainer) {
-        result.kind = "trainer";
-        result.data = trainer;
-        return result;
-    }
-
-    const admin = await Admin.findOne({ username: username }, idProjection(Admin), null).exec();
-    if (admin) {
-        result.kind = "admin";
-        result.data = admin;
-        return result;
-    }
+    return { kind: null, data: null };
 }
 
 exports.authenticate = async (req, res) => {
@@ -36,7 +29,7 @@ exports.authenticate = async (req, res) => {
 
     try {
         const user = await lookupUsername(username);
-        if (user.kind === null || user.data.password !== password) { // TODO salt and hash
+        if (user.kind === null || !await verify(user.data.password, password)) {
             res.status(401).send("Unauthorized");
         } else {
             token.role = user.kind;
