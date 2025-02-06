@@ -30,7 +30,6 @@ export class Client {
         }
         h.append("Content-Type", "application/json");
         return fetch(`/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
-        // return fetch(`http://localhost:8080/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
     public async login(username: string, password: string): Promise<boolean> {
