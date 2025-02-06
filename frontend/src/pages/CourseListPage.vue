@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import CourseAvailabilityWatcher, { CourseAvailabilityUpdate } from '@/components/CourseAvailabilityWatcher.vue';
 import ListView from '@/components/ListView.vue';
 import router from '@/routes/router';
 import { useModalsStore } from '@/store/modals';
@@ -25,10 +26,10 @@ const courses = ref<Array<Course>>([]);
 const displayableCourses = computed(() => courses.value.map(displayableCourseFormatter));
 
 client.listCourses()
-    .then(courses => Promise.all(courses.map(c => 
+    .then(courses => Promise.all(courses.map(c =>
         client.getTrainerById(c.trainer)
             .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}` }))
-        ))
+    ))
     ).then(x => courses.value = x);
 
 
@@ -79,8 +80,19 @@ const filter = (d: Course | RowData, s: string) =>
     (d as Course).description.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
     (d as Course).trainer.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0;
 
+function handlePush(update: CourseAvailabilityUpdate) {
+    const courseIndex = courses.value.findIndex((x) => x.id === update.course);
+    if (courseIndex !== -1) {
+        const scheduleIndex = courses.value[courseIndex].schedule.findIndex(x => x.dayOfWeek == update.dayOfWeek && x.startTime == update.startTime);
+        if (scheduleIndex !== -1) {
+            courses.value[courseIndex].schedule[scheduleIndex].availableSpots += update.availability;
+        }
+    }
+}
+
 </script>
 <template>
     <h2>All courses</h2>
     <ListView :data="data" :mobile-header="mobileHeader" :filter-function="filter"></ListView>
+    <CourseAvailabilityWatcher @update="handlePush"></CourseAvailabilityWatcher>
 </template>

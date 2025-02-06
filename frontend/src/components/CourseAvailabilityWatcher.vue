@@ -4,7 +4,7 @@ import { EventType, SubscriptionEntity } from '@gym-manager/models';
 import { useUserStore } from '@/store/user';
 import { onMounted } from 'vue';
 
-interface CourseAvailabilityUpdate {
+export interface CourseAvailabilityUpdate {
     course: string,
     availability: number,
     dayOfWeek: string,
