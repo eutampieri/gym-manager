@@ -8,14 +8,13 @@ import express, { json, urlencoded, static as serveStatic } from 'express';
 import { join } from 'path';
 import { connect } from 'mongoose';
 import logger from 'morgan';
-import createError from 'http-errors';
 import cookieParser from 'cookie-parser';
 import expressOpenAPI from 'express-openapi-generator';
 import { writeFileSync } from 'fs';
-import { Server } from 'socket.io';
 import { hash } from '@node-rs/argon2';
 import Admin from './models/adminModel.js';
 import idProjection from './controller/idProjection.js';
+import { createSocketIoServer } from './controller/chat/index.js'
 
 
 const documentBuilder = expressOpenAPI.DocumentBuilder.initializeDocument({
@@ -129,4 +128,5 @@ if (process.env.GENERATE_OPENAPI !== undefined) {
   const server = app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
   });
+  createSocketIoServer(server);
 }
