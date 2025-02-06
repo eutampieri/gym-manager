@@ -121,6 +121,9 @@ export class Client {
     public updateAdmin(id: string, updated: CreateAdminRequest): Promise<boolean> {
         return this.apiRequest("PUT", "/admins/" + id, updated).then(r => r.status == 200);
     }
+    public updateCustomer(id: string, updated: CreateUserRequest): Promise<boolean> {
+        return this.apiRequest("PUT", "/customers/" + id, updated).then(r => r.status == 200);
+    }
 
     public listUsers(): Promise<User[]> {
         return this.apiRequest("GET", "/customers").then(x => x.json());

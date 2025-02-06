@@ -62,8 +62,8 @@ module.exports = class API {
 
 
     static async updateCustomer(req, res) {
-        const username = req.body.username;
-        const { password, email, phoneNumber, dateOfBirth, address, courses, sessions } = req.body; // Extract the fields to update
+        const id = req.params.id;
+        const { password, email, phoneNumber, dateOfBirth, address, courses, sessions } = req.body;
 
         try {
             const updateFields = {}; // Object that will contain only the fields to update
@@ -78,7 +78,7 @@ module.exports = class API {
             if (sessions) updateFields.sessions = sessions;
             // Perform the update only if there are fields to update
             if (Object.keys(updateFields).length > 0) {
-                await Client.updateOne({ username: username }, updateFields, null);
+                await Client.updateOne({ _id: id }, updateFields, null);
                 res.status(200).json({ message: 'Client updated successfully' });
             } else {
                 res.status(400).json({ message: 'No fields to update' });
