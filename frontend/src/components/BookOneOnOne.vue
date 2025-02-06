@@ -28,9 +28,12 @@ async function bookSession() {
     }
 
     const success = await client.createSession(
-        trainerId,
-        selectedDay.value,
-        selectedTime.value
+        {
+            participant: client.userDetails!.id,
+            trainer: trainerId,
+            dayOfWeek: selectedDay.value,
+            startTime: selectedTime.value,
+        }
     );
 
     if (success) {

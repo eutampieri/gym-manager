@@ -20,3 +20,9 @@ export interface CourseScheduleEntry {
 
 export interface CourseInfo extends CourseData, Identifiable { }
 export interface Course extends CreateCourseRequest, Identifiable { }
+
+export interface BookCourseRequest {
+    dayOfWeek: string,
+    startTime: string,
+    clientId?: string,
+}

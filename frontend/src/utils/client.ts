@@ -1,4 +1,4 @@
-import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
+import { Admin, BookCourseRequest, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateSessionRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
 import { TrainerAvailabilities } from "@gym-manager/models/trainer";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
@@ -151,7 +151,7 @@ export class Client {
 
         return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
     }
-    public async getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string }[] }>> {
+    public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string }[] }>> {
         // return Promise.resolve([{
         //     course: {
         //         id: "c.id",
@@ -209,7 +209,7 @@ export class Client {
                 }
             })));
     }
-    public async getTrainerSessions(userId: string): Promise<Array<{ info: SessionInfo, participant: Admin }>> {
+    public getTrainerSessions(userId: string): Promise<Array<{ info: SessionInfo, participant: Admin }>> {
         return this.apiRequest("GET", `/trainers/${userId}/sessions`)
             .then(r => r.json())
             .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string; username: string; firstName: string; lastName: string; }; }) => ({
@@ -244,10 +244,10 @@ export class Client {
         // ... TODO
     }
 
-    public async bookCourse(courseId: string, dayOfWeek: string, startTime: string, clientId?: string): Promise<boolean> {
+    public async bookCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
         //return Promise.resolve(true);
 
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: clientId, dayOfWeek, startTime })
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r)
             .then(r => true);
     }
 
@@ -263,23 +263,15 @@ export class Client {
         return this.apiRequest("POST", "/trainers", trainer);
     }
 
-    public async listTrainers(): Promise<Trainer[]> {
+    public listTrainers(): Promise<Trainer[]> {
         return this.apiRequest("GET", "/trainers").then(x => x.json());
     }
-    public async createSession(trainer: string, dayOfWeek: string, startTime: string): Promise<boolean> {
-        //public async createSession(trainer: string, dayOfWeek: string, startTime: string, participant?: string): Promise<boolean> {
-        /*if (!this.isLoggedIn || !this.userDetails) {
-            return false; // L'utente deve essere loggato per creare una sessione
-        }*/
-        const participant = this.userDetails?.id;
-        const sessionData = {
-            trainer,
-            dayOfWeek,
-            startTime,
-            participant
-        };
+    public async createSession(session: CreateSessionRequest): Promise<boolean> {
+        if (!this.isLoggedIn) {
+            return false;
+        }
 
-        const response = await this.apiRequest("POST", "/sessions", sessionData);
+        const response = await this.apiRequest("POST", "/sessions", session);
 
         return response.status === 201; // Ritorna `true` se la sessione è stata creata con successo
     }
