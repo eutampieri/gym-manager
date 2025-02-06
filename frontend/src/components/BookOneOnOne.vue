@@ -13,7 +13,7 @@ const daysOfWeek = ref(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
 
 const selectedDay = ref("");
 const selectedTime = ref("");
-const availableTimeSlots = computed(() => availabilities === null ? [] : Object.entries(availabilities[selectedDay.value])
+const availableTimeSlots = computed(() => (availabilities === null || selectedDay.value === '') ? [] : Object.entries(availabilities[selectedDay.value])
     .filter(x => x[1])
     .map(x => x[0]));
 
