@@ -78,7 +78,7 @@ export class Client {
         return this.apiRequest("GET", "/customers/" + id).then(r => r.json());
     }
     public getAdminById(id: string): Promise<Admin | undefined> {
-        return this.apiRequest("GET", "/admin/" + id).then(r => r.json());
+        return this.apiRequest("GET", "/admins/" + id).then(r => r.json());
     }
     public getTrainerById(id: string): Promise<Trainer> {
         return this.apiRequest("GET", "/trainers/" + id).then(r => r.json());
@@ -108,8 +108,8 @@ export class Client {
     public addUser(user: CreateUserRequest) {
         return this.apiRequest("POST", "/customers", user);
     }
-    public addAdmin(admin: CreateAdminRequest) {
-        return this.apiRequest("POST", "/admins", admin);
+    public addAdmin(admin: CreateAdminRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/admins", admin).then(r => r.status == 201);
     }
     public addTrainer(trainer: CreateTrainerRequest) {
         return this.apiRequest("POST", "/trainers", trainer);
@@ -129,6 +129,19 @@ export class Client {
     }
     public updateCourse(id: string, updated: CreateCourseRequest): Promise<boolean> {
         return this.apiRequest("PUT", "/courses/" + id, updated).then(r => r.status == 200);
+    }
+
+    public deleteAdmin(id: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/admins/" + id).then(r => r.status == 200);
+    }
+    public deleteCustomer(id: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/customers/" + id).then(r => r.status == 200);
+    }
+    public deleteTrainer(id: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/trainers/" + id).then(r => r.status == 200);
+    }
+    public deleteCourse(id: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/courses/" + id).then(r => r.status == 200);
     }
 
     public listUsers(): Promise<User[]> {

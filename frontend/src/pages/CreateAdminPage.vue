@@ -3,7 +3,7 @@ import { isOnlyLetters } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import CheckBox from '@/components/CheckBox.vue';
-import { CreateAdminRequest } from '@gym-manager/models/user';
+import { Admin, CreateAdminRequest } from '@gym-manager/models/user';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
 
@@ -12,7 +12,6 @@ const password = ref("");
 const firstName = ref("");
 const lastName = ref("");
 const hasFullPrivileges = ref(false);
-const message = ref("");
 
 const usernameValid = ref(false);
 const passwordValid = ref(false);
@@ -26,57 +25,92 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
 );
 
 const client = useUserStore().client;
-const notificationStore = useNotificationsStore();
+const notification = useNotificationsStore();
+
+const props = defineProps<{ id?: string }>();
+
+if (props.id) {
+    client.getAdminById(props.id).then(r => {
+        if (r) {
+            username.value = r.username;
+            firstName.value = r.firstName;
+            lastName.value = r.lastName;
+            password.value = '*******';
+            hasFullPrivileges.value = r.hasFullPrivileges;
+        } else {
+            notification.fire({
+                title: 'Error',
+                body: 'This admin could not be found',
+                background: 'danger'
+            })
+        }
+    })
+}
+const createRequest = () => {
+    return {
+        username: username.value,
+        password: password.value == '*******' ? undefined : password.value,
+        firstName: firstName.value,
+        lastName: lastName.value,
+        hasFullPrivileges: hasFullPrivileges.value
+    } as CreateAdminRequest
+}
+async function handleUpdateAdmin() {
+    try {
+        const request = createRequest()
+        const id = props.id!;
+        const response = await client.updateAdmin(id, request);
+
+        if (response) {
+            notification.fire({
+                title: 'Success',
+                body: `Admin ${firstName.value} ${lastName.value} successfully updated!`,
+                background: 'success',
+                when: new Date(),
+            });
+        } else {
+            throw new Error();
+        }
+    } catch (error) {
+        notification.fire({
+            title: 'Error',
+            body: 'Error while updating the admin',
+            background: 'danger',
+            when: new Date(),
+        });
+    }
+}
 
 async function handleCreateAdmin() {
     try {
-
-        // Creazione dell'oggetto JSON con i dati del cliente
-        const request: CreateAdminRequest = {
-            username: username.value,
-            password: password.value,
-            firstName: firstName.value,
-            lastName: lastName.value,
-            hasFullPrivileges: hasFullPrivileges.value
-        }
-
-
-        // Effettua la richiesta POST per creare il cliente
+        const request = createRequest()
         const response = await client.addAdmin(request);
 
-        if (response.status === 201) {
-            notificationStore.fire({
+        if (response) {
+            notification.fire({
                 title: 'Success',
                 body: `Admin ${firstName.value} ${lastName.value} successfully created!`,
                 background: 'success',
                 when: new Date(),
             });
         } else {
-            notificationStore.fire({
-                title: 'Error',
-                body: 'Error while creating the admin',
-                background: 'danger',
-                when: new Date(),
-            });
+            throw new Error();
         }
     } catch (error) {
-        notificationStore.fire({
+        notification.fire({
             title: 'Error',
             body: 'Error while creating the admin',
             background: 'danger',
             when: new Date(),
         });
     }
-
 }
 </script>
+
 <template>
-
-    <h2>Creating {{ firstName === "" ? "a new admin" : `${firstName} ${lastName}` }}</h2>
-
-
+    <h2 v-if="props.id">Update {{ username != '' ? username : 'Admin' }}</h2>
+    <h2 v-else>Create {{ username != '' ? username : 'a new Admin' }}</h2>
     <form>
-
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
             :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
             Username
@@ -101,14 +135,9 @@ async function handleCreateAdmin() {
         <CheckBox type="boolean" id="hasFullPrivileges" v-model="hasFullPrivileges">
             Privilege</CheckBox>
 
-
-        <button class="btn btn-primary" type="button" @click="handleCreateAdmin()"
+        <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateAdmin"
+            :disabled="!submitButtonEnabled">Update Admin {{ firstName }}</button>
+        <button v-else class="btn btn-primary" type="button" @click="handleCreateAdmin"
             :disabled="!submitButtonEnabled">Create Admin {{ firstName }}</button>
-
-        <p v-if="message">
-            {{ message }}
-        </p>
-
     </form>
-
 </template>

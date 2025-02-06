@@ -28,6 +28,7 @@ const routes = [
     { path: '/admin/listCourses', name: "listCourses", component: CourseListPage, meta: { role: "user" } },
     { path: '/admin/createTrainer', name: "createTrainer", component: CreateTrainerPage, meta: { role: "admin" } },
     { path: '/admin/createAdmin', name: "createAdmin", component: CreateAdminPage, meta: { role: "admin" } },
+    { path: '/admin/updateAdmin/:id', name: "updateAdmin", component: CreateAdminPage, meta: { role: "admin" }, props: true },
     { path: '/admin/listAdmins', name: "listAdmins", component: AdminListPage, meta: { role: "admin" } },
     { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
     { path: '/user/book/oneOnOne', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
