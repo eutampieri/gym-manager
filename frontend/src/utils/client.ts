@@ -195,19 +195,10 @@ export class Client {
     }
     
     public async bookCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
-        //return Promise.resolve(true);
-
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r)
-            .then(r => true);
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r).then(r => r.status == 201);
     }
-    public unsubscribeFromCourse(courseId: string): Promise<string> {
-        return Promise.resolve(courseId);
-        if (this.getRole != Role.User) {
-            return Promise.reject();
-        }
-        const user = this.userDetails
-        // unsubscribe
-        // ... TODO
+    public unsubscribeFromCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
+        return this.apiRequest("DELETE", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
     }
     
     public async createSession(session: CreateSessionRequest): Promise<boolean> {
