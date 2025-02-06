@@ -8,6 +8,8 @@ const ROOMS = {
     admin: "admin"
 }
 
+const ACCEPTED_CHATS = new Set<string>();
+
 export function createSocketIoServer(server: NodeServer) {
     console.log(verifyJWT)
     const io = new Server(server, {
@@ -44,8 +46,12 @@ export function createSocketIoServer(server: NodeServer) {
         // Accept chat request
         socket.on(EventType.AcceptChatRequest.toString(), (room) => {
             if (userData !== undefined && (userData as any).role === "admin") {
-                socket.join(room);
-                io.to(room).emit(EventType.ChatEstablished.toString(), room);
+                if (ACCEPTED_CHATS.has(room)) {
+                    socket.emit(EventType.Error.toString(), "The chat was already taken.");
+                } else {
+                    socket.join(room);
+                    io.to(room).emit(EventType.ChatEstablished.toString(), room);
+                }
             }
         });
 
