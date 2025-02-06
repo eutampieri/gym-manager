@@ -30,7 +30,14 @@ const myId = client.userDetails!.id;
 
 onMounted(() => {
     socket.emit(EventType.Authenticate.toString(), client.authToken!);
-    useChatStore().registerHandler(() => socket.emit(EventType.ChatRequest.toString()));
+    useChatStore().registerHandler(() => {
+        socket.emit(EventType.ChatRequest.toString());
+        notifications.fire({
+            body: "A support chat has been requested. When an admin accepts your request, a chat will be shown.",
+            background: "info",
+            when: new Date(),
+        })
+    });
 });
 
 socket.on(
