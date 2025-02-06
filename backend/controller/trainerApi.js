@@ -176,15 +176,11 @@ module.exports = class API {
 
             const availabilities = days.reduce((o, key) => Object.assign(o, { [key]: times.reduce((o, key) => Object.assign(o, { [key]: true }), {}) }), {})
 
-            const trainerSessions = await Trainer.findAll({
-                _id: id,
-            }, null, null);
+            const trainer = await Trainer.find({ _id: id, }, null, null)
+                .populate("sessions")
+                .populate("courses");
 
-            const trainerCourses = await Trainer.findAll({
-                _id: id,
-            }, null, null);
-
-            trainerUnavailabilities = trainerSessions.concat(trainerCourses);
+            trainerUnavailabilities = trainer.sessions.concat(trainer.courses);
 
             for (const t of trainerUnavailabilities) {
                 availabilities[t.dayOfWeek][t.startTime] = false;
