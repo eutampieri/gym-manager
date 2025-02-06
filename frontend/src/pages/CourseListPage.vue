@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import ListView from '@/components/ListView.vue';
+import router from '@/routes/router';
+import { useModalsStore } from '@/store/modals';
+import { useNotificationsStore } from '@/store/notifications';
 import { useUserStore } from '@/store/user';
 import { ListData, RowData } from '@/utils/lists';
 import { Course, Trainer, User } from '@gym-manager/models';
@@ -7,22 +10,24 @@ import { computed, ref } from 'vue';
 
 function displayableCourseFormatter(c: Course): RowData {
     return {
+        id: c.id,
         name: c.name,
         description: c.description,
-        dateTime: c.schedule.map((x) => `${x.dayOfWeek} ${x.startTime}`),
         trainer: c.trainer,
-        capacityStatus: c.schedule.map((x) => `${c.capacity - x.participants.length}/${c.capacity}`),
+        schedule: c.schedule.map(x => `${x.dayOfWeek} ${x.startTime} (available slots: ${c.capacity - x.participants.length}/${c.capacity})`),
     };
 }
 
 const client = useUserStore().client;
+const confirm = useModalsStore().confirm;
+const notification = useNotificationsStore();
 const courses = ref<Array<Course>>([]);
 const displayableCourses = computed(() => courses.value.map(displayableCourseFormatter));
 
 client.listCourses()
     .then(courses => Promise.all(courses.map(c => 
         client.getTrainerById(c.trainer)
-            .then(t => ({ ...c, trainer: `${t.firstName} ${t.lastName}` }))
+            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}` }))
         ))
     ).then(x => courses.value = x);
 
@@ -30,19 +35,41 @@ client.listCourses()
 const data = computed<ListData>((): ListData => {
     return {
         actions: [
-            { action: (d) => alert("Edit"), colour: "primary", label: "Edit" },
-            { action: (d) => alert("Delete"), colour: "danger", label: "Delete" },
+            { action: edit, colour: "primary", label: "Edit" },
+            { action: del, colour: "danger", label: "Delete" },
         ],
         data: displayableCourses.value,
         headers: [
             { key: "name", name: "Name" },
             { key: "description", name: "Description" },
-            { key: "dateTime", name: "Date and time" },
             { key: "trainer", name: "Trainer" },
-            { key: "capacityStatus", name: "Enrolled/Capacity" },
+            { key: "schedule", name: "Schedule" },
         ]
     };
 });
+const edit = (d: Course | RowData) => router.push({ path: '/admin/updateCourse/' + d.id })
+const del = async (d: Course | RowData) => {
+    if (await confirm(`Are you sure you want to delete the course "${d.name}"?`)) {
+        client.deleteCourse(d.id as string).then(r => {
+            if (r) {
+                courses.value = courses.value.filter(c => c.id != d.id)
+                notification.fire({
+                    title: 'Success',
+                    body: 'Course deleted successfully!',
+                    background: 'success',
+                    when: new Date(),
+                });
+            } else {
+                notification.fire({
+                    title: 'Error',
+                    body: 'Error while deleting the course',
+                    background: 'danger',
+                    when: new Date(),
+                });
+            }
+        });
+    }
+}
 
 const mobileHeader = (d: Course | RowData) =>
     `${d.name} (${d.trainer})`;

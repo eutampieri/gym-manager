@@ -15,7 +15,7 @@ const fieldValid = computed(() => {
     validationModel.value = status;
     return status;
 });
-console.log(props.errorMessage.length);
+
 </script>
 <template>
     <div class="mb-3">
