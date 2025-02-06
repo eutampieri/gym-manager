@@ -76,7 +76,6 @@ import trainers from './routes/trainerRoutes.js';
 import sessions from './routes/sessionRoutes.js';
 import admins from './routes/adminRoutes.js';
 import auth from './routes/authRoutes.js';
-import { createSocketIoServer } from './controller/chat/index.js';
 
 
 
@@ -103,5 +102,4 @@ if (process.env.GENERATE_OPENAPI !== undefined) {
   const server = app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
   });
-  createSocketIoServer(server);
 }
