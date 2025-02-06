@@ -7,6 +7,9 @@ import { SelectInputValue } from '@/components/SelectInput.vue';
 import { useUserStore } from '@/store/user';
 import SelectInput from '@/components/SelectInput.vue';
 import { useNotificationsStore } from '@/store/notifications';
+import SectionContainer from '@/components/SectionContainer.vue';
+import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import TextAreaInput from '@/components/TextAreaInput.vue';
 
 const name = ref("");
 const description = ref("");
@@ -21,7 +24,6 @@ const scheduleEntriesHours = computed(() => scheduleEntries.value.map(computeHou
 const trainersList = computed(() => allTrainers.value.map(t => ({ ...t, selected: t.id == trainer.value })));
 
 const nameValid = ref(false);
-const descriptionValid = ref(false);
 const capacityValid = ref(false);
 
 const submitButtonEnabled = computed(() => {
@@ -31,7 +33,6 @@ const submitButtonEnabled = computed(() => {
         scheduleEntries.value.length > 0 &&
         capacity.value > 0 &&
         trainer.value !== "" &&
-        descriptionValid.value &&
         capacityValid.value &&
         nameValid.value
     );
@@ -61,18 +62,8 @@ if (props.id) {
 }
 // Giorni della settimana
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-// Orari disponibili (09:00 - 18:00)
-// const timeSlots = computed(() => {
-//     const times = [];
-//     for (let hour = 9; hour <= 18; hour++) {
-//         times.push(`${hour.toString().padStart(2, '0')}:00`); //padding iniziale per avere 09:00
-//     }
-//     return times;
-// });
 // Orari disponibili (09:00 - 18:00)
 const timeSlots = Array(10).fill(9).map((x, i) => x + i).map(h => `${h.toString().padStart(2, '0')}:00`);
-
 function computeDays(entry: CourseScheduleEntry): SelectInputValue[] {
     return daysOfWeek.map(s => ({ id: s, label: s, selected: entry.dayOfWeek == s }))
 }
@@ -163,47 +154,50 @@ async function handleCreateCourse() {
 </script>
 
 <template>
-    <h2 v-if="props.id">Update {{ name != '' ? name : 'Course' }}</h2>
-    <h2 v-else>Create {{ name != '' ? name : 'a new Course' }}</h2>
-    <form>
-        <ValidatingGenericInput type="text" id="name" error-message="The name can only contain letters"
-            :validation-function="isOnlyLetters" v-model="name" v-model:valid="nameValid">
-            Name
-        </ValidatingGenericInput>
+    <h2 v-if="props.id" class="text-center">Update {{ name != '' ? name : 'Course' }}</h2>
+    <h2 v-else class="text-center">Create {{ name != '' ? name : 'a new Course' }}</h2>
+    <SectionContainer>
+        <SectionContainerItem>
+            <form>
+                <ValidatingGenericInput type="text" id="name" error-message="The name can only contain letters"
+                    :validation-function="isOnlyLetters" v-model="name" v-model:valid="nameValid">
+                    Name
+                </ValidatingGenericInput>
 
-        <ValidatingGenericInput type="text" id="description" error-message="The description can only contain letters"
-            :validation-function="isOnlyLetters" v-model="description" v-model:valid="descriptionValid">
-            Description
-        </ValidatingGenericInput>
+                <TextAreaInput type="text" id="description" label="Description" v-model="description" />
 
-        <h3 class="fs-5">Schedule</h3>
-        <div>
-            <div v-for="(entry, index) in scheduleEntries" :key="index" class="schedule-entry">
-                <SelectInput :id="'dayOfWeek' + index" v-model="entry.dayOfWeek" :options="scheduleEntriesDays[index]">
-                    Day of Week
+                <h3 class="fs-5">Schedule</h3>
+                <div class="d-flex flex-column">
+                    <div v-for="(entry, index) in scheduleEntries" :key="index" 
+                        :class="`schedule-entry d-flex justify-content-center align-content-center pb-1 ${index != 0 ? 'pt-3 border-top' : ''}`">
+                        <div class="d-flex flex-column col-8">
+                            <SelectInput :id="'dayOfWeek' + index" v-model="entry.dayOfWeek" :options="scheduleEntriesDays[index]">
+                                Day of Week
+                            </SelectInput>
+                            <SelectInput :id="'startTime' + index" v-model="entry.startTime" :options="scheduleEntriesHours[index]">
+                                Start Time
+                            </SelectInput>
+                        </div>
+                        <button type="button" class="btn btn-danger m-3 align-self-center" @click="removeScheduleEntry(index)">Remove</button>
+                    </div>
+                    <button type="button" class="btn btn-secondary mx-auto" @click="addScheduleEntry">Add Schedule Entry</button>
+                </div>
+
+                <ValidatingGenericInput type="text" id="capacity" error-message="The course must have at least one participant"
+                    :validation-function="isValidCapacity" v-model="capacityString" v-model:valid="capacityValid">
+                    Capacity
+                </ValidatingGenericInput>
+
+                <SelectInput id="trainer" v-model="trainer" :options="trainersList">
+                    Trainer
                 </SelectInput>
+
+                <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateCourse"
+                    :disabled="!submitButtonEnabled">Update Course {{ name }}</button>
+                <button v-else class="btn btn-primary" type="button" @click="handleCreateCourse"
+                    :disabled="!submitButtonEnabled">Create Course {{ name }}</button>
+            </form>
+        </SectionContainerItem>
+    </SectionContainer>
     
-                <SelectInput :id="'startTime' + index" v-model="entry.startTime" :options="scheduleEntriesHours[index]">
-                    Start Time
-                </SelectInput>
-    
-                <button type="button" class="btn btn-danger" @click="removeScheduleEntry(index)">Remove</button>
-            </div>
-            <button type="button" class="btn btn-secondary" @click="addScheduleEntry">Add Schedule Entry</button>
-        </div>
-
-        <ValidatingGenericInput type="text" id="capacity" error-message="The course must have at least one participant"
-            :validation-function="isValidCapacity" v-model="capacityString" v-model:valid="capacityValid">
-            Capacity
-        </ValidatingGenericInput>
-
-        <SelectInput id="trainer" v-model="trainer" :options="trainersList">
-            Trainer
-        </SelectInput>
-
-        <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateCourse"
-            :disabled="!submitButtonEnabled">Update Course {{ name }}</button>
-        <button v-else class="btn btn-primary" type="button" @click="handleCreateCourse"
-            :disabled="!submitButtonEnabled">Create Course {{ name }}</button>
-    </form>
 </template>
