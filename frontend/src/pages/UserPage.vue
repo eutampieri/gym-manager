@@ -36,7 +36,7 @@ async function unsubscribeFromCourse(courseId: string, courseName: string, dayOf
                     // removed
                     myCourses.value = myCourses.value?.filter(x => x.course.id != courseId && x.dayOfWeek != dayOfWeek && x.startTime != startTime)
                     notification.fire({
-                        body: 'Unsubscribed from course correctly',
+                        body: 'Unsubscribed from course correctly!',
                         background: 'success'
                     })
                 } else {
@@ -52,7 +52,22 @@ async function unsubscribeFromCourse(courseId: string, courseName: string, dayOf
 async function cancelSession(sessionId: string) {
     if (await confirm('Do you want to cancel the private session?')) {
         store.client.cancelSession(sessionId)
-            .then(id => myOneOnOne.value = myOneOnOne.value?.filter(x => x.info.id != id));
+            .then(res => {
+                if (res) {
+                    // removed
+                    myOneOnOne.value = myOneOnOne.value?.filter(x => x.info.id != sessionId)
+                    notification.fire({
+                        body: 'One-on-one canceled correctly!',
+                        background: 'success'
+                    })
+                } else {
+                    // error
+                    notification.fire({
+                        body: 'Could not cancel one-on-one',
+                        background: 'danger'
+                    })
+                }
+            });
     }
 }
 
@@ -103,8 +118,7 @@ const contactSupport = '/support/chat'
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => cancelSession(session.info.id)">Cancel
-                        appointment</button>
+                        @click="() => cancelSession(session.info.id)">Cancel appointment</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>

@@ -201,28 +201,16 @@ export class Client {
         return this.apiRequest("DELETE", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
     }
     
-    public async createSession(session: CreateSessionRequest): Promise<boolean> {
-        if (!this.isLoggedIn) {
-            return false;
-        }
-
-        const response = await this.apiRequest("POST", "/sessions", session);
-
-        return response.status === 201; // Ritorna `true` se la sessione è stata creata con successo
+    public createSession(session: CreateSessionRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/sessions", session).then(r => r.status == 201);
     }
-    public cancelSession(sessionId: string): Promise<string> {
-        return Promise.resolve(sessionId);
-        // cancel one-on-one
-        // ... TODO
+    public cancelSession(sessionId: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/sessions/" + sessionId).then(r => r.status == 200);
     }
-
-
 
     public async getTrainerAvailabilities(trainer: string): Promise<TrainerAvailabilities> {
-        const response = await this.apiRequest("GET", `/trainers/${trainer}/availabilities`)
-            .then(x => x.json());
-
-        return response; // Ritorna `true` se la sessione è stata creata con successo
+        const response = await this.apiRequest("GET", `/trainers/${trainer}/availabilities`).then(x => x.json());
+        return response;
     }
 
 }
