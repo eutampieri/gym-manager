@@ -2,7 +2,7 @@ import Client from '../models/clientModel.js';
 import Course from '../models/courseModel.js';
 import Trainer from '../models/trainerModel.js';
 import idProjection from './idProjection.js';
-import { SubscriptionEntity } from '@gym-manager/models/chat.js';
+import { EventType, SubscriptionEntity } from '@gym-manager/models/chat.js';
 
 
 // RESTFUL CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
@@ -140,7 +140,7 @@ export default class API {
             // Elimina il corso dal database
             await Course.findOneAndDelete({ _id: courseId });
             for (s of course.schedule) {
-                req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit({
+                req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
                     course: courseId,
                     availability: s.availableSpots * -1,
                     dayOfWeek: s.dayOfWeek,
@@ -203,7 +203,7 @@ export default class API {
                     }
                 }
             );
-            req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit({
+            req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
                 course: courseId,
                 availability: -1,
                 dayOfWeek,
@@ -298,7 +298,7 @@ export default class API {
                 }
             );
 
-            req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit({
+            req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
                 course: courseId,
                 availability: 1,
                 dayOfWeek,

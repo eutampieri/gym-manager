@@ -9,6 +9,7 @@ export enum EventType {
     CloseChat,
     LeaveRoom,
     Subscribe,
+    SubscriptionUpdate,
 }
 
 export enum SubscriptionEntity {
