@@ -6,6 +6,8 @@ import GenericInput from '@/components/GenericInput.vue';
 import { CreateTrainerRequest } from '@gym-manager/models/trainer';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const username = ref("");
 const password = ref("");
@@ -57,6 +59,7 @@ async function handleCreateTrainer() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             notificationStore.fire({
                 title: 'Error',

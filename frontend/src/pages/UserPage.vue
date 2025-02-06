@@ -4,15 +4,16 @@ import Dropdown from '@/components/Dropdown.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
 import MainButton from '@/components/MainButton.vue';
-import { CourseInfo, SessionInfo, Trainer } from '@gym-manager/models';
+import { BookCourseRequest, CourseInfo, SessionInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
 import { useModalsStore } from '@/store/modals';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
-
+import { useNotificationsStore } from '@/store/notifications';
 
 const store = useUserStore();
 const confirm = useModalsStore().confirm;
+const notification = useNotificationsStore();
 
 const user = store.client.userDetails;
 
@@ -26,16 +27,47 @@ if (user) {
         .then(sessions => myOneOnOne.value = sessions);
 }
 
-async function unsubscribeFromCourse(courseId: string, courseName: string) {
+async function unsubscribeFromCourse(courseId: string, courseName: string, dayOfWeek: string, startTime: string) {
     if (await confirm('Do you want to unsubscribe from ' + courseName + '?')) {
-        store.client.unsubscribeFromCourse(courseId)
-            .then(id => myCourses.value = myCourses.value?.filter(x => x.course.id != id));
+        const req: BookCourseRequest = { clientId: user?.id, dayOfWeek, startTime }
+        store.client.unsubscribeFromCourse(courseId, req)
+            .then(res => {
+                if (res) {
+                    // removed
+                    myCourses.value = myCourses.value?.filter(x => x.course.id != courseId && x.dayOfWeek != dayOfWeek && x.startTime != startTime)
+                    notification.fire({
+                        body: 'Unsubscribed from course correctly!',
+                        background: 'success'
+                    })
+                } else {
+                    // error
+                    notification.fire({
+                        body: 'Could not unsubscribe from course',
+                        background: 'danger'
+                    })
+                }
+            });
     }
 }
 async function cancelSession(sessionId: string) {
     if (await confirm('Do you want to cancel the private session?')) {
         store.client.cancelSession(sessionId)
-            .then(id => myOneOnOne.value = myOneOnOne.value?.filter(x => x.info.id != id));
+            .then(res => {
+                if (res) {
+                    // removed
+                    myOneOnOne.value = myOneOnOne.value?.filter(x => x.info.id != sessionId)
+                    notification.fire({
+                        body: 'One-on-one canceled correctly!',
+                        background: 'success'
+                    })
+                } else {
+                    // error
+                    notification.fire({
+                        body: 'Could not cancel one-on-one',
+                        background: 'danger'
+                    })
+                }
+            });
     }
 }
 
@@ -68,7 +100,7 @@ const contactSupport = '/support/chat'
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => unsubscribeFromCourse(course.course.id, course.course.name)">Unsubscribe</button>
+                        @click="() => unsubscribeFromCourse(course.course.id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>
@@ -86,8 +118,7 @@ const contactSupport = '/support/chat'
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => cancelSession(session.info.id)">Cancel
-                        appointment</button>
+                        @click="() => cancelSession(session.info.id)">Cancel appointment</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>

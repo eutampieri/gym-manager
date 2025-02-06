@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 
 const sessionSchema = new Schema({
-
     trainer: {
         type: Schema.Types.ObjectId,
         ref: 'Trainer',

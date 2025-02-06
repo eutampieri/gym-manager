@@ -1,12 +1,14 @@
 <script lang="ts" setup>
 import { isValidCapacity, isOnlyLetters } from '@/utils/validation';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { CourseScheduleEntry, CreateCourseRequest } from "@gym-manager/models/course";
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import { SelectInputValue } from '@/components/SelectInput.vue';
 import { useUserStore } from '@/store/user';
+import SelectInput from '@/components/SelectInput.vue';
 import { useNotificationsStore } from '@/store/notifications';
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const name = ref("");
 const description = ref("");
 const capacityString = ref("");
@@ -15,7 +17,6 @@ const trainer = ref("");
 const message = ref("");
 const trainersList = ref<SelectInputValue[]>([]);
 const scheduleEntries = ref<CourseScheduleEntry[]>([]);
-
 const nameValid = ref(false);
 const descriptionValid = ref(false);
 const capacityValid = ref(false);
@@ -47,10 +48,12 @@ const timeSlots = computed(() => {
     }
     return times;
 });
+
 // Aggiungi un nuovo giorno/orario
 const addScheduleEntry = () => {
     scheduleEntries.value.push({ dayOfWeek: "", startTime: "", participants: [], availableSpots: 0 });
 };
+
 
 // Rimuovi un giorno/orario
 const removeScheduleEntry = (index: number) => {
@@ -67,8 +70,9 @@ watch(capacity, (newCapacity) => {
     }
 });
 
+
 client.listTrainers()
-    .then(x => x.map((y => { return { id: y._id, label: `${y.firstName} ${y.lastName}` }; })))
+    .then(x => x.map((y => { return { id: y.id, label: `${y.firstName} ${y.lastName}` }; })))
     .then(x => trainersList.value = x);
 
 async function handleCreateCourse() {
@@ -92,6 +96,7 @@ async function handleCreateCourse() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             notificationStore.fire({
                 title: 'Error',
@@ -110,6 +115,8 @@ async function handleCreateCourse() {
     }
 
 }
+
+
 
 
 </script>

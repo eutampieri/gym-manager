@@ -21,7 +21,7 @@ const displayableCourses = computed(() => courses.value.map(displayableCourseFor
 
 client.listCourses()
     .then(courses => Promise.all(courses.map(c => 
-        client.getTrainer(c.trainer)
+        client.getTrainerById(c.trainer)
             .then(t => ({ ...c, trainer: `${t.firstName} ${t.lastName}` }))
         ))
     ).then(x => courses.value = x);

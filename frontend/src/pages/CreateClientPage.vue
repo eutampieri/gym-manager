@@ -6,7 +6,8 @@ import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
 import { useUserStore } from '../store/user';
 import { useNotificationsStore } from '@/store/notifications';
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const username = ref("");
 const password = ref("");
 const firstName = ref("");
@@ -69,6 +70,7 @@ async function handleCreateClient() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             notificationStore.fire({
                 title: 'Error',

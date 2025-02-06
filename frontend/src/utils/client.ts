@@ -1,4 +1,5 @@
-import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
+import { Admin, BookCourseRequest, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateSessionRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
+import { TrainerAvailabilities } from "@gym-manager/models/trainer";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface UserJwt extends JwtPayload {
@@ -29,7 +30,6 @@ export class Client {
         }
         h.append("Content-Type", "application/json");
         return fetch(`/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
-        return fetch(`http://localhost:8080/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
     public async login(username: string, password: string): Promise<boolean> {
@@ -75,45 +75,24 @@ export class Client {
     }
 
     public getUserById(id: string): Promise<undefined | User | Trainer | Admin> {
-        // TODO
-        return Promise.resolve(this.userDetails);
         return this.apiRequest("GET", "/customers/" + id).then(r => r.json());
     }
-    public getAdmin(id: string): Promise<Admin | undefined> {
-        // TODO
-        return Promise.resolve(undefined);
+    public getAdminById(id: string): Promise<Admin | undefined> {
+        return this.apiRequest("GET", "/admin/" + id).then(r => r.json());
+    }
+    public getTrainerById(id: string): Promise<Trainer> {
+        return this.apiRequest("GET", "/trainers/" + id).then(r => r.json());
     }
 
-    public addUser(user: CreateUserRequest) {
-        return this.apiRequest("POST", "/customers", user);
+    public adminProfilePath(adminId: string) {
+        return '/admin/profile/' + adminId;
     }
-
-    public async listUsers(): Promise<Array<User>> {
-        /*const x = await this.apiRequest("GET", "/customers");
-        return await x.json();*/
-        return [
-            {
-                id: "1",
-                dateOfBirth: "2021-01-01",
-                fiscalCode: "mockCF",
-                address: "Abbey Road 21, SW234E1 London",
-                email: "info@abbey-road.com",
-                phoneNumber: "+44 0071 194893845",
-                username: "abbeyroad",
-                firstName: "Abbey",
-                lastName: "Road"
-            }
-        ];
+    public trainerProfilePath(trainerId: string) {
+        return '/trainer/profile/' + trainerId;
     }
-
-    public async listCourses(): Promise<Array<Course>> {
-        return this.apiRequest("GET", "/courses").then(x => x.json());
+    public customerProfilePath(trainerId: string) {
+        return '/user/profile/' + trainerId;
     }
-    public getTrainer(trainerId: string): Promise<Trainer> {
-        return this.apiRequest("GET", "/trainers/" + trainerId)
-            .then(r => r.json());
-    }
-
     public getProfilePath() {
         const id = this.userDetails?.id || '';
         switch (this.getRole) {
@@ -125,50 +104,37 @@ export class Client {
                 return this.adminProfilePath(id);
         }
     }
-    public adminProfilePath(adminId: string) {
-        return '/admin/profile/' + adminId;
+
+    public addUser(user: CreateUserRequest) {
+        return this.apiRequest("POST", "/customers", user);
     }
-    public trainerProfilePath(trainerId: string) {
-        return '/trainer/profile/' + trainerId;
+    public addAdmin(admin: CreateAdminRequest) {
+        return this.apiRequest("POST", "/admins", admin);
     }
-    public customerProfilePath(trainerId: string) {
-        return '/user/profile/' + trainerId;
+    public addTrainer(trainer: CreateTrainerRequest) {
+        return this.apiRequest("POST", "/trainers", trainer);
+    }
+    public addCourse(course: CreateCourseRequest) {
+        return this.apiRequest("POST", "/courses", course);
+    }
+
+    public listUsers(): Promise<User[]> {
+        return this.apiRequest("GET", "/customers").then(x => x.json());
+    }
+    public listAdmins(): Promise<Admin[]> {
+        return this.apiRequest("GET", "/admins").then(x => x.json());
+    }
+    public listTrainers(): Promise<Trainer[]> {
+        return this.apiRequest("GET", "/trainers").then(x => x.json());
+    }
+    public async listCourses(): Promise<Course[]> {
+        return this.apiRequest("GET", "/courses").then(x => x.json());
     }
 
     public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
-        // return Promise.resolve([{
-        //     course: {
-        //         id: "c.id",
-        //         name: "c.name",
-        //         description: "c.description",
-        //         capacity: 43,
-        //         trainer: "c.trainer",
-        //     },
-        //     startTime: "s.startTime",
-        //     dayOfWeek: "s.dayOfWeek",
-        //     participants: [{
-        //         firstName: "string", lastName: "string", id: "string"
-        //     }]
-        // }])
-
         return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
     }
     public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string }[] }>> {
-        // return Promise.resolve([{
-        //     course: {
-        //         id: "c.id",
-        //         name: "c.name",
-        //         description: "c.description",
-        //         capacity: 43,
-        //         trainer: "c.trainer",
-        //     },
-        //     startTime: "s.startTime",
-        //     dayOfWeek: "s.dayOfWeek",
-        //     participants: [{
-        //         firstName: "string", lastName: "string", id: "string"
-        //     }]
-        // }])
-
         return this.apiRequest("GET", `/trainers/${userId}/courses`)
             .then(r => r.json())
             .then(r =>
@@ -191,8 +157,6 @@ export class Client {
             );
     }
     public getCustomerSessions(userId: string): Promise<Array<{ info: SessionInfo, trainer: Trainer }>> {
-        // return Promise.resolve([])
-
         return this.apiRequest("GET", `/customers/${userId}/sessions`)
             .then(r => r.json())
             .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string, username: string; firstName: string; lastName: string; email: string; phoneNumber: string; }; }) => ({
@@ -228,48 +192,24 @@ export class Client {
                 }
             })));
     }
-
-
-    public unsubscribeFromCourse(courseId: string): Promise<string> {
-        return Promise.resolve(courseId);
-        if (this.getRole != Role.User) {
-            return Promise.reject();
-        }
-        const user = this.userDetails
-        // unsubscribe
-        // ... TODO
+    
+    public async bookCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r).then(r => r.status == 201);
+    }
+    public unsubscribeFromCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
+        return this.apiRequest("DELETE", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
+    }
+    
+    public createSession(session: CreateSessionRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/sessions", session).then(r => r.status == 201);
+    }
+    public cancelSession(sessionId: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/sessions/" + sessionId).then(r => r.status == 200);
     }
 
-    public cancelSession(sessionId: string): Promise<string> {
-        return Promise.resolve(sessionId);
-        // cancel one-on-one
-        // ... TODO
+    public async getTrainerAvailabilities(trainer: string): Promise<TrainerAvailabilities> {
+        const response = await this.apiRequest("GET", `/trainers/${trainer}/availabilities`).then(x => x.json());
+        return response;
     }
 
-    public async bookCourse(courseId: string, dayOfWeek: string, startTime: string, clientId?: string): Promise<boolean> {
-        //return Promise.resolve(true);
-
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: clientId, dayOfWeek, startTime })
-            .then(r => true);
-    }
-
-    public addAdmin(admin: CreateAdminRequest) {
-        return this.apiRequest("POST", "/admins", admin);
-    }
-
-    public listAdmins(): Promise<Admin[]> {
-        return this.apiRequest("GET", "/admins").then(x => x.json());
-    }
-
-    public addCourse(course: CreateCourseRequest) {
-        return this.apiRequest("POST", "/courses", course);
-    }
-
-    public addTrainer(trainer: CreateTrainerRequest) {
-        return this.apiRequest("POST", "/trainers", trainer);
-    }
-
-    public listTrainers(): Promise<Trainer[]> {
-        return this.apiRequest("GET", "/trainers").then(x => x.json());
-    }
 }

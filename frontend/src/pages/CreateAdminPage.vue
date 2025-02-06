@@ -6,6 +6,8 @@ import CheckBox from '@/components/CheckBox.vue';
 import { CreateAdminRequest } from '@gym-manager/models/user';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const username = ref("");
 const password = ref("");
@@ -51,6 +53,7 @@ async function handleCreateAdmin() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             notificationStore.fire({
                 title: 'Error',
