@@ -13,6 +13,9 @@ import cookieParser from 'cookie-parser';
 import expressOpenAPI from 'express-openapi-generator';
 import { writeFileSync } from 'fs';
 import { Server } from 'socket.io';
+import { hash } from '@node-rs/argon2';
+import Admin from './models/adminModel.js';
+import idProjection from './controller/idProjection.js';
 
 
 const documentBuilder = expressOpenAPI.DocumentBuilder.initializeDocument({
@@ -63,10 +66,34 @@ const uri = process.env.MONGODB_URI || 'mongodb://mongodb:27017/gym';
 connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connection to database successful');
+    // Crea admin di default se non esiste
+    createDefaultAdmin();
   })
   .catch((error) => {
     console.error('Errore connecting to the database:', error.message);
   });
+
+// Funzione per creare l'admin di default
+async function createDefaultAdmin() {
+  try {
+    const admins = await Admin.find({}, idProjection(Admin), null).exec();
+    if (admins.length === 0) {
+      const admin = new Admin({
+        username: 'admin',
+        password: await hash('admin'),
+        firstName: 'admin',
+        lastName: 'admin',
+        hasFullPrivileges: true,
+      });
+      await Admin.create(admin, null);
+      console.log('Admin di default creato con successo.');
+    } else {
+      console.log('Admin di default già esistente.');
+    }
+  } catch (error) {
+    console.error('Errore nella creazione dell\'admin di default:', error);
+  }
+}
 
 
 // Definiamo i percorsi per i moduli di gestione della palestra
