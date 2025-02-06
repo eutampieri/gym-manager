@@ -1,13 +1,13 @@
-const Client = require('../models/clientModel');
-const Course = require('../models/courseModel');
-const idProjection = require('./idProjection');
-const { hash } = require('@node-rs/argon2');
+import Client from '../models/clientModel.js';
+import Course from '../models/courseModel.js';
+import idProjection from './idProjection.js';
+import { hash } from '@node-rs/argon2';
 
 // RESTFUL CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
 // Mongoose functions are CRUD
 // find returns an array of objects
 
-module.exports = class API {
+export default class API {
     static async createCustomer(req, res) {
         const customer = req.body;
         customer.password = await hash(customer.password);

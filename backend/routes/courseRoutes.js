@@ -1,8 +1,8 @@
-const express = require('express')
-const API = require('../controller/courseApi')
-const { wrapMiddleware, adminAuth, trainerAuth, customerAuth, anyAuth } = require('../utils')
+import { Router } from 'express';
+import API from '../controller/courseApi.js';
+import { wrapMiddleware, adminAuth, trainerAuth, customerAuth, anyAuth } from '../utils.js';
 
-const router = express.Router();
+const router = Router();
 
 router.post("/", wrapMiddleware(adminAuth, API.createCourse))
 router.get("/", wrapMiddleware(anyAuth, API.fetchAllCourses))
@@ -14,4 +14,4 @@ router.post("/:id/bookings", wrapMiddleware(customerAuth, API.createBooking)) //
 router.delete("/:id/bookings", wrapMiddleware(customerAuth, API.deleteBooking)) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
 
 
-module.exports = router
+export default router

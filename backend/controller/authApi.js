@@ -1,10 +1,10 @@
-const Client = require('../models/clientModel');
-const Trainer = require('../models/trainerModel');
-const Admin = require('../models/adminModel');
-const jose = require('jose');
-const idProjection = require('./idProjection');
-const { JWT_KEY, ISSUER, AUDIENCE } = require('../utils');
-const { verify } = require('@node-rs/argon2');
+import Client from '../models/clientModel.js';
+import Trainer from '../models/trainerModel.js';
+import Admin from '../models/adminModel.js';
+import { SignJWT } from 'jose';
+import idProjection from './idProjection.js';
+import { JWT_KEY, ISSUER, AUDIENCE } from '../utils.js';
+import { verify } from '@node-rs/argon2';
 
 async function lookupUsername(username) {
     const models = [
@@ -23,7 +23,7 @@ async function lookupUsername(username) {
     return { kind: null, data: null };
 }
 
-exports.authenticate = async (req, res) => {
+export async function authenticate(req, res) {
     const { username, password } = req.body;
     const token = {};
 
@@ -38,7 +38,7 @@ exports.authenticate = async (req, res) => {
             token.profile.password = undefined;
             token.profile.sessions = undefined;
             token.profile.courses = undefined;
-            const jwt = await new jose.SignJWT(token) // details to  encode in the token
+            const jwt = await new SignJWT(token) // details to  encode in the token
                 .setProtectedHeader({
                     alg: 'HS256'
                 }) // algorithm
@@ -53,4 +53,4 @@ exports.authenticate = async (req, res) => {
         console.error('Error during authentication:', error);
         res.status(500).send('Error during authentication');
     }
-};
+}
