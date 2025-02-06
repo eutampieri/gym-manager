@@ -7,7 +7,8 @@ import { SelectInputValue } from '@/components/SelectInput.vue';
 import { useUserStore } from '@/store/user';
 import SelectInput from '@/components/SelectInput.vue';
 import { useNotificationsStore } from '@/store/notifications';
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const name = ref("");
 const description = ref("");
 const capacityString = ref("");
@@ -16,7 +17,6 @@ const trainer = ref("");
 const message = ref("");
 const trainersList = ref<SelectInputValue[]>([]);
 const scheduleEntries = ref<CourseScheduleEntry[]>([]);
-
 const nameValid = ref(false);
 const descriptionValid = ref(false);
 const capacityValid = ref(false);
@@ -96,6 +96,7 @@ async function handleCreateCourse() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             notificationStore.fire({
                 title: 'Error',
