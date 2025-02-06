@@ -175,13 +175,12 @@ export default class API {
             }
 
             // Controlla se ci sono posti disponibili
-            if (scheduleEntry.availableSpots <= 0) {
+            if (scheduleEntry.availableSpots - scheduleEntry.participants.length <= 0) {
                 return res.status(400).json({ message: 'No available spots for this schedule' });
             }
 
             // Aggiungi il cliente ai partecipanti e decrementa availableSpot
             scheduleEntry.participants.push(safeClientId);
-            scheduleEntry.availableSpots -= 1;
 
             // Aggiorna il corso con le nuove informazioni
             await Course.updateOne(
