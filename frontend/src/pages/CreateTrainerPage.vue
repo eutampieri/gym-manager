@@ -3,7 +3,7 @@ import { isOnlyLetters, isPhoneNumber } from '@/utils/validation';
 import { computed, ref } from 'vue';
 import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import GenericInput from '@/components/GenericInput.vue';
-import { CreateTrainerRequest } from '@gym-manager/models/trainer';
+import { CreateTrainerRequest } from '@gym-manager/models/user';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
 import { useRouter } from 'vue-router';
