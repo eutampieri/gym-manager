@@ -51,11 +51,11 @@ if (props.id) {
             firstName.value = r.firstName;
             lastName.value = r.lastName;
             password.value = '*******';
-            email.value = r.email,
-            phoneNumber.value = r.phoneNumber,
-            dateOfBirth.value = r.dateOfBirth,
-            fiscalCode.value = r.fiscalCode,
-            address.value = r.address,
+            email.value = r.email;
+            phoneNumber.value = r.phoneNumber;
+            dateOfBirth.value = r.dateOfBirth;
+            fiscalCode.value = r.fiscalCode;
+            address.value = r.address;
         } else {
             notification.fire({
                 title: 'Error',

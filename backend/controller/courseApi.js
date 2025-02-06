@@ -96,19 +96,19 @@ module.exports = class API {
                 // Rimuove il corso dall'array courses del trainer precedente
                 await Trainer.updateOne(
                     { _id: existingCourse.trainer },
-                    { $pull: { courses: _id } }
+                    { $pull: { courses: id } }
                 );
 
                 // Aggiunge il corso all'array courses del nuovo trainer
                 await Trainer.updateOne(
                     { _id: trainer },
-                    { $addToSet: { courses: _id } } // Evita duplicati con $addToSet
+                    { $addToSet: { courses: id } } // Evita duplicati con $addToSet
                 );
             }
 
             // Aggiorna il corso nel database
             await Course.updateOne({_id: id}, updateFields, null);
-            res.status(200).json({ message: 'Course updated successfully', course: updatedCourse });
+            res.status(200).json({ message: 'Course updated successfully' });
 
         } catch (error) {
             res.status(500).json({ message: error.message });

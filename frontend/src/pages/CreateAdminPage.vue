@@ -56,7 +56,7 @@ const createRequest = () => ({
 
 async function handleUpdateAdmin() {
     try {
-        const request = createRequest()
+        const request = createRequest();
         const id = props.id!;
         const response = await client.updateAdmin(id, request);
 
