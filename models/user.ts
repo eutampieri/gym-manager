@@ -22,9 +22,6 @@ function computeProfileIconLink(username?: string) {
 export function getProfileIcon(user: BasicInfo | RichInfo): string {
     return computeProfileIconLink(('email' in user) ? user.email : user.username);
 }
-export enum Role {
-    Admin, Trainer, User
-}
 // User
 export interface User extends CompleteInfo, Identifiable { }
 
@@ -46,9 +43,7 @@ export interface CreateAdminRequest extends BaseAdmin {
     password: string
 }
 
-export interface Admin extends BaseAdmin, Identifiable {
-    password: string
-}
+export interface Admin extends BaseAdmin, Identifiable { }
 
 export interface LoginRequest {
     username: string,

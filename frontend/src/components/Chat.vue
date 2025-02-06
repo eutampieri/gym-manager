@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Message as IMessage } from '@/utils/chat';
-import { Admin, Role } from '@gym-manager/models';
+import { BasicInfo, Role } from '@gym-manager/models';
 import { ref } from 'vue';
 import NameLink from './NameLink.vue';
 import Message from './Message.vue';
@@ -12,9 +12,9 @@ const emit = defineEmits<{ send: [string], close: [] }>();
 defineProps<{
     isActive: boolean,
     messages: IMessage[],
-    otherParty: [Admin, Role],
+    otherParty: [BasicInfo, Role],
 }>();
-const minimised = ref(false);
+const minimised = defineModel<boolean>();
 const currentMessage = ref("");
 const minimise = () => minimised.value = true;
 const expand = () => minimised.value = false;
@@ -26,7 +26,8 @@ function send() {
 </script>
 <template>
     <div v-if="isActive" class="fixed-bottom">
-        <div v-if="!minimised" :class="`chat-container-${$matches.sm.max ? 'full' : 'small'} d-flex flex-column col-md-7 col-xl-5 p-3 m-0 mb-md-5 me-md-4 float-md-end bg-body-secondary rounded-${$matches.sm.max ? '0' : '5'} border`">
+        <div v-if="!minimised"
+            :class="`chat-container-${$matches.sm.max ? 'full' : 'small'} d-flex flex-column col-md-7 col-xl-5 p-3 m-0 mb-md-5 me-md-4 float-md-end bg-body-secondary rounded-${$matches.sm.max ? '0' : '5'} border`">
             <section class="d-flex flex-row">
                 <section class="flex-grow-1">
                     <h2>Support chat</h2>
@@ -56,7 +57,8 @@ function send() {
             </section>
         </div>
         <div v-else class="fixed-bottom m-md-4 mb-md-5 d-grid d-md-block">
-            <button class="btn btn-primary shadow float-md-end pt-2 pb-5 py-md-4 fs-6 text-decoration-underline" @click="expand">
+            <button class="btn btn-primary shadow float-md-end pt-2 pb-5 py-md-4 fs-6 text-decoration-underline"
+                @click="expand">
                 Resume chat with {{ otherParty[0].firstName }} {{ otherParty[0].lastName }}
             </button>
         </div>
@@ -68,6 +70,7 @@ function send() {
     min-height: 100vh !important;
     max-height: 100vh !important;
 }
+
 .chat-container-small {
     height: 85vh !important;
     max-height: 900px !important;

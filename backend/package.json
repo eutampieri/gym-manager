@@ -19,7 +19,8 @@
     "jose": "^5.9.6",
     "mongoose": "^8.1.1",
     "morgan": "~1.9.1",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "ulidx": "^2.4.1"
   },
   "peerDependencies": {
     "ajv": "8.17.1"

@@ -10,6 +10,7 @@ import { useModalsStore } from '@/store/modals';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 import { useNotificationsStore } from '@/store/notifications';
+import ChatButton from '@/components/ChatButton.vue';
 
 const store = useUserStore();
 const confirm = useModalsStore().confirm;
@@ -123,5 +124,5 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <MainButton class="mt-5" :path="contactSupport" :use-variant="true">Need help?</MainButton>
+    <ChatButton class="mt-5" :path="contactSupport" :use-variant="true">Need help?</ChatButton>
 </template>

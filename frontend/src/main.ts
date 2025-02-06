@@ -10,4 +10,4 @@ createApp(App)
     .use(router)
     .use(createPinia())
     .use(VueResponsiveness, Presets.Bootstrap_5)
-    .mount('#app')
+    .mount('#app');

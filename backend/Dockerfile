@@ -14,7 +14,10 @@ COPY . .
 # Install project dependencies
 RUN npm install
 
+WORKDIR /app/models
+RUN ../node_modules/typescript/bin/tsc 
 WORKDIR /app/backend
+RUN ../node_modules/typescript/bin/tsc 
 
 # Expose the port that the Express server is listening on
 EXPOSE 3000
