@@ -20,7 +20,7 @@ const allCourses = ref<{ course: Course; trainer: Trainer }[]>();
 store.client.listCourses()
     .then(courses => Promise.all(courses.map(c => 
             store.client.getTrainerById(c.trainer)
-                .then(t => ({ course: c, trainer: t }))
+                .then(t => ({ course: c, trainer: t! }))
             ))
     ).then(d => allCourses.value = d);
 

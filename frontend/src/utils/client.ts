@@ -70,14 +70,17 @@ export class Client {
         }
     }
 
-    public getUserById(id: string): Promise<undefined | User | Trainer | Admin> {
+    public getUserById(id: string): Promise<User | undefined> {
         return this.apiRequest("GET", "/customers/" + id).then(r => r.json());
     }
     public getAdminById(id: string): Promise<Admin | undefined> {
-        return this.apiRequest("GET", "/admin/" + id).then(r => r.json());
+        return this.apiRequest("GET", "/admins/" + id).then(r => r.json());
     }
-    public getTrainerById(id: string): Promise<Trainer> {
+    public getTrainerById(id: string): Promise<Trainer | undefined> {
         return this.apiRequest("GET", "/trainers/" + id).then(r => r.json());
+    }
+    public getCourseById(id: string): Promise<Course | undefined> {
+        return this.apiRequest("GET", "/courses/" + id).then(r => r.json());
     }
 
     public adminProfilePath(adminId: string) {
@@ -101,17 +104,43 @@ export class Client {
         }
     }
 
-    public addUser(user: CreateUserRequest) {
-        return this.apiRequest("POST", "/customers", user);
+    public addUser(user: CreateUserRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/customers", user).then(r => r.status == 201);
     }
-    public addAdmin(admin: CreateAdminRequest) {
-        return this.apiRequest("POST", "/admins", admin);
+    public addAdmin(admin: CreateAdminRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/admins", admin).then(r => r.status == 201);
     }
-    public addTrainer(trainer: CreateTrainerRequest) {
-        return this.apiRequest("POST", "/trainers", trainer);
+    public addTrainer(trainer: CreateTrainerRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/trainers", trainer).then(r => r.status == 201);
     }
-    public addCourse(course: CreateCourseRequest) {
-        return this.apiRequest("POST", "/courses", course);
+    public addCourse(course: CreateCourseRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/courses", course).then(r => r.status == 201);
+    }
+
+    public updateAdmin(id: string, updated: CreateAdminRequest): Promise<boolean> {
+        return this.apiRequest("PUT", "/admins", { ...updated, id: id }).then(r => r.status == 200);
+    }
+    public updateCustomer(id: string, updated: CreateUserRequest): Promise<boolean> {
+        return this.apiRequest("PUT", "/customers", { ...updated, id: id }).then(r => r.status == 200);
+    }
+    public updateTrainer(id: string, updated: CreateTrainerRequest): Promise<boolean> {
+        return this.apiRequest("PUT", "/trainers", { ...updated, id: id }).then(r => r.status == 200);
+    }
+    public updateCourse(id: string, updated: CreateCourseRequest): Promise<boolean> {
+        return this.apiRequest("PUT", "/courses", { ...updated, id: id }).then(r => r.status == 200);
+    }
+
+    public deleteAdmin(id: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/admins/" + id).then(r => r.status == 200);
+    }
+    public deleteCustomer(id: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/customers/" + id).then(r => r.status == 200);
+    }
+    public deleteTrainer(id: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/trainers/" + id).then(r => r.status == 200);
+    }
+    public deleteCourse(id: string): Promise<boolean> {
+        return this.apiRequest("DELETE", "/courses/" + id).then(r => r.status == 200);
     }
 
     public listUsers(): Promise<User[]> {
@@ -123,7 +152,7 @@ export class Client {
     public listTrainers(): Promise<Trainer[]> {
         return this.apiRequest("GET", "/trainers").then(x => x.json());
     }
-    public async listCourses(): Promise<Course[]> {
+    public listCourses(): Promise<Course[]> {
         return this.apiRequest("GET", "/courses").then(x => x.json());
     }
 
