@@ -1,7 +1,7 @@
 import sha256 from "sha256";
 import { Identifiable } from ".";
 
-interface BasicInfo {
+export interface BasicInfo {
     username: string,
     firstName: string,
     lastName: string,
@@ -38,9 +38,15 @@ export interface CreateTrainerRequest extends RichInfo {
     password: string
 }
 // Admin
-export interface Admin extends BasicInfo, Identifiable { }
+interface BaseAdmin extends BasicInfo {
+    hasFullPrivileges: boolean
+}
 
-export interface CreateAdminRequest extends BasicInfo {
+export interface CreateAdminRequest extends BaseAdmin {
+    password: string
+}
+
+export interface Admin extends BaseAdmin, Identifiable {
     password: string
 }
 

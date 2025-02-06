@@ -69,7 +69,7 @@ export class Client {
     }
     public getAdmin(id: string): Promise<Admin | undefined> {
         // TODO
-        return Promise.resolve(this.userDetails);
+        return Promise.resolve(undefined);
     }
 
     public addUser(user: CreateUserRequest) {
@@ -114,7 +114,7 @@ export class Client {
     public getProfilePath() {
         const id = this.userDetails?.id || '';
         switch (this.getRole) {
-            case Role.User: 
+            case Role.User:
                 return this.customerProfilePath(id);
             case Role.Trainer:
                 return this.trainerProfilePath(id);
@@ -252,6 +252,10 @@ export class Client {
 
     public addAdmin(admin: CreateAdminRequest) {
         return this.apiRequest("POST", "/admins", admin);
+    }
+
+    public listAdmins(): Promise<Admin[]> {
+        return this.apiRequest("GET", "/admins").then(x => x.json());
     }
 
     public addCourse(course: CreateCourseRequest) {
