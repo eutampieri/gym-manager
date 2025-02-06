@@ -6,6 +6,8 @@ import CheckBox from '@/components/CheckBox.vue';
 import { Admin, CreateAdminRequest } from '@gym-manager/models/user';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
+import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import SectionContainer from '@/components/SectionContainer.vue';
 
 const username = ref("");
 const password = ref("");
@@ -56,7 +58,7 @@ const createRequest = () => ({
 
 async function handleUpdateAdmin() {
     try {
-        const request = createRequest()
+        const request = createRequest();
         const id = props.id!;
         const response = await client.updateAdmin(id, request);
 
@@ -107,36 +109,41 @@ async function handleCreateAdmin() {
 </script>
 
 <template>
-    <h2 v-if="props.id">Update {{ username != '' ? username : 'Admin' }}</h2>
-    <h2 v-else>Create {{ username != '' ? username : 'a new Admin' }}</h2>
-    <form>
-        <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
-            :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
-            Username
-        </ValidatingGenericInput>
+    <h2 v-if="props.id" class="text-center">Update {{ username != '' ? username : 'Admin' }}</h2>
+    <h2 v-else class="text-center">Create {{ username != '' ? username : 'a new Admin' }}</h2>
+    <SectionContainer>
+        <SectionContainerItem>
+            <form>
+                <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
+                    :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
+                    Username
+                </ValidatingGenericInput>
 
-        <ValidatingGenericInput type="password" id="password"
-            error-message="The password must be at least 7 characters long"
-            :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="passwordValid">
-            Password
-        </ValidatingGenericInput>
+                <ValidatingGenericInput type="password" id="password"
+                    error-message="The password must be at least 7 characters long"
+                    :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="passwordValid">
+                    Password
+                </ValidatingGenericInput>
 
-        <ValidatingGenericInput type="text" id="firstName" error-message="The name can only contain letters"
-            :validation-function="isOnlyLetters" v-model="firstName" v-model:valid="firstNameValid">
-            Name
-        </ValidatingGenericInput>
+                <ValidatingGenericInput type="text" id="firstName" error-message="The name can only contain letters"
+                    :validation-function="isOnlyLetters" v-model="firstName" v-model:valid="firstNameValid">
+                    Name
+                </ValidatingGenericInput>
 
-        <ValidatingGenericInput error-message="The surname can only be made of letters"
-            :validation-function="isOnlyLetters" type="text" id="lastName" v-model="lastName"
-            v-model:valid="lastNameValid">Surname
-        </ValidatingGenericInput>
+                <ValidatingGenericInput error-message="The surname can only be made of letters"
+                    :validation-function="isOnlyLetters" type="text" id="lastName" v-model="lastName"
+                    v-model:valid="lastNameValid">Surname
+                </ValidatingGenericInput>
 
-        <CheckBox type="boolean" id="hasFullPrivileges" v-model="hasFullPrivileges">
-            Privilege</CheckBox>
+                <CheckBox type="boolean" id="hasFullPrivileges" v-model="hasFullPrivileges">
+                    Privilege</CheckBox>
 
-        <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateAdmin"
-            :disabled="!submitButtonEnabled">Update Admin {{ firstName }}</button>
-        <button v-else class="btn btn-primary" type="button" @click="handleCreateAdmin"
-            :disabled="!submitButtonEnabled">Create Admin {{ firstName }}</button>
-    </form>
+                <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateAdmin"
+                    :disabled="!submitButtonEnabled">Update Admin {{ firstName }}</button>
+                <button v-else class="btn btn-primary" type="button" @click="handleCreateAdmin"
+                    :disabled="!submitButtonEnabled">Create Admin {{ firstName }}</button>
+            </form> 
+        </SectionContainerItem>
+    </SectionContainer>
+    
 </template>

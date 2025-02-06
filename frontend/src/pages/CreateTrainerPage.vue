@@ -6,6 +6,8 @@ import GenericInput from '@/components/GenericInput.vue';
 import { CreateTrainerRequest } from '@gym-manager/models';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
+import SectionContainer from '@/components/SectionContainer.vue';
+import SectionContainerItem from '@/components/SectionContainerItem.vue';
 
 const username = ref("");
 const password = ref("");
@@ -113,41 +115,46 @@ async function handleCreateTrainer() {
 }
 </script>
 <template>
-    <h2 v-if="props.id">Update {{ username != '' ? username : 'Trainer' }}</h2>
-    <h2 v-else>Create {{ username != '' ? username : 'a new Trainer' }}</h2>
-    <form>
-        <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
-            :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
-            Username
-        </ValidatingGenericInput>
+    <h2 v-if="props.id" class="text-center">Update {{ username != '' ? username : 'Trainer' }}</h2>
+    <h2 v-else class="text-center">Create {{ username != '' ? username : 'a new Trainer' }}</h2>
+    <SectionContainer>
+        <SectionContainerItem>
+            <form>
+                <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
+                    :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
+                    Username
+                </ValidatingGenericInput>
 
-        <ValidatingGenericInput type="password" id="password"
-            error-message="The password must be at least 7 characters long"
-            :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="passwordValid">
-            Password
-        </ValidatingGenericInput>
+                <ValidatingGenericInput type="password" id="password"
+                    error-message="The password must be at least 7 characters long"
+                    :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="passwordValid">
+                    Password
+                </ValidatingGenericInput>
 
-        <ValidatingGenericInput type="text" id="firstName" error-message="The name can only contain letters"
-            :validation-function="isOnlyLetters" v-model="firstName" v-model:valid="firstNameValid">
-            Name
-        </ValidatingGenericInput>
+                <ValidatingGenericInput type="text" id="firstName" error-message="The name can only contain letters"
+                    :validation-function="isOnlyLetters" v-model="firstName" v-model:valid="firstNameValid">
+                    Name
+                </ValidatingGenericInput>
 
-        <ValidatingGenericInput error-message="The surname can only be made of letters"
-            :validation-function="isOnlyLetters" type="text" id="lastName" v-model="lastName"
-            v-model:valid="lastNameValid">Surname
-        </ValidatingGenericInput>
+                <ValidatingGenericInput error-message="The surname can only be made of letters"
+                    :validation-function="isOnlyLetters" type="text" id="lastName" v-model="lastName"
+                    v-model:valid="lastNameValid">Surname
+                </ValidatingGenericInput>
 
-        <GenericInput type="email" id="email" v-model="email">Email
-            address</GenericInput>
+                <GenericInput type="email" id="email" v-model="email">Email
+                    address</GenericInput>
 
-        <ValidatingGenericInput :validation-function="isPhoneNumber" error-message="Invalid phone number" type="tel"
-            id="phoneNumber" v-model="phoneNumber">
-            Phone number
-        </ValidatingGenericInput>
+                <ValidatingGenericInput :validation-function="isPhoneNumber" error-message="Invalid phone number" type="tel"
+                    id="phoneNumber" v-model="phoneNumber">
+                    Phone number
+                </ValidatingGenericInput>
 
-        <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateTrainer"
-            :disabled="!submitButtonEnabled">Update Trainer {{ firstName }}</button>
-        <button v-else class="btn btn-primary" type="button" @click="handleCreateTrainer"
-            :disabled="!submitButtonEnabled">Create Trainer {{ firstName }}</button>
-    </form>
+                <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateTrainer"
+                    :disabled="!submitButtonEnabled">Update Trainer {{ firstName }}</button>
+                <button v-else class="btn btn-primary" type="button" @click="handleCreateTrainer"
+                    :disabled="!submitButtonEnabled">Create Trainer {{ firstName }}</button>
+            </form>
+        </SectionContainerItem>
+    </SectionContainer>
+    
 </template>

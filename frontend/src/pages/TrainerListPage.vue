@@ -25,9 +25,8 @@ const data = computed<ListData>((): ListData => {
             { key: "username", name: "Username" },
             { key: "firstName", name: "First name" },
             { key: "lastName", name: "Last name" },
-            { key: "dateOfBirth", name: "Date of birth" },
-            { key: "fiscalCode", name: "CF" },
-            { key: "address", name: "Address" },
+            { key: "email", name: "Email" },
+            { key: "phoneNumber", name: "Mobile" },
         ]
     };
 });

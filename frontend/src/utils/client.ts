@@ -83,6 +83,9 @@ export class Client {
     public getTrainerById(id: string): Promise<Trainer | undefined> {
         return this.apiRequest("GET", "/trainers/" + id).then(r => r.json());
     }
+    public getCourseById(id: string): Promise<Course | undefined> {
+        return this.apiRequest("GET", "/courses/" + id).then(r => r.json());
+    }
 
     public adminProfilePath(adminId: string) {
         return '/admin/profile/' + adminId;
@@ -114,8 +117,8 @@ export class Client {
     public addTrainer(trainer: CreateTrainerRequest): Promise<boolean> {
         return this.apiRequest("POST", "/trainers", trainer).then(r => r.status == 201);
     }
-    public addCourse(course: CreateCourseRequest) {
-        return this.apiRequest("POST", "/courses", course);
+    public addCourse(course: CreateCourseRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/courses", course).then(r => r.status == 201);
     }
 
     public updateAdmin(id: string, updated: CreateAdminRequest): Promise<boolean> {
