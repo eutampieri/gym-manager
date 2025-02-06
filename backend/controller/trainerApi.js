@@ -180,7 +180,7 @@ module.exports = class API {
                 .populate("sessions")
                 .populate("courses");
 
-            trainerUnavailabilities = trainer.sessions.concat(trainer.courses);
+            const trainerUnavailabilities = trainer[0].sessions.concat(trainer[0].courses);
 
             for (const t of trainerUnavailabilities) {
                 availabilities[t.dayOfWeek][t.startTime] = false;
@@ -188,7 +188,7 @@ module.exports = class API {
 
             res.status(200).json(availabilities);
         } catch (error) {
-            res.status(404).json({ message: error.message });
+            res.status(500).json({ message: error.message });
         }
     }
 
