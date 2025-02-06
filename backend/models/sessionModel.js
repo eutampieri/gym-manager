@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const sessionSchema = new mongoose.Schema({
-  
+
     trainer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Trainer',

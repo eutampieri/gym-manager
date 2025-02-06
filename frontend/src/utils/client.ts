@@ -1,4 +1,5 @@
-import { Admin, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
+import { Admin, BookCourseRequest, Course, CourseInfo, CourseScheduleEntry, CreateAdminRequest, CreateCourseRequest, CreateSessionRequest, CreateTrainerRequest, CreateUserRequest, LoginRequest, Role, Session, SessionInfo, Trainer, User } from "@gym-manager/models";
+import { TrainerAvailabilities } from "@gym-manager/models/trainer";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface UserJwt extends JwtPayload {
@@ -241,10 +242,10 @@ export class Client {
         // ... TODO
     }
 
-    public async bookCourse(courseId: string, dayOfWeek: string, startTime: string, clientId?: string): Promise<boolean> {
+    public async bookCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
         //return Promise.resolve(true);
 
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, { clientId: clientId, dayOfWeek, startTime })
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r)
             .then(r => true);
     }
 
@@ -267,4 +268,21 @@ export class Client {
     public listTrainers(): Promise<Trainer[]> {
         return this.apiRequest("GET", "/trainers").then(x => x.json());
     }
+    public async createSession(session: CreateSessionRequest): Promise<boolean> {
+        if (!this.isLoggedIn) {
+            return false;
+        }
+
+        const response = await this.apiRequest("POST", "/sessions", session);
+
+        return response.status === 201; // Ritorna `true` se la sessione è stata creata con successo
+    }
+
+    public async getTrainerAvailabilities(trainer: string): Promise<TrainerAvailabilities> {
+        const response = await this.apiRequest("GET", `/trainers/${trainer}/availabilities`)
+            .then(x => x.json());
+
+        return response; // Ritorna `true` se la sessione è stata creata con successo
+    }
+
 }
