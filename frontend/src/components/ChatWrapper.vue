@@ -99,6 +99,7 @@ socket.on(
         socket.emit(EventType.LeaveRoom.toString());
         active.value = false;
         minimised.value = false;
+        otherParty.value = DUMMY_OTHER_PARTY;
     }
 );
 
