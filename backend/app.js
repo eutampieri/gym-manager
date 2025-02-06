@@ -77,7 +77,6 @@ connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
 async function createDefaultAdmin() {
   try {
     const admins = await Admin.find({}, idProjection(Admin), null).exec();
-    console.log("admins: "+admins);
     if (admins.length === 0) {
       const admin = new Admin({
         username: 'admin',
