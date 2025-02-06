@@ -8,8 +8,10 @@ export enum EventType {
     MessageDelivery,
     CloseChat,
     LeaveRoom,
+    Subscribe,
 }
 
-
-export type AuthenticateEvent = [EventType.Authenticate, string];
-export type ChatRequestEvent = [EventType.ChatRequest, string];
+export enum SubscriptionEntity {
+    CourseAvailability,
+    TrainerAvailability,
+}

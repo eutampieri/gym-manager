@@ -1,6 +1,6 @@
 import { Server as NodeServer } from 'node:http';
 import { Server } from 'socket.io';
-import { EventType } from '@gym-manager/models/chat.js';
+import { EventType, SubscriptionEntity } from '@gym-manager/models/chat.js';
 import { verifyJWT } from '../../utils.js';
 import { ulid } from 'ulidx';
 
@@ -87,6 +87,14 @@ export function createSocketIoServer(server: NodeServer) {
                 }
                 socket.leave(roomID!);
                 roomID = undefined;
+            }
+        });
+
+        //Backend-initiated push subscriptions
+        socket.on(EventType.Subscribe.toString(), async (data: { token: string, entity: SubscriptionEntity }) => {
+            const token = (await verifyJWT(data.token)).payload as { error?: boolean };
+            if (token.error === undefined) {
+                socket.join(data.entity.toString());
             }
         });
 
