@@ -2,7 +2,7 @@
 import MobileListView from './MobileListView.vue';
 import DesktopListView from './DesktopListView.vue';
 import { ListData, RowData } from '@/utils/lists';
-import SerarchBar from './SerarchBar.vue';
+import SearchBar from './SearchBar.vue';
 import { computed, ref } from 'vue';
 
 const props = defineProps<{
@@ -22,7 +22,7 @@ const filteredData = computed((): ListData => {
 });
 </script>
 <template>
-    <SerarchBar v-model="searchQuery"></SerarchBar>
+    <SearchBar v-model="searchQuery"></SearchBar>
     <MobileListView v-if="$matches.sm.max" :data="filteredData" :accordion-header="mobileHeader"></MobileListView>
     <DesktopListView v-else :data="filteredData"></DesktopListView>
 </template>
