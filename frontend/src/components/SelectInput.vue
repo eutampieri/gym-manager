@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 
 export interface SelectInputValue { id: string, label: string };
@@ -10,17 +10,21 @@ const props = defineProps<{
     options: SelectInputValue[] | string[]; // Lista delle opzioni per il select
 }>();
 
-const fixedOptions = computed(() => props.options.map((x): SelectInputValue => {
-    if ((x as SelectInputValue).id === undefined) {        
-        let value = x as string;
-        return { id: value, label: value };
-    } else {
-        return (x as SelectInputValue);
-    }
-}));
-
 // Modello reattivo collegato a `v-model`
 const model = defineModel<string>();
+// Forza Vue a tracciare i cambiamenti
+const fixedOptions = ref<SelectInputValue[]>([]);
+
+watch(() => props.options, (newOptions) => {
+    fixedOptions.value = newOptions.map((x): SelectInputValue => {
+        if (typeof x === "string") {
+            return { id: x, label: x };
+        } else {
+            return x;
+        }
+    });
+}, { immediate: true });
+
 </script>
 
 <template>
