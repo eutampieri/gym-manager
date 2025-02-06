@@ -63,7 +63,7 @@ module.exports = class API {
 
     static async updateCustomer(req, res) {
         const id = req.params.id;
-        const { password, email, phoneNumber, dateOfBirth, address, courses, sessions } = req.body;
+        const { username, firstName, lastName, password, email, phoneNumber, dateOfBirth, address } = req.body;
 
         try {
             const updateFields = {}; // Object that will contain only the fields to update
@@ -74,8 +74,10 @@ module.exports = class API {
             if (phoneNumber) updateFields.phoneNumber = phoneNumber;
             if (dateOfBirth) updateFields.dateOfBirth = dateOfBirth;
             if (address) updateFields.address = address;
-            if (courses) updateFields.courses = courses;
-            if (sessions) updateFields.sessions = sessions;
+            if (username) updateFields.username = username;
+            if (firstName) updateFields.firstName = firstName;
+            if (lastName) updateFields.lastName = lastName;
+
             // Perform the update only if there are fields to update
             if (Object.keys(updateFields).length > 0) {
                 await Client.updateOne({ _id: id }, updateFields, null);

@@ -62,8 +62,8 @@ module.exports = class API {
 
 
     static async updateTrainer(req, res) {
-        const username = req.body.username;
-        const { password, email, phoneNumber, courses, sessions } = req.body; // Extract the fields to update
+        const id = req.params.id;
+        const { username, firstName, lastName, password, email, phoneNumber } = req.body; // Extract the fields to update
 
         try {
             const updateFields = {}; // Object that will contain only the fields to update
@@ -71,12 +71,13 @@ module.exports = class API {
             if (password) updateFields.password = await hash(password);
             if (email) updateFields.email = email;
             if (phoneNumber) updateFields.phoneNumber = phoneNumber;
-            if (courses) updateFields.courses = courses;
-            if (sessions) updateFields.sessions = sessions;
+            if (username) updateFields.username = username;
+            if (firstName) updateFields.firstName = firstName;
+            if (lastName) updateFields.lastName = lastName;
 
             // Perform the update only if there are fields to update
             if (Object.keys(updateFields).length > 0) {
-                await Trainer.updateOne({ username: username }, updateFields, null);
+                await Trainer.updateOne({ _id: id }, updateFields, null);
                 res.status(200).json({ message: 'Trainer updated successfully' });
             } else {
                 res.status(400).json({ message: 'No fields to update' });

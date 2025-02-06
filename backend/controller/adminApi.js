@@ -62,6 +62,9 @@ module.exports = class API {
             // Check and add non-empty fields to the update object
             if (admin.password) updatedAdmin.password = await hash(admin.password);
             if (admin.hasFullPrivileges !== undefined) updatedAdmin.hasFullPrivileges = admin.hasFullPrivileges;
+            if (admin.username) updatedAdmin.username = admin.username;
+            if (admin.firstName) updatedAdmin.firstName = admin.firstName;
+            if (admin.lastName) updatedAdmin.lastName = admin.lastName;
 
             // Perform the update only if there are fields to update
             if (Object.keys(updatedAdmin).length > 0) {
