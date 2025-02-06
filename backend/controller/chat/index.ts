@@ -10,6 +10,8 @@ const ROOMS = {
 
 const ACCEPTED_CHATS = new Set<string>();
 
+let availableAdmins = 0;
+
 export function createSocketIoServer(server: NodeServer) {
     const io = new Server(server, {
         path: "/api/socketio/",
@@ -26,8 +28,9 @@ export function createSocketIoServer(server: NodeServer) {
             if (token.error === undefined) {
                 userData = token;
                 if ((userData as any).role === "admin") {
-                    console.log("New admin joined");
                     socket.join(ROOMS.admin);
+                    availableAdmins += 1;
+                    socket.on('disconnect', () => { availableAdmins -= 1; })
                 }
             } else {
                 socket.emit(EventType.Error.toString(), "Invalid token received");
@@ -37,9 +40,13 @@ export function createSocketIoServer(server: NodeServer) {
         // Chat request
         socket.on(EventType.ChatRequest.toString(), () => {
             if (userData !== undefined) {
-                roomID = ulid();
-                socket.join(roomID);
-                io.to(ROOMS.admin).emit(EventType.ChatRequest.toString(), { user: userData.profile, kind: userData.role, room: roomID });
+                if (availableAdmins > 0) {
+                    roomID = ulid();
+                    socket.join(roomID);
+                    io.to(ROOMS.admin).emit(EventType.ChatRequest.toString(), { user: userData.profile, kind: userData.role, room: roomID });
+                } else {
+                    socket.emit(EventType.Error.toString(), "Support is not available now, please try again later.")
+                }
             }
         });
 
@@ -52,6 +59,7 @@ export function createSocketIoServer(server: NodeServer) {
                     roomID = room;
                     socket.join(room);
                     io.to(room).emit(EventType.ChatEstablished.toString());
+                    availableAdmins -= 1;
                 }
             }
         });
@@ -67,10 +75,14 @@ export function createSocketIoServer(server: NodeServer) {
         socket.on(EventType.CloseChat.toString(), () => {
             if (userData !== undefined) {
                 io.to(roomID!).emit(EventType.CloseChat.toString(), userData.profile.id);
+                ACCEPTED_CHATS.delete(roomID!);
             }
         });
         socket.on(EventType.LeaveRoom.toString(), () => {
             if (userData !== undefined) {
+                if (userData.role === "admin") {
+                    availableAdmins += 1;
+                }
                 socket.leave(roomID!);
                 roomID = undefined;
             }
