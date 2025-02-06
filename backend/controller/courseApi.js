@@ -69,16 +69,18 @@ module.exports = class API {
     }
 
     static async updateCourse(req, res) {
-        const { _id, description, schedule, capacity, trainer } = req.body;
+        const id = req.params.id;
+        const { name, description, schedule, capacity, trainer } = req.body;
 
         try {
             // Trova il corso esistente per confrontare il trainer originale
-            const existingCourse = await Course.findById(_id);
+            const existingCourse = await Course.findById(id);
             if (!existingCourse) {
                 return res.status(404).json({ message: "Course not found" });
             }
 
             const updateFields = {};
+            if (name) updateFields.name = name;
             if (description) updateFields.description = description;
             if (schedule) updateFields.schedule = schedule;
             if (capacity) updateFields.capacity = capacity;
@@ -105,8 +107,7 @@ module.exports = class API {
             }
 
             // Aggiorna il corso nel database
-            const updatedCourse = await Course.findByIdAndUpdate(_id, updateFields, { new: true });
-
+            await Course.updateOne({_id: id}, updateFields, null);
             res.status(200).json({ message: 'Course updated successfully', course: updatedCourse });
 
         } catch (error) {

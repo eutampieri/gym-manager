@@ -7,7 +7,7 @@ Course (/api/courses):
   GET / -> fetchAllCourses   (non ha input, ritorna l'elenco dei course)    
   GET /:id -> fetchCourseBy_Id (prende come parametro l'_id del corso, ritorna il course)
   GET /name/:name -> fetchCourseByName (prende come parametro il name del corso, ritorna il course)
-  PUT / -> updateCourse  (prende come body un course, aggiorna il corso)
+  PUT /:id -> updateCourse  (prende come body un course, aggiorna il corso)
   DELETE /:id -> deleteCourse (prende come parametri l'_id del corso, elimina il corso)
   GET /:id/bookings -> fetchCourseBookings (prende come parametro l'_id del corso, ritorna l'array di schedule del corso (dayOfWeek, startTime, participants, availableSpots))
   POST /:id/bookings -> createBooking (prende come parametro l'_id del corso e come body { clientId, dayOfWeek, startTime }, aggiunge il corso ai corsi del client e il client ai participant del corso) 
