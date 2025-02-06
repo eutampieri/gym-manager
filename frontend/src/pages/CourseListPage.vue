@@ -15,7 +15,7 @@ function displayableCourseFormatter(c: Course): RowData {
         name: c.name,
         description: c.description,
         trainer: c.trainer,
-        schedule: c.schedule.map(x => `${x.dayOfWeek} ${x.startTime} (available slots: ${c.capacity - x.participants.length}/${c.capacity})`),
+        schedule: c.schedule.map(x => `${x.dayOfWeek} ${x.startTime} (available slots: ${x.availableSpots}/${c.capacity})`),
     };
 }
 
