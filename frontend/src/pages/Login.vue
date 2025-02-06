@@ -20,6 +20,7 @@ const sadPath = () => notifications.fire({
 });
 
 async function login() {
+    if (loginInProgress.value) return;
     loginInProgress.value = true;
     let authResult = await store.client.login(username.value || "", password.value || "").catch(sadPath);
     loginInProgress.value = false;
@@ -30,12 +31,13 @@ async function login() {
     }
 }
 </script>
+
 <template>
     <h2>Login</h2>
-    <form>
+    <form @submit.prevent="login">
         <GenericInput v-model="username" type="text" id="username">Username</GenericInput>
         <GenericInput v-model="password" type="password" id="password">Password</GenericInput>
-        <button :disabled="loginInProgress" class="btn btn-primary" type="button" @click="login()">
+        <button :disabled="loginInProgress" class="btn btn-primary" type="submit">
             <div v-if="loginInProgress" class="spinner-border spinner-border-sm" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div> Login

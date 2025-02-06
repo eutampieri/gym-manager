@@ -129,5 +129,4 @@ if (process.env.GENERATE_OPENAPI !== undefined) {
   const server = app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
   });
- 
 }
