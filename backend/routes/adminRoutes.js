@@ -5,7 +5,7 @@ const { createAuthMiddleware } = require('../utils')
 
 router.use(createAuthMiddleware(new Set(["admin"])));
 router.use((req, res, next) => {
-    if(!req.user.hasFullPrivileges) {
+    if (!req.user.hasFullPrivileges) {
         res.status(401).json({ message: 'User not authorized' });
     } else {
         next();
@@ -16,7 +16,7 @@ router.post("/", API.createAdmin)
 router.get("/", API.fetchAllAdmins)
 router.get("/username/:username", API.fetchAdminByUsername)
 router.get("/:id", API.fetchAdminBy_Id)
-router.put("/:id", API.updateAdmin)
+router.put("/", API.updateAdmin)
 router.delete("/:id", API.deleteAdmin)
 
 module.exports = router

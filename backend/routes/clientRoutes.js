@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post("/", wrapMiddleware(adminAuth, API.createCustomer))
 router.get("/", wrapMiddleware(adminAuth, API.fetchAllCustomers))
-router.put("/:id", wrapMiddleware(adminAuth, API.updateCustomer))
+router.put("/", wrapMiddleware(adminAuth, API.updateCustomer))
 router.delete("/:id", wrapMiddleware(adminAuth, API.deleteCustomer))
 router.get("/:id", wrapMiddleware(trainerAuth, API.fetchCustomerBy_Id))
 router.get("/:id/sessions", wrapMiddleware(customerAuth, API.fetchAllCustomerSessions))

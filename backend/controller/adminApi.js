@@ -53,7 +53,7 @@ module.exports = class API {
         }
     }
     static async updateAdmin(req, res) {
-        const id = req.params.id;
+        const id = req.body.id;
         const admin = req.body;
 
         try {

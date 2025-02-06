@@ -62,8 +62,7 @@ module.exports = class API {
 
 
     static async updateTrainer(req, res) {
-        const id = req.params.id;
-        const { username, firstName, lastName, password, email, phoneNumber } = req.body; // Extract the fields to update
+        const { id, username, firstName, lastName, password, email, phoneNumber } = req.body; // Extract the fields to update
 
         try {
             const updateFields = {}; // Object that will contain only the fields to update
