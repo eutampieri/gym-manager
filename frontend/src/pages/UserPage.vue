@@ -18,11 +18,14 @@ const notification = useNotificationsStore();
 
 const user = store.client.userDetails;
 
-const myCourses = ref<Array<{ course: CourseInfo; dayOfWeek: string; startTime: string; }>>();
+const myCourses = ref<Array<{ course: CourseInfo; dayOfWeek: string; startTime: string; trainer: Trainer }>>();
 const myOneOnOne = ref<Array<{ info: SessionInfo, trainer: Trainer }>>();
 
 if (user) {
     store.client.getCustomerCourses(user.id)
+        .then(courses => Promise.all(courses.map(c => 
+            store.client.getTrainerById(c.course.trainer).then(t => ({ ...c, trainer: t }))
+        )))
         .then(courses => myCourses.value = courses);
     store.client.getCustomerSessions(user.id)
         .then(sessions => myOneOnOne.value = sessions);
@@ -97,7 +100,7 @@ const contactSupport = '/support/chat'
                         <dt>Trainer</dt>
                         <dd>
                             <NameLink :path="store.client.trainerProfilePath(course.course.trainer)">{{
-                                course.course.trainer }}</NameLink>
+                                course.trainer.firstName + ' ' + course.trainer.lastName }}</NameLink>
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
