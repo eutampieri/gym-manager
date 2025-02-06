@@ -53,19 +53,19 @@ module.exports = class API {
         }
     }
     static async updateAdmin(req, res) {
-        const username = req.body.username;
-        const { password, hasFullPrivileges } = req.body; // Extract the fields to update
+        const id = req.params.id;
+        const admin = req.body;
 
         try {
-            const updateFields = {}; // Object that will contain only the fields to update
+            const updatedAdmin = {};
 
             // Check and add non-empty fields to the update object
-            if (password) updateFields.password = await hash(password);
-            if (hasFullPrivileges !== undefined) updateFields.hasFullPrivileges = hasFullPrivileges;
+            if (admin.password) updatedAdmin.password = await hash(admin.password);
+            if (admin.hasFullPrivileges !== undefined) updatedAdmin.hasFullPrivileges = admin.hasFullPrivileges;
 
             // Perform the update only if there are fields to update
-            if (Object.keys(updateFields).length > 0) {
-                await Admin.updateOne({ username: username }, updateFields, null);
+            if (Object.keys(updatedAdmin).length > 0) {
+                await Admin.updateOne({ _id: id }, updatedAdmin, null);
                 res.status(200).json({ message: 'Admin updated successfully' });
             } else {
                 res.status(400).json({ message: 'No fields to update' });

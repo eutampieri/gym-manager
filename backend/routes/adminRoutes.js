@@ -16,7 +16,7 @@ router.post("/", API.createAdmin)
 router.get("/", API.fetchAllAdmins)
 router.get("/username/:username", API.fetchAdminByUsername)
 router.get("/:id", API.fetchAdminBy_Id)
-router.put("/", API.updateAdmin)
+router.put("/:id", API.updateAdmin)
 router.delete("/:id", API.deleteAdmin)
 
 module.exports = router

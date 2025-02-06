@@ -118,6 +118,10 @@ export class Client {
         return this.apiRequest("POST", "/courses", course);
     }
 
+    public updateAdmin(id: string, updated: CreateAdminRequest): Promise<boolean> {
+        return this.apiRequest("PUT", "/admins/" + id, updated).then(r => r.status == 200);
+    }
+
     public listUsers(): Promise<User[]> {
         return this.apiRequest("GET", "/customers").then(x => x.json());
     }
@@ -127,7 +131,7 @@ export class Client {
     public listTrainers(): Promise<Trainer[]> {
         return this.apiRequest("GET", "/trainers").then(x => x.json());
     }
-    public async listCourses(): Promise<Course[]> {
+    public listCourses(): Promise<Course[]> {
         return this.apiRequest("GET", "/courses").then(x => x.json());
     }
 
