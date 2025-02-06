@@ -46,15 +46,14 @@ if (props.id) {
         }
     })
 }
-const createRequest = () => {
-    return {
+const createRequest = () => ({
         username: username.value,
         password: password.value == '*******' ? undefined : password.value,
         firstName: firstName.value,
         lastName: lastName.value,
         hasFullPrivileges: hasFullPrivileges.value
-    } as CreateAdminRequest
-}
+    }) as CreateAdminRequest;
+
 async function handleUpdateAdmin() {
     try {
         const request = createRequest()

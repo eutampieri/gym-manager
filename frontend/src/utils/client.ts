@@ -111,8 +111,8 @@ export class Client {
     public addAdmin(admin: CreateAdminRequest): Promise<boolean> {
         return this.apiRequest("POST", "/admins", admin).then(r => r.status == 201);
     }
-    public addTrainer(trainer: CreateTrainerRequest) {
-        return this.apiRequest("POST", "/trainers", trainer);
+    public addTrainer(trainer: CreateTrainerRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/trainers", trainer).then(r => r.status == 201);
     }
     public addCourse(course: CreateCourseRequest) {
         return this.apiRequest("POST", "/courses", course);
