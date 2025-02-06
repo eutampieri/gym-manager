@@ -7,6 +7,7 @@ export enum EventType {
     ChatEstablished,
     MessageDelivery,
     CloseChat,
+    LeaveRoom,
 }
 
 

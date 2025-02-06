@@ -14,15 +14,17 @@ const socket = io({
     path: "/api/socketio",
 });
 
-const active = ref(false);
-const minimised = ref(false);
-const messages = ref<Message[]>([]);
-const otherParty: Ref<[BasicInfo, Role]> = ref([{
+const DUMMY_OTHER_PARTY: [BasicInfo, Role] = [{
     username: "admin",
     firstName: "Gym",
     lastName: "Support"
 
-}, Role.Admin]);
+}, Role.Admin];
+
+const active = ref(false);
+const minimised = ref(false);
+const messages = ref<Message[]>([]);
+const otherParty: Ref<[BasicInfo, Role]> = ref(DUMMY_OTHER_PARTY);
 
 const myId = client.userDetails!.id;
 
@@ -83,11 +85,33 @@ socket.on(
     }
 );
 
+socket.on(
+    EventType.CloseChat.toString(),
+    (sender) => {
+        const sentByCurrentUser = sender === myId;
+        notifications.fire({
+            title: "New message",
+            body: (sentByCurrentUser ? "You" : `${otherParty.value[0].firstName} ${otherParty.value[0].lastName}`)
+                + " closed the chat",
+            background: "info",
+            when: new Date(),
+        })
+        socket.emit(EventType.LeaveRoom.toString());
+        active.value = false;
+        minimised.value = false;
+    }
+);
+
 function send(msg: string) {
     socket.emit(EventType.Message.toString(), { message: msg });
 }
 
+function close() {
+    socket.emit(EventType.CloseChat.toString());
+}
+
 </script>
 <template>
-    <Chat v-model="minimised" :is-active="active" :messages="messages" :other-party="otherParty" @send="send"></Chat>
+    <Chat v-model="minimised" :is-active="active" :messages="messages" :other-party="otherParty" @send="send"
+        @close="close"></Chat>
 </template>

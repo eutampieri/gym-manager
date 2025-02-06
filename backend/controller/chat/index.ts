@@ -63,6 +63,19 @@ export function createSocketIoServer(server: NodeServer) {
             }
         });
 
+        // Handle leave
+        socket.on(EventType.CloseChat.toString(), () => {
+            if (userData !== undefined) {
+                io.to(roomID!).emit(EventType.CloseChat.toString(), userData.profile.id);
+            }
+        });
+        socket.on(EventType.LeaveRoom.toString(), () => {
+            if (userData !== undefined) {
+                socket.leave(roomID!);
+                roomID = undefined;
+            }
+        });
+
     })
     return io;
 }
