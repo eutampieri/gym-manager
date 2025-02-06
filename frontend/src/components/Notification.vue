@@ -3,9 +3,17 @@ import * as bootstrap from 'bootstrap';
 import { onMounted, useTemplateRef } from 'vue';
 import { Notification as INotification } from '@/utils/notifications';
 import ActionButton from './ActionButton.vue';
+import { Action } from '@/utils/lists';
 defineProps<INotification>();
 let toast = useTemplateRef("toast");
 
+function dismiss() {
+    bootstrap.Toast.getOrCreateInstance(toast.value!).hide();
+}
+
+function wrappedAction(a: Action): Action {
+    return { ...a, action: () => { dismiss(); a.action() } };
+}
 onMounted(() => {
     bootstrap.Toast.getOrCreateInstance(toast.value!).show();
 });
@@ -26,7 +34,8 @@ onMounted(() => {
             {{ body }}
         </div>
         <div v-if="actions" class="mt-2 pt-2 border-top">
-            <ActionButton v-for="action, index in actions" :key="index" :action="action" :small="true"></ActionButton>
+            <ActionButton v-for="action, index in actions" :key="index" :action="wrappedAction(action)" :small="true">
+            </ActionButton>
         </div>
     </div>
 </template>
