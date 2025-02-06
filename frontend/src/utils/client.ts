@@ -23,6 +23,10 @@ export class Client {
         }
     }
 
+    public get authToken(): string | undefined {
+        return this.jwt;
+    }
+
     private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
         const h = headers || new Headers;
         if (this.jwt !== undefined) {
@@ -192,14 +196,14 @@ export class Client {
                 }
             })));
     }
-    
+
     public async bookCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
         return this.apiRequest("POST", `/courses/${courseId}/bookings`, r).then(r => r.status == 201);
     }
     public unsubscribeFromCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
         return this.apiRequest("DELETE", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
     }
-    
+
     public createSession(session: CreateSessionRequest): Promise<boolean> {
         return this.apiRequest("POST", "/sessions", session).then(r => r.status == 201);
     }

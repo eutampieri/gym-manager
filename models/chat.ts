@@ -1,8 +1,9 @@
-export enum EventTypes {
+export enum EventType {
     Authenticate,
     ChatRequest,
+    Error,
 }
 
 
-export type AuthenticateEvent = [EventTypes.Authenticate, string];
-export type ChatRequestEvent = [EventTypes.ChatRequest, string];
+export type AuthenticateEvent = [EventType.Authenticate, string];
+export type ChatRequestEvent = [EventType.ChatRequest, string];

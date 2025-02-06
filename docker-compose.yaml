@@ -44,7 +44,7 @@ services:
     depends_on:
       - mongodb
     deploy:
-      replicas: 2 # se voglio scalabilità e elevate prestazioni,
+      replicas: 1 # se voglio scalabilità e elevate prestazioni,
       # e se voglio che l'app continui a essere disponibile anche se il nodo sul quale è in esecuzione fallisce
       # ATTENZIONE USARE I COMANDI SWARM se no non viene considerata
       # così vengono creati due container stackApplicazione_web.1 e stackApplicazione_web.2

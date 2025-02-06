@@ -2,7 +2,7 @@ import { ConfirmModal } from '@/components/ConfirmModal.vue';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-export const useModalsStore = defineStore('modals', () => {
+export const useChatStore = defineStore('chat', () => {
     const confirmModals = ref<[ConfirmModal, () => void][]>([]);
 
     return {
