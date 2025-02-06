@@ -26,9 +26,9 @@ function getUser(): Promise<undefined | User | Trainer | Admin> {
         if (props.role == 'user') {
             return client.getUserById(props.id);
         } else if (props.role == 'trainer') {
-            return client.getTrainer(props.id);
+            return client.getTrainerById(props.id);
         } else if (props.role == 'admin') {
-            return client.getAdmin(props.id);
+            return client.getAdminById(props.id);
         } else {
             return Promise.reject();
         }

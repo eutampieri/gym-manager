@@ -29,7 +29,7 @@ export class Client {
         }
         h.append("Content-Type", "application/json");
         return fetch(`/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
-        return fetch(`http://localhost:8080/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
+        // return fetch(`http://localhost:8080/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
     public async login(username: string, password: string): Promise<boolean> {
@@ -75,15 +75,14 @@ export class Client {
     }
 
     public getUserById(id: string): Promise<undefined | User | Trainer | Admin> {
-        // TODO
-        return Promise.resolve(this.userDetails);
         return this.apiRequest("GET", "/customers/" + id).then(r => r.json());
     }
-    public getAdmin(id: string): Promise<Admin | undefined> {
-        // TODO
-        return Promise.resolve(undefined);
+    public getAdminById(id: string): Promise<Admin | undefined> {
+        return this.apiRequest("GET", "/admin/" + id).then(r => r.json());
     }
-
+    public getTrainerById(id: string): Promise<Trainer> {
+        return this.apiRequest("GET", "/trainers/" + id).then(r => r.json());
+    }
     public addUser(user: CreateUserRequest) {
         return this.apiRequest("POST", "/customers", user);
     }
@@ -108,10 +107,6 @@ export class Client {
 
     public async listCourses(): Promise<Array<Course>> {
         return this.apiRequest("GET", "/courses").then(x => x.json());
-    }
-    public getTrainer(trainerId: string): Promise<Trainer> {
-        return this.apiRequest("GET", "/trainers/" + trainerId)
-            .then(r => r.json());
     }
 
     public getProfilePath() {
