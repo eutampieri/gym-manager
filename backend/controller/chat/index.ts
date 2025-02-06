@@ -45,7 +45,9 @@ export function createSocketIoServer(server: NodeServer) {
                     socket.join(roomID);
                     io.to(ROOMS.admin).emit(EventType.ChatRequest.toString(), { user: userData.profile, kind: userData.role, room: roomID });
                 } else {
-                    socket.emit(EventType.Error.toString(), "Support is not available now, please try again later.")
+                    setTimeout(() => {
+                        socket.emit(EventType.Error.toString(), "Support is not available now, please try again later.")
+                    }, 3000);
                 }
             }
         });
