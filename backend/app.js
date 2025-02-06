@@ -4,18 +4,21 @@ Avvio del server: Avvia il server Express su una porta specifica (porta 3000 di 
 
 // Importiamo i moduli necessari
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-const mongoose = require('mongoose')
-const logger = require('morgan');
-const createError = require('http-errors');
-const cookieParser = require('cookie-parser');
-const { DocumentBuilder } = require('express-openapi-generator');
-const fs = require('fs');
+import express, { json, urlencoded, static as serveStatic } from 'express';
+import { join } from 'path';
+import { connect } from 'mongoose';
+import logger from 'morgan';
+import createError from 'http-errors';
+import cookieParser from 'cookie-parser';
+import expressOpenAPI from 'express-openapi-generator';
+import { writeFileSync } from 'fs';
+import { Server } from 'socket.io';
+import { hash } from '@node-rs/argon2';
+import Admin from './models/adminModel.js';
+import idProjection from './controller/idProjection.js';
 
 
-const documentBuilder = DocumentBuilder.initializeDocument({
+const documentBuilder = expressOpenAPI.DocumentBuilder.initializeDocument({
   openapi: '3.0.1',
   info: {
     title: 'Gym backend',
@@ -23,18 +26,19 @@ const documentBuilder = DocumentBuilder.initializeDocument({
   },
   paths: {}, // You don't need to include any path objects, those will be generated later
 });
+const __dirname = import.meta.dirname;
 
 // Inizializziamo l'applicazione Express
 const app = express();
 
 // Configuriamo i middleware
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('uploads'));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
+app.use(serveStatic('uploads'));
+app.use(urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Configuriamo Express per servire i file statici dalla directory 'public' come index.html login.html style.css
@@ -50,31 +54,55 @@ app.get('/', function(req, res) {
   res.sendFile(path.resolve('../frontend/index.html'));
 });*/
 //Serviamo l'intera cartella frontend come cartella di file statici
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.use(serveStatic(join(__dirname, '../frontend/dist')));
 
 //Route per servire index.html quando si accede a "/"
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+  res.sendFile(join(__dirname, '../frontend/dist', 'index.html'));
 });
 
 const uri = process.env.MONGODB_URI || 'mongodb://mongodb:27017/gym';
 // Connessione al database
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connection to database successful');
+    // Crea admin di default se non esiste
+    createDefaultAdmin();
   })
   .catch((error) => {
     console.error('Errore connecting to the database:', error.message);
   });
 
+// Funzione per creare l'admin di default
+async function createDefaultAdmin() {
+  try {
+    const admins = await Admin.find({}, idProjection(Admin), null).exec();
+    if (admins.length === 0) {
+      const admin = new Admin({
+        username: 'admin',
+        password: await hash('admin'),
+        firstName: 'admin',
+        lastName: 'admin',
+        hasFullPrivileges: true,
+      });
+      await Admin.create(admin, null);
+      console.log('Admin di default creato con successo.');
+    } else {
+      console.log('Admin di default già esistente.');
+    }
+  } catch (error) {
+    console.error('Errore nella creazione dell\'admin di default:', error);
+  }
+}
+
 
 // Definiamo i percorsi per i moduli di gestione della palestra
-const clients = require('./routes/clientRoutes');
-const courses = require('./routes/courseRoutes');
-const trainers = require('./routes/trainerRoutes');
-const sessions = require('./routes/sessionRoutes');
-const admins = require('./routes/adminRoutes');
-const auth = require('./routes/authRoutes');
+import clients from './routes/clientRoutes.js';
+import courses from './routes/courseRoutes.js';
+import trainers from './routes/trainerRoutes.js';
+import sessions from './routes/sessionRoutes.js';
+import admins from './routes/adminRoutes.js';
+import auth from './routes/authRoutes.js';
 
 
 
@@ -96,9 +124,9 @@ app.use('/api/auth', auth);
 const port = process.env.PORT || 3000;
 if (process.env.GENERATE_OPENAPI !== undefined) {
   documentBuilder.generatePathsObject(app);
-  fs.writeFileSync("openapi.json", JSON.stringify(documentBuilder.build()));
+  writeFileSync("openapi.json", JSON.stringify(documentBuilder.build()));
 } else {
-  app.listen(port, () => {
+  const server = app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
   });
 }

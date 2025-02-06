@@ -1,4 +1,4 @@
-const { Model } = require("mongoose");
+import { Model } from "mongoose";
 
 const baseProjection = {
     _id: 0,
@@ -15,4 +15,4 @@ function buildProjection(schema) {
     return p;
 }
 
-module.exports = buildProjection;
+export default buildProjection;

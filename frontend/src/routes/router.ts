@@ -15,7 +15,7 @@ import BookOneOnOnePage from '@/pages/BookOneOnOnePage.vue';
 import AdminListPage from '@/pages/AdminListPage.vue';
 import TrainerPage from '@/pages/TrainerPage.vue';
 import BookCoursePage from '@/pages/BookCoursePage.vue';
-import { Role } from '@gym-manager/models/user';
+import { Role } from '@gym-manager/models';
 
 
 const routes = [

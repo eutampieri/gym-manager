@@ -8,6 +8,8 @@ import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const username = ref("");
 const password = ref("");
@@ -76,6 +78,7 @@ async function handleUpdateTrainer() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             throw new Error();
         }
@@ -101,6 +104,7 @@ async function handleCreateTrainer() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             throw new Error();
         }

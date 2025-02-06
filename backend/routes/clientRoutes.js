@@ -1,8 +1,8 @@
-const express = require('express')
-const API = require('../controller/clientApi')
-const { wrapMiddleware, adminAuth, trainerAuth, customerAuth } = require('../utils')
+import { Router } from 'express';
+import API from '../controller/clientApi.js';
+import { wrapMiddleware, adminAuth, trainerAuth, customerAuth } from '../utils.js';
 
-const router = express.Router();
+const router = Router();
 
 router.post("/", wrapMiddleware(adminAuth, API.createCustomer))
 router.get("/", wrapMiddleware(adminAuth, API.fetchAllCustomers))
@@ -13,4 +13,4 @@ router.get("/:id/sessions", wrapMiddleware(customerAuth, API.fetchAllCustomerSes
 router.get("/:id/courses", wrapMiddleware(customerAuth, API.fetchAllCustomerCourses))
 
 
-module.exports = router
+export default router

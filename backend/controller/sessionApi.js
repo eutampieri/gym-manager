@@ -1,13 +1,12 @@
-const Client = require('../models/clientModel');
-const Trainer = require('../models/trainerModel');
-const Session = require('../models/sessionModel');
-const idProjection = require('./idProjection');
+import Client from '../models/clientModel.js';
+import Trainer from '../models/trainerModel.js';
+import Session from '../models/sessionModel.js';
+import idProjection from './idProjection.js';
 
 // RESTful CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
 // Mongoose functions are CRUD
 
-module.exports = class API {
-
+export default class API {
     static async createSession(req, res) {
         const session = req.body;
         const idTrainer = req.body.trainer;

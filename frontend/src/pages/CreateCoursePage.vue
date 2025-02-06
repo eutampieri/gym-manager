@@ -10,6 +10,8 @@ import { useNotificationsStore } from '@/store/notifications';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 import TextAreaInput from '@/components/TextAreaInput.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const name = ref("");
 const description = ref("");
@@ -115,6 +117,7 @@ async function handleUpdateCourse() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             throw new Error();
         }
@@ -139,6 +142,7 @@ async function handleCreateCourse() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             throw new Error();
         }

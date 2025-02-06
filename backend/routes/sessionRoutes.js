@@ -1,13 +1,13 @@
 // Import modules
-const express = require('express');
-const { wrapMiddleware, adminAuth, customerAuth, anyAuth } = require('../utils')
-const API = require('../controller/sessionApi');
+import { Router } from 'express';
+import { wrapMiddleware, adminAuth, customerAuth, anyAuth } from '../utils.js';
+import API from '../controller/sessionApi.js';
 
-const router = express.Router();
+const router = Router();
 
 router.post('/', wrapMiddleware(customerAuth, API.createSession));
 router.get('/', wrapMiddleware(adminAuth, API.fetchAllSessions));
 router.get("/:id", wrapMiddleware(anyAuth, API.fetchSessionBy_Id));
 router.delete('/:id', wrapMiddleware(customerAuth, API.deleteSession));
 
-module.exports = router;
+export default router;

@@ -8,7 +8,7 @@ defineProps<Message>();
 </template>
 <style lang="css" scoped>
 .text-bg-tertiary {
-    background-color: var(--bs-gray-400);
+    background-color: var(--bs-tertiary-bg);
 }
 
 p {

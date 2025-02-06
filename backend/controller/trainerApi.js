@@ -1,13 +1,13 @@
-const Client = require('../models/clientModel');
-const Course = require('../models/courseModel');
-const Trainer = require('../models/trainerModel');
-const idProjection = require('./idProjection');
-const { hash } = require('@node-rs/argon2');
+import Client from '../models/clientModel.js';
+import Course from '../models/courseModel.js';
+import Trainer from '../models/trainerModel.js';
+import idProjection from './idProjection.js';
+import { hash } from '@node-rs/argon2';
 
 //API RESTFUL CRUD CON LOCK PER LA GESTIONE DELLA MUTUA ESCLUSIONE
 // le funzioni di Mongoose sono CRUD
 
-module.exports = class API {
+export default class API {
     static async createTrainer(req, res) {
         const trainer = req.body;
         trainer.password = await hash(trainer.password);

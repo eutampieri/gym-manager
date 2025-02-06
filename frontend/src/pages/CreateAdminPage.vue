@@ -8,6 +8,8 @@ import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 import SectionContainer from '@/components/SectionContainer.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const username = ref("");
 const password = ref("");
@@ -69,6 +71,7 @@ async function handleUpdateAdmin() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             throw new Error();
         }
@@ -94,6 +97,7 @@ async function handleCreateAdmin() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             throw new Error();
         }
