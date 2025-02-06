@@ -24,7 +24,6 @@ const otherParty: Ref<[BasicInfo, Role]> = ref([{
 
 }, Role.Admin]);
 
-let chatID: string | null = null;
 const myId = client.userDetails!.id;
 
 onMounted(() => {
@@ -57,8 +56,7 @@ if (client.getRole === Role.Admin) {
 
 socket.on(
     EventType.ChatEstablished.toString(),
-    (id) => {
-        chatID = id;
+    () => {
         active.value = true;
         messages.value = [];
     }
@@ -86,7 +84,7 @@ socket.on(
 );
 
 function send(msg: string) {
-    socket.emit(EventType.Message.toString(), { message: msg, room: chatID });
+    socket.emit(EventType.Message.toString(), { message: msg });
 }
 
 </script>

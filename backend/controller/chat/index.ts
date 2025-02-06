@@ -11,7 +11,6 @@ const ROOMS = {
 const ACCEPTED_CHATS = new Set<string>();
 
 export function createSocketIoServer(server: NodeServer) {
-    console.log(verifyJWT)
     const io = new Server(server, {
         path: "/api/socketio/",
         serveClient: false,
@@ -19,6 +18,7 @@ export function createSocketIoServer(server: NodeServer) {
     io.on('connection', (socket) => {
         console.log("New connection");
         let userData: any | undefined = undefined;
+        let roomID: string | undefined;
 
         // Authentication
         socket.on(EventType.Authenticate.toString(), async (jwt) => {
@@ -37,7 +37,7 @@ export function createSocketIoServer(server: NodeServer) {
         // Chat request
         socket.on(EventType.ChatRequest.toString(), () => {
             if (userData !== undefined) {
-                const roomID = ulid();
+                roomID = ulid();
                 socket.join(roomID);
                 io.to(ROOMS.admin).emit(EventType.ChatRequest.toString(), { user: userData.profile, kind: userData.role, room: roomID });
             }
@@ -49,16 +49,17 @@ export function createSocketIoServer(server: NodeServer) {
                 if (ACCEPTED_CHATS.has(room)) {
                     socket.emit(EventType.Error.toString(), "The chat was already taken.");
                 } else {
+                    roomID = room;
                     socket.join(room);
-                    io.to(room).emit(EventType.ChatEstablished.toString(), room);
+                    io.to(room).emit(EventType.ChatEstablished.toString());
                 }
             }
         });
 
         // Handle messages
-        socket.on(EventType.Message.toString(), ({ message, room }) => {
+        socket.on(EventType.Message.toString(), ({ message }) => {
             if (userData !== undefined) {
-                io.to(room).emit(EventType.MessageDelivery.toString(), { message, sender: userData.profile.id });
+                io.to(roomID!).emit(EventType.MessageDelivery.toString(), { message, sender: userData.profile.id });
             }
         });
 
