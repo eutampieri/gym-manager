@@ -13,29 +13,34 @@ const password = ref<string>();
 const loginInProgress = ref(false);
 
 const notifications = useNotificationsStore();
+const sadPath = () => notifications.fire({
+    title: 'Authentication error',
+    body: 'The credentials you provided were invalid.',
+    background: "danger"
+});
 
 async function login() {
     loginInProgress.value = true;
-    let authResult = await store.client.login(username.value || "", password.value || "");
+    let authResult = await store.client.login(username.value || "", password.value || "").catch(sadPath);
     loginInProgress.value = false;
     if (authResult) {
-        switch (store.client.getRole) {
-            case Role.Admin:
-                router.push({ "path": "/admin" })
-                break;
-            case Role.Trainer:
-                router.push({ "path": "/trainer" })
-                break;
-            case Role.User:
-                router.push({ "path": "/user" })
-                break;
+        try {
+            switch (store.client.getRole) {
+                case Role.Admin:
+                    router.push({ "path": "/admin" })
+                    break;
+                case Role.Trainer:
+                    router.push({ "path": "/trainer" })
+                    break;
+                case Role.User:
+                    router.push({ "path": "/user" })
+                    break;
+            }
+        } catch {
+            sadPath();
         }
     } else {
-        notifications.fire({
-            title: 'Authentication error',
-            body: 'The credentials you provided were invalid.',
-            background: "danger"
-        });
+        sadPath();
     }
 }
 </script>
