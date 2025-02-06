@@ -24,21 +24,7 @@ async function login() {
     let authResult = await store.client.login(username.value || "", password.value || "").catch(sadPath);
     loginInProgress.value = false;
     if (authResult) {
-        try {
-            switch (store.client.getRole) {
-                case Role.Admin:
-                    router.push({ "path": "/admin" })
-                    break;
-                case Role.Trainer:
-                    router.push({ "path": "/trainer" })
-                    break;
-                case Role.User:
-                    router.push({ "path": "/user" })
-                    break;
-            }
-        } catch {
-            sadPath();
-        }
+        router.push({ path: "/" })
     } else {
         sadPath();
     }

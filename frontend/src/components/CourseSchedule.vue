@@ -25,7 +25,7 @@ async function bookCourse(courseId: string, dayOfWeek: string, startTime: string
     } else {
         notifications.fire({
             body: 'There was an error while booking.',
-            background: 'error-subtle'
+            background: 'danger'
         });
     }
 }

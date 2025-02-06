@@ -15,38 +15,52 @@ import BookOneOnOnePage from '@/pages/BookOneOnOnePage.vue';
 import AdminListPage from '@/pages/AdminListPage.vue';
 import TrainerPage from '@/pages/TrainerPage.vue';
 import BookCoursePage from '@/pages/BookCoursePage.vue';
+import { Role } from '@gym-manager/models/user';
 
 
 const routes = [
-  { path: '/login', name: "Login", component: Login },
-  { path: '/admin', name: "adminPage", component: AdminPage, meta: { role: "admin" } },
-  { path: '/admin/createCourse', name: "createCourse", component: CreateCoursePage, meta: { role: "admin" } },
-  { path: '/admin/createClient', name: "createClient", component: CreateClientPage, meta: { role: "admin" } },
-  { path: '/admin/listCustomers', name: "listCustomers", component: UserListPage, meta: { role: "admin" } },
-  { path: '/admin/listTrainers', name: "listTrainers", component: TrainerListPage, meta: { role: "admin" } },
-  { path: '/admin/listCourses', name: "listCourses", component: CourseListPage, meta: { role: "user" } },
-  { path: '/admin/createTrainer', name: "createTrainer", component: CreateTrainerPage, meta: { role: "admin" } },
-  { path: '/admin/createAdmin', name: "createAdmin", component: CreateAdminPage, meta: { role: "admin" } },
-  { path: '/admin/listAdmins', name: "listAdmins", component: AdminListPage, meta: { role: "admin" } },
-  { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
-  { path: '/user/book/oneOnOne', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
-  { path: '/user/book/course', name: "bookCourse", component: BookCoursePage, meta: { role: "user" } },
-  { path: '/trainer', name: "trainerPage", component: TrainerPage, meta: { role: "trainer" } },
-  { path: '/:role/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },
+    { path: '/login', name: "Login", component: Login },
+    { path: '/admin', name: "adminPage", component: AdminPage, meta: { role: "admin" } },
+    { path: '/admin/createCourse', name: "createCourse", component: CreateCoursePage, meta: { role: "admin" } },
+    { path: '/admin/createClient', name: "createClient", component: CreateClientPage, meta: { role: "admin" } },
+    { path: '/admin/listCustomers', name: "listCustomers", component: UserListPage, meta: { role: "admin" } },
+    { path: '/admin/listTrainers', name: "listTrainers", component: TrainerListPage, meta: { role: "admin" } },
+    { path: '/admin/listCourses', name: "listCourses", component: CourseListPage, meta: { role: "user" } },
+    { path: '/admin/createTrainer', name: "createTrainer", component: CreateTrainerPage, meta: { role: "admin" } },
+    { path: '/admin/createAdmin', name: "createAdmin", component: CreateAdminPage, meta: { role: "admin" } },
+    { path: '/admin/listAdmins', name: "listAdmins", component: AdminListPage, meta: { role: "admin" } },
+    { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
+    { path: '/user/book/oneOnOne', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
+    { path: '/user/book/course', name: "bookCourse", component: BookCoursePage, meta: { role: "user" } },
+    { path: '/trainer', name: "trainerPage", component: TrainerPage, meta: { role: "trainer" } },
+    { path: '/:role/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes
+    history: createWebHistory(),
+    routes
 });
 router.beforeEach(async (to, from) => {
-  const store = useUserStore()
-  if (
-    !store.client.isLoggedIn &&
-    to.name !== 'Login'
-  ) {
-    return { name: 'Login' }
-  }
-})
+    const store = useUserStore()
+    if (
+        !store.client.isLoggedIn &&
+        to.name !== 'Login'
+    ) {
+        return { name: 'Login' }
+    }
+});
+router.beforeEach(async (to, from) => {
+    if (to.path === '/') {
+        const store = useUserStore()
+        switch (store.client.getRole) {
+            case Role.Admin:
+                return '/admin';
+            case Role.Trainer:
+                return '/trainer';
+            case Role.User:
+                return '/user';
+        }
+    }
+});
 
 export default router;
