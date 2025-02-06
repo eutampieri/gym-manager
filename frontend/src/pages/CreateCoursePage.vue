@@ -6,7 +6,8 @@ import ValidatingGenericInput from '@/components/ValidatingGenericInput.vue';
 import { SelectInputValue } from '@/components/SelectInput.vue';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const name = ref("");
 const description = ref("");
 const capacityString = ref("");
@@ -15,7 +16,6 @@ const trainer = ref("");
 const message = ref("");
 const trainersList = ref<SelectInputValue[]>([]);
 const scheduleEntries = ref<CourseScheduleEntry[]>([]);
-
 const nameValid = ref(false);
 const descriptionValid = ref(false);
 const capacityValid = ref(false);
@@ -68,7 +68,7 @@ watch(capacity, (newCapacity) => {
 });
 
 client.listTrainers()
-    .then(x => x.map((y => { return { id: y._id, label: `${y.firstName} ${y.lastName}` }; })))
+    .then(x => x.map((y => { return { id: y.id, label: `${y.firstName} ${y.lastName}` }; })))
     .then(x => trainersList.value = x);
 
 async function handleCreateCourse() {
@@ -92,6 +92,7 @@ async function handleCreateCourse() {
                 background: 'success',
                 when: new Date(),
             });
+            router.back();
         } else {
             notificationStore.fire({
                 title: 'Error',
