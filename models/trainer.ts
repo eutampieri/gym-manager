@@ -1,12 +1,6 @@
-interface BaseTrainer {
-    username: string
-    firstName: string
-    lastName: string
-    email: string
-    phoneNumber: string
-}
-
-
-export interface CreateTrainerRequest extends BaseTrainer {
-    password: string
+export interface TrainerAvailabilities {
+    [key: string]: DailyAvailability
+};
+interface DailyAvailability {
+    [key: string]: boolean
 }

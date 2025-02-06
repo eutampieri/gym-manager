@@ -11,5 +11,6 @@ router.put("/", wrapMiddleware(adminAuth, API.updateTrainer));
 router.delete("/:id", wrapMiddleware(adminAuth, API.deleteTrainer));
 router.get("/:id/courses", wrapMiddleware(trainerAuth, API.fetchAllTrainerCourses));
 router.get("/:id/sessions", wrapMiddleware(trainerAuth, API.fetchAllTrainerSessions));
+router.get("/:id/availabilities", wrapMiddleware(anyAuth, API.listTrainerAvailability));
 
 module.exports = router

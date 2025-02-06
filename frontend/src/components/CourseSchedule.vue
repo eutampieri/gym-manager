@@ -12,7 +12,10 @@ const isBooked = ref(props.booked);
 const availableSpots = ref(props.schedule.availableSpots);
 
 async function bookCourse(courseId: string, dayOfWeek: string, startTime: string) {
-    isBooked.value = await store.client.bookCourse(courseId, dayOfWeek, startTime);
+    isBooked.value = await store.client.bookCourse(courseId, {
+        dayOfWeek: dayOfWeek,
+        startTime: startTime,
+    });
     if (isBooked.value) {
         availableSpots.value--;
         notifications.fire({
@@ -37,7 +40,8 @@ async function bookCourse(courseId: string, dayOfWeek: string, startTime: string
         </div>
         <div class="w-50 d-flex justify-content-center align-items-center">
             <button type="button" class="btn btn-primary py-2 px-5" :disabled="isBooked || availableSpots <= 0"
-                @click="() => bookCourse(courseId, schedule.dayOfWeek, schedule.startTime)">{{ isBooked ? 'Booked' : 'Book' }}</button>
+                @click="() => bookCourse(courseId, schedule.dayOfWeek, schedule.startTime)">{{ isBooked ? 'Booked' :
+                    'Book' }}</button>
         </div>
     </div>
 </template>

@@ -11,6 +11,7 @@ import CourseListPage from '@/pages/CourseListPage.vue';
 import CreateTrainerPage from '@/pages/CreateTrainerPage.vue';
 import CreateAdminPage from '@/pages/CreateAdminPage.vue';
 import UserPage from '@/pages/UserPage.vue';
+import BookOneOnOnePage from '@/pages/BookOneOnOnePage.vue';
 import AdminListPage from '@/pages/AdminListPage.vue';
 import TrainerPage from '@/pages/TrainerPage.vue';
 import BookCoursePage from '@/pages/BookCoursePage.vue';
@@ -28,6 +29,7 @@ const routes = [
   { path: '/admin/createAdmin', name: "createAdmin", component: CreateAdminPage, meta: { role: "admin" } },
   { path: '/admin/listAdmins', name: "listAdmins", component: AdminListPage, meta: { role: "admin" } },
   { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
+  { path: '/user/book/oneOnOne', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
   { path: '/user/book/course', name: "bookCourse", component: BookCoursePage, meta: { role: "user" } },
   { path: '/trainer', name: "trainerPage", component: TrainerPage, meta: { role: "trainer" } },
   { path: '/:role/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },

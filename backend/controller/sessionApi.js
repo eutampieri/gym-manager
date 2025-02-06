@@ -13,56 +13,56 @@ module.exports = class API {
         const idTrainer = req.body.trainer;
         const idParticipant = req.body.participant;
         const safeIdParticipant = req.user.role === "admin" ? idParticipant : req.user.id;
-        
-        try {            
 
-                session.participant = safeIdParticipant;
+        try {
 
-                /* check if session can be created */
-                // check in partecipant sessions
-                const overlappingParticipantSessions = await Client.find({
-                    _id: safeIdParticipant,
-                    'sessions.startTime': session.startTime,
-                    'sessions.dayOfWeek': session.dayOfWeek
-                }, null, null);
-                if (overlappingParticipantSessions) {
-                    return res.status(400).json({ message: 'Cannot create session' });
-                }
-                // check in trainer sessions
-                const overlappingTrainerSessions = await Trainer.find({
-                    _id: idTrainer,
-                    'sessions.startTime': session.startTime,
-                    'sessions.dayOfWeek': session.dayOfWeek
-                }, null, null);
-                if (overlappingTrainerSessions) {
-                    return res.status(400).json({ message: 'Cannot create session' });
-                }
-                // check in trainer courses
-                const overlappingTrainerCourses = await Trainer.find({
-                    _id: idTrainer,
-                    'courses.schedule.startTime': session.startTime,
-                    'courses.schedule.dayOfWeek': session.dayOfWeek
-                }, null, null);
-                if (overlappingTrainerCourses) {
-                    return res.status(400).json({ message: 'Cannot create session' });
-                }
+            session.participant = safeIdParticipant;
 
-                /* Create session */
-                const newSession = await Session.create(session, null);
-                // Aggiunge la sessione al Client
-                await Client.updateOne(
-                    { _id: safeIdParticipant },
-                    { $push: { sessions: newSession._id } }
-                );
+            /* check if session can be created */
+            // check in partecipant sessions
+            const overlappingParticipantSessions = await Client.find({
+                _id: safeIdParticipant,
+                'sessions.startTime': session.startTime,
+                'sessions.dayOfWeek': session.dayOfWeek
+            }, null, null);
+            if (overlappingParticipantSessions) {
+                return res.status(400).json({ message: 'Cannot create session' });
+            }
+            // check in trainer sessions
+            const overlappingTrainerSessions = await Trainer.find({
+                _id: idTrainer,
+                'sessions.startTime': session.startTime,
+                'sessions.dayOfWeek': session.dayOfWeek
+            }, null, null);
+            if (overlappingTrainerSessions) {
+                return res.status(400).json({ message: 'Cannot create session' });
+            }
+            // check in trainer courses
+            const overlappingTrainerCourses = await Trainer.find({
+                _id: idTrainer,
+                'courses.schedule.startTime': session.startTime,
+                'courses.schedule.dayOfWeek': session.dayOfWeek
+            }, null, null);
+            if (overlappingTrainerCourses) {
+                return res.status(400).json({ message: 'Cannot create session' });
+            }
 
-                // Aggiunge la sessione al Trainer
-                await Trainer.updateOne(
-                    { _id: idTrainer },
-                    { $push: { sessions: newSession._id } }
-                );
-                res.status(201).json({ message: 'Session created successfully' });
-            
-           
+            /* Create session */
+            const newSession = await Session.create(session, null);
+            // Aggiunge la sessione al Client
+            await Client.updateOne(
+                { _id: safeIdParticipant },
+                { $push: { sessions: newSession._id } }
+            );
+
+            // Aggiunge la sessione al Trainer
+            await Trainer.updateOne(
+                { _id: idTrainer },
+                { $push: { sessions: newSession._id } }
+            );
+            res.status(201).json({ message: 'Session created successfully' });
+
+
         } catch (error) {
             res.status(400).json({ message: error.message });
         } finally {
