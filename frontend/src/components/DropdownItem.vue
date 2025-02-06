@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useTemplateRef } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 
 
 const props = defineProps<{
@@ -12,7 +12,9 @@ const itemId = props.idPrefix + props.index;
 
 const emit = defineEmits<{ shown: [] }>();
 const collapsible = useTemplateRef('collapsible');
-collapsible.value?.addEventListener('shown.bs.collapse', () => emit('shown'));
+onMounted(() => {
+    collapsible.value!.addEventListener('shown.bs.collapse', () => emit('shown'));
+})
 </script>
 
 <template>
