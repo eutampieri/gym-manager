@@ -74,13 +74,13 @@ export class Client {
         }
     }
 
-    public getUserById(id: string): Promise<undefined | User | Trainer | Admin> {
+    public getUserById(id: string): Promise<User | undefined> {
         return this.apiRequest("GET", "/customers/" + id).then(r => r.json());
     }
     public getAdminById(id: string): Promise<Admin | undefined> {
         return this.apiRequest("GET", "/admins/" + id).then(r => r.json());
     }
-    public getTrainerById(id: string): Promise<Trainer> {
+    public getTrainerById(id: string): Promise<Trainer | undefined> {
         return this.apiRequest("GET", "/trainers/" + id).then(r => r.json());
     }
 
@@ -105,8 +105,8 @@ export class Client {
         }
     }
 
-    public addUser(user: CreateUserRequest) {
-        return this.apiRequest("POST", "/customers", user);
+    public addUser(user: CreateUserRequest): Promise<boolean> {
+        return this.apiRequest("POST", "/customers", user).then(r => r.status == 201);
     }
     public addAdmin(admin: CreateAdminRequest): Promise<boolean> {
         return this.apiRequest("POST", "/admins", admin).then(r => r.status == 201);

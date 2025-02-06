@@ -82,7 +82,7 @@ async function handleUpdateAdmin() {
 
 async function handleCreateAdmin() {
     try {
-        const request = createRequest()
+        const request = createRequest();
         const response = await client.addAdmin(request);
 
         if (response) {

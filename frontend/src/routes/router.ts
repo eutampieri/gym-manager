@@ -23,6 +23,7 @@ const routes = [
     { path: '/admin', name: "adminPage", component: AdminPage, meta: { role: "admin" } },
     { path: '/admin/createCourse', name: "createCourse", component: CreateCoursePage, meta: { role: "admin" } },
     { path: '/admin/createClient', name: "createClient", component: CreateClientPage, meta: { role: "admin" } },
+    { path: '/admin/updateClient/:id', name: "updateClient", component: CreateClientPage, meta: { role: "admin" }, props: true },
     { path: '/admin/listCustomers', name: "listCustomers", component: UserListPage, meta: { role: "admin" } },
     { path: '/admin/createTrainer', name: "createTrainer", component: CreateTrainerPage, meta: { role: "admin" } },
     { path: '/admin/updateTrainer/:id', name: "updateTrainer", component: CreateTrainerPage, meta: { role: "admin" }, props: true },

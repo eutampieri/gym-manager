@@ -40,58 +40,97 @@ const submitButtonEnabled = computed(() => usernameValid.value &&
 );
 
 const client = useUserStore().client;
-const notificationStore = useNotificationsStore();
+const notification = useNotificationsStore();
 
-async function handleCreateClient() {
-    try {
+const props = defineProps<{ id?: string }>();
 
-        // Creazione dell'oggetto JSON con i dati del cliente
-        const request: CreateUserRequest = {
-            username: username.value,
-            password: password.value,
-            firstName: firstName.value,
-            lastName: lastName.value,
-            email: email.value,
-            phoneNumber: phoneNumber.value,
-            dateOfBirth: dateOfBirth.value,
-            fiscalCode: fiscalCode.value,
-            address: address.value,
+if (props.id) {
+    client.getUserById(props.id).then(r => {
+        if (r) {
+            username.value = r.username;
+            firstName.value = r.firstName;
+            lastName.value = r.lastName;
+            password.value = '*******';
+            email.value = r.email,
+            phoneNumber.value = r.phoneNumber,
+            dateOfBirth.value = r.dateOfBirth,
+            fiscalCode.value = r.fiscalCode,
+            address.value = r.address,
+        } else {
+            notification.fire({
+                title: 'Error',
+                body: 'This user could not be found',
+                background: 'danger'
+            })
         }
+    })
+}
+const createRequest = () => ({
+        username: username.value,
+        password: password.value == '*******' ? undefined : password.value,
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        phoneNumber: phoneNumber.value,
+        dateOfBirth: dateOfBirth.value,
+        fiscalCode: fiscalCode.value,
+        address: address.value,
+    }) as CreateUserRequest;
 
+async function handleUpdateCustomer() {
+    try {
+        const request = createRequest()
+        const id = props.id!;
+        const response = await client.updateCustomer(id, request);
 
-        // Effettua la richiesta POST per creare il cliente
-        const response = await client.addUser(request);
-
-        if (response.status === 201) {
-            notificationStore.fire({
+        if (response) {
+            notification.fire({
                 title: 'Success',
-                body: `Customer ${firstName.value} ${lastName.value} successfully created!`,
+                body: `User ${firstName.value} ${lastName.value} successfully updated!`,
                 background: 'success',
                 when: new Date(),
             });
         } else {
-            notificationStore.fire({
-                title: 'Error',
-                body: 'Error while creating customer',
-                background: 'danger',
-                when: new Date(),
-            });
+            throw new Error();
         }
     } catch (error) {
-        notificationStore.fire({
+        notification.fire({
             title: 'Error',
-            body: 'Error while creating customer',
+            body: 'Error while updating the user',
             background: 'danger',
             when: new Date(),
         });
     }
+}
+async function handleCreateCustomer() {
+    try {
+        const request = createRequest();
+        const response = await client.addUser(request);
 
+        if (response) {
+            notification.fire({
+                title: 'Success',
+                body: `User ${firstName.value} ${lastName.value} successfully created!`,
+                background: 'success',
+                when: new Date(),
+            });
+        } else {
+            throw new Error();
+        }
+    } catch (error) {
+        notification.fire({
+            title: 'Error',
+            body: 'Error while creating the user',
+            background: 'danger',
+            when: new Date(),
+        });
+    }
 }
 </script>
+
 <template>
-    
-    <h2>Creating {{ firstName === "" ? "a new customer" : `${firstName} ${lastName}` }}</h2>
-    
+    <h2 v-if="props.id">Update {{ username != '' ? username : 'User' }}</h2>
+    <h2 v-else>Create {{ username != '' ? username : 'a new User' }}</h2>
     <form>
 
         <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
@@ -129,13 +168,9 @@ async function handleCreateClient() {
 
         <GenericInput type="text" id="address" v-model="address">Address</GenericInput>
 
-        <button class="btn btn-primary" type="button" @click="handleCreateClient()"
-            :disabled="!submitButtonEnabled">Create Client {{ firstName }}</button>
-
-        <p v-if="message">
-            {{ message }}
-        </p>
-
+        <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateCustomer"
+            :disabled="!submitButtonEnabled">Update User {{ firstName }}</button>
+        <button v-else class="btn btn-primary" type="button" @click="handleCreateCustomer"
+            :disabled="!submitButtonEnabled">Create User {{ firstName }}</button>
     </form>
-
 </template>

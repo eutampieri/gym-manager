@@ -12,7 +12,7 @@ const client = useUserStore().client;
 const confirm = useModalsStore().confirm;
 const notification = useNotificationsStore();
 const users = ref<Array<Trainer>>([]);
-client.listUsers().then(x => users.value = x);
+client.listTrainers().then(x => users.value = x);
 
 const data = computed<ListData>((): ListData => {
     return {
@@ -31,7 +31,7 @@ const data = computed<ListData>((): ListData => {
         ]
     };
 });
-const edit = (d: Trainer | RowData) => router.push({ path: '/trainer/updateTrainer/' + d.id })
+const edit = (d: Trainer | RowData) => router.push({ path: '/admin/updateTrainer/' + d.id })
 const del = async (d: Trainer | RowData) => {
     if (await confirm(`Are you sure you want to delete trainer ${d.username}?`)) {
         client.deleteTrainer(d.id as string).then(r => {
