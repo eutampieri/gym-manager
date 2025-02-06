@@ -2,11 +2,13 @@
   "name": "@gym-manager/backend",
   "version": "0.0.0",
   "main": "app.js",
+  "type": "module",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@gym-manager/models": "^1.0.0",
     "@node-rs/argon2": "^2.0.2",
     "body-parser": "^1.20.2",
     "cookie-parser": "~1.4.4",
@@ -16,7 +18,8 @@
     "http-errors": "~1.6.3",
     "jose": "^5.9.6",
     "mongoose": "^8.1.1",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "socket.io": "^4.8.1"
   },
   "peerDependencies": {
     "ajv": "8.17.1"

@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
 // Definition of the schema for the client model
-const adminSchema = new mongoose.Schema({
+const adminSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -22,7 +22,7 @@ const adminSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     }
-    
+
 });
 
 /* Here are some of the main functions offered by Mongoose:
@@ -34,4 +34,4 @@ Advanced query methods: Mongoose offers many query methods to perform advanced s
 */
 
 // Creation of the client model
-module.exports = mongoose.model("Admin", adminSchema)
+export default model("Admin", adminSchema)

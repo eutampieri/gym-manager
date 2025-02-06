@@ -1,8 +1,8 @@
-const Admin = require('../models/adminModel');
-const idProjection = require('./idProjection');
-const { hash } = require('@node-rs/argon2');
+import Admin from '../models/adminModel.js';
+import idProjection from './idProjection.js';
+import { hash } from '@node-rs/argon2';
 
-module.exports = class API {
+export default class API {
     static async createAdmin(req, res) {
         const admin = req.body;
         admin.password = await hash(admin.password);

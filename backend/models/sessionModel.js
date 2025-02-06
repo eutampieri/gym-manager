@@ -1,9 +1,8 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const sessionSchema = new mongoose.Schema({
-
+const sessionSchema = new Schema({
     trainer: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Trainer',
         required: true
     },
@@ -19,11 +18,11 @@ const sessionSchema = new mongoose.Schema({
         match: /^(09|1[0-8]):00$/ // Regex for the "HH:00" format and hours between 09 and 18
     },
     participant: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Client',
         required: true
     },
 
 });
 
-module.exports = mongoose.model("Session", sessionSchema)
+export default model("Session", sessionSchema)
