@@ -12,7 +12,7 @@ function dismiss() {
 }
 
 function wrappedAction(a: Action): Action {
-    return { ...a, action: () => { dismiss(); a.action() } };
+    return { ...a, action: (x) => { dismiss(); a.action(x) } };
 }
 onMounted(() => {
     bootstrap.Toast.getOrCreateInstance(toast.value!).show();
