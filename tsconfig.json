@@ -2,11 +2,11 @@
     "compilerOptions": {
         "incremental": true,
         "target": "es2020",
-        "module": "ESNext",
+        "module": "commonjs",
         "declaration": true,
         "sourceMap": true,
         "strict": true,
-        "moduleResolution": "nodenext",
+        "moduleResolution": "node",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
