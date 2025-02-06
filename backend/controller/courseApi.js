@@ -69,8 +69,7 @@ module.exports = class API {
     }
 
     static async updateCourse(req, res) {
-        const id = req.params.id;
-        const { name, description, schedule, capacity, trainer } = req.body;
+        const { id, name, description, schedule, capacity, trainer } = req.body;
 
         try {
             // Trova il corso esistente per confrontare il trainer originale

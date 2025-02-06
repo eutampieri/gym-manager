@@ -122,16 +122,16 @@ export class Client {
     }
 
     public updateAdmin(id: string, updated: CreateAdminRequest): Promise<boolean> {
-        return this.apiRequest("PUT", "/admins/" + id, updated).then(r => r.status == 200);
+        return this.apiRequest("PUT", "/admins", { ...updated, id: id }).then(r => r.status == 200);
     }
     public updateCustomer(id: string, updated: CreateUserRequest): Promise<boolean> {
-        return this.apiRequest("PUT", "/customers/" + id, updated).then(r => r.status == 200);
+        return this.apiRequest("PUT", "/customers", { ...updated, id: id }).then(r => r.status == 200);
     }
     public updateTrainer(id: string, updated: CreateTrainerRequest): Promise<boolean> {
-        return this.apiRequest("PUT", "/trainers/" + id, updated).then(r => r.status == 200);
+        return this.apiRequest("PUT", "/trainers", { ...updated, id: id }).then(r => r.status == 200);
     }
     public updateCourse(id: string, updated: CreateCourseRequest): Promise<boolean> {
-        return this.apiRequest("PUT", "/courses/" + id, updated).then(r => r.status == 200);
+        return this.apiRequest("PUT", "/courses", { ...updated, id: id }).then(r => r.status == 200);
     }
 
     public deleteAdmin(id: string): Promise<boolean> {
@@ -221,14 +221,14 @@ export class Client {
                 }
             })));
     }
-    
+
     public async bookCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
         return this.apiRequest("POST", `/courses/${courseId}/bookings`, r).then(r => r.status == 201);
     }
     public unsubscribeFromCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
         return this.apiRequest("DELETE", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
     }
-    
+
     public createSession(session: CreateSessionRequest): Promise<boolean> {
         return this.apiRequest("POST", "/sessions", session).then(r => r.status == 201);
     }
