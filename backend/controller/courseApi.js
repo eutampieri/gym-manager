@@ -140,7 +140,7 @@ export default class API {
             // Elimina il corso dal database
             await Course.findOneAndDelete({ _id: courseId });
             for (s of course.schedule) {
-                req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+                req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
                     course: courseId,
                     availability: s.availableSpots * -1,
                     dayOfWeek: s.dayOfWeek,
@@ -203,7 +203,7 @@ export default class API {
                     }
                 }
             );
-            req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+            req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
                 course: courseId,
                 availability: -1,
                 dayOfWeek,
@@ -298,7 +298,7 @@ export default class API {
                 }
             );
 
-            req.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+            req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
                 course: courseId,
                 availability: 1,
                 dayOfWeek,
