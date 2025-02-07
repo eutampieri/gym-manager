@@ -75,6 +75,6 @@ const filter = (d: Session | RowData, s: string) =>
 
 </script>
 <template>
-    <h2>All courses</h2>
+    <h2>All one on one sessions</h2>
     <ListView :data="data" :mobile-header="mobileHeader" :filter-function="filter"></ListView>
 </template>

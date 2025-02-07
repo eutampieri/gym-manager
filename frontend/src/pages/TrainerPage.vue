@@ -26,7 +26,7 @@ if (user) {
 
 <template>
     <div class="d-flex flex-column">
-        <h2 class="mx-auto">Hello {{ user?.username }}!</h2>
+        <h2 class="mx-auto">Hello {{ user?.firstName }}!</h2>
     </div>
     <SectionContainer>
         <SectionContainerItem id="my-courses" class="my-3">
@@ -38,18 +38,20 @@ if (user) {
                     <dl>
                         <dt>{{ course.course.name }}</dt>
                         <dd>{{ course.course.description }}</dd>
-                        <dt>Partecipants</dt>
+                        <dt>Participants</dt>
                         <dd>
-                            <ul>
+                            <ul v-if="course.participants.length">
                                 <li v-for="u in course.participants">
                                     <NameLink :path="store.client.customerProfilePath(u.id)">{{
                                         u.firstName + ' ' + u.lastName }}</NameLink>
                                 </li>
                             </ul>
+                            <p v-else>No participants enrolled</p>
                         </dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
+            <p v-if="!(myCourses ?? []).length">You haven't signed up for any course yet</p>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one" class="my-3">
             <h3>My One-on-one</h3>
@@ -58,14 +60,20 @@ if (user) {
                     :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.participant.firstName + ' ' + session.participant.lastName]"
                     :id-prefix="'one-on-one'" :index="i" :dropdown-id="'my-oo-dropdown'">
                     <dl>
-                        <dt>Partecipant</dt>
+                        <dt>Participant</dt>
                         <dd>
+                            <div v-if="session.participant">
                             <NameLink :path="store.client.customerProfilePath(session.participant.id)">{{
                                 session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
+                            </div>
+                            <div v-else>
+                                No participant enrolled.
+                            </div>
                         </dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
+            <p v-if="!(myOneOnOne ?? []).length">You haven't signed up for any one-on-one session yet</p>
         </SectionContainerItem>
     </SectionContainer>
     <ChatButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :use-variant="true">Need help?</ChatButton>

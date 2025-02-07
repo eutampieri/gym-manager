@@ -39,7 +39,7 @@ interface BaseAdmin extends BasicInfo {
     hasFullPrivileges: boolean
 }
 
-export interface CreateAdminRequest extends BaseAdmin {
+interface CreateAdminRequest extends BaseAdmin {
     password: string
 }
 
