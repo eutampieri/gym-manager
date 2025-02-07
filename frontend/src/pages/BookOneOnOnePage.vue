@@ -16,7 +16,7 @@ store.client.listTrainers()
 
 async function fillAvailability(trainer: Trainer, r: Ref<TrainerAvailabilities | null>) {
     if (r.value === null) {
-        r.value = await store.client.getTrainerAvailabilities(trainer.id);
+        r.value = await store.client.getTrainerAvailabilities(trainer._id);
     }
 }
 </script>
@@ -26,9 +26,9 @@ async function fillAvailability(trainer: Trainer, r: Ref<TrainerAvailabilities |
 
     <Dropdown id="trainer-dropdown">
         <DropdownItem v-for="(trainer, i) in trainers" :key="i"
-            :header="[`${trainer[0].firstName} ${trainer[0].lastName}`]" :id-prefix="trainer[0].id" :index="i"
+            :header="[`${trainer[0].firstName} ${trainer[0].lastName}`]" :id-prefix="trainer[0]._id" :index="i"
             :dropdown-id="'trainer-dropdown'" @shown="() => fillAvailability(trainer[0], trainer[1])">
-            <BookOneOnOne :availabilities="trainer[1].value" :trainer-id="trainer[0].id"></BookOneOnOne>
+            <BookOneOnOne :availabilities="trainer[1].value" :trainer-id="trainer[0]._id"></BookOneOnOne>
         </DropdownItem>
     </Dropdown>
 </template>

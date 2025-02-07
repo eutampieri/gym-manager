@@ -5,5 +5,5 @@ export * from './chat';
 export * from './role';
 
 export interface Identifiable {
-    id: string
+    _id: string
 }

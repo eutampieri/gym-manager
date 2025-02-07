@@ -26,7 +26,7 @@ const data = computed<ListData>((): ListData => {
                 firstName: x.firstName,
                 lastName: x.lastName,
                 superadmin: x.hasFullPrivileges ? "Yes" : "No",
-                id: x.id
+                id: x._id
             }
         }),
         headers: [
@@ -37,12 +37,12 @@ const data = computed<ListData>((): ListData => {
         ]
     };
 });
-const edit = (d: Admin | RowData) => router.push({ path: '/admin/updateAdmin/' + d.id })
+const edit = (d: Admin | RowData) => router.push({ path: '/admin/updateAdmin/' + d._id })
 const del = async (d: Admin | RowData) => {
     if (await confirm(`Are you sure you want to delete admin ${d.username}?`)) {
-        client.deleteAdmin(d.id as string).then(r => {
+        client.deleteAdmin(d._id as string).then(r => {
             if (r) {
-                admins.value = admins.value.filter(a => a.id != d.id)
+                admins.value = admins.value.filter(a => a._id != d._id)
                 notification.fire({
                     title: 'Success',
                     body: 'Admin deleted successfully!',

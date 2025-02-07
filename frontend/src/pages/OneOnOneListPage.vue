@@ -11,13 +11,13 @@ import { computed, ref } from 'vue';
 
 function displayableCourseFormatter(c: Session): RowData {
     return {
-        id: c.id,
+        id: c._id,
         dayOfWeek: c.dayOfWeek,
         startTime: c.startTime,
         participant: ((p: User) => `${p.firstName} ${p.lastName}`)(c.participant as unknown as User),
         trainer: ((t: Trainer) => `${t.firstName} ${t.lastName}`)(c.trainer as unknown as Trainer),
-        trainerId: (c.trainer as Trainer).id,
-        participantId: (c.participant as User).id,
+        trainerId: (c.trainer as Trainer)._id,
+        participantId: (c.participant as User)._id,
     };
 }
 
@@ -45,9 +45,9 @@ const data = computed<ListData>((): ListData => {
 });
 const del = async (d: Session | RowData) => {
     if (await confirm("Are you sure you want to delete this session?")) {
-        client.cancelSession(d.id as string).then(r => {
+        client.cancelSession(d._id as string).then(r => {
             if (r) {
-                courses.value = courses.value.filter(c => c.id != d.id)
+                courses.value = courses.value.filter(c => c._id != d._id)
                 notification.fire({
                     title: 'Success',
                     body: 'Session deleted successfully!',

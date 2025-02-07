@@ -25,7 +25,7 @@ export class Client {
             return false;
         }
     }
-    
+
     public get authToken(): string | undefined {
         return this.jwt;
     }
@@ -43,7 +43,7 @@ export class Client {
         this.impersonating = false;
         this.impersonatedInfo.user = undefined;
     }
-    
+
     private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
         const h = headers || new Headers;
         if (this.jwt !== undefined) {
@@ -114,7 +114,7 @@ export class Client {
         return '/user/profile/' + trainerId;
     }
     public getProfilePath() {
-        const id = this.userDetails?.id || '';
+        const id = this.userDetails?._id || '';
         switch (this.getRole) {
             case Role.User:
                 return this.customerProfilePath(id);

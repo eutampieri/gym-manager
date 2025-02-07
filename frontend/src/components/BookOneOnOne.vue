@@ -29,7 +29,7 @@ async function bookSession() {
 
     const success = await client.createSession(
         {
-            participant: client.userDetails!.id,
+            participant: client.userDetails!._id,
             trainer: trainerId,
             dayOfWeek: selectedDay.value,
             startTime: selectedTime.value,
