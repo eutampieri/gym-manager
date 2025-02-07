@@ -1,3 +1,4 @@
+import { Role } from '@gym-manager/models/role.js';
 import Client from '../models/clientModel.js';
 import Course from '../models/courseModel.js';
 import Trainer from '../models/trainerModel.js';
@@ -105,7 +106,7 @@ export default class API {
             }
 
             // Aggiorna il corso nel database
-            await Course.updateOne({_id: id}, updateFields, null);
+            await Course.updateOne({ _id: id }, updateFields, null);
             res.status(200).json({ message: 'Course updated successfully' });
 
         } catch (error) {
@@ -148,7 +149,7 @@ export default class API {
     static async createBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
-            const safeClientId = req.user.role === "admin" ? clientId : req.user.id;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user.id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato e popola i partecipanti
@@ -239,7 +240,7 @@ export default class API {
     static async deleteBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
-            const safeClientId = req.user.role === "admin" ? clientId : req.user.id;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user.id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato

@@ -1,5 +1,6 @@
 import { createSecretKey } from 'crypto';
 import { jwtVerify } from 'jose';
+import { Role, parseRole } from '@gym-manager/models/role.js'
 
 const JWT_KEY = createSecretKey(process.env.JWT_KEY || "secret");
 const ISSUER = process.env.JWT_ISSUER || "iss";
@@ -13,7 +14,7 @@ const createAuthMiddleware = (roles) => async function authMiddleware(req, res, 
         if (jwt_payload.error === undefined && roles.has(jwt_payload.role)) {
             // JWT is still valid
             req.user = jwt_payload.profile
-            req.user.role = jwt_payload.role;
+            req.user.role = parseRole(jwt_payload.role);
         } else {
             res.contentType("text/plain").status(401).send(`Invalid token${jwt_payload.error === undefined ? "" : ": " + jwt_payload.error.code}`);
             return;
@@ -31,10 +32,10 @@ export { _AUDIENCE as AUDIENCE };
 const _createAuthMiddleware = createAuthMiddleware;
 export { _createAuthMiddleware as createAuthMiddleware };
 export function wrapMiddleware(wrapping, wrapped) { return (req, res, next) => wrapping(req, res, () => wrapped(req, res, next)); }
-export const customerAuth = createAuthMiddleware(new Set(["admin", "customer"]));
-export const adminAuth = createAuthMiddleware(new Set(["admin"]));
-export const trainerAuth = createAuthMiddleware(new Set(["admin", "trainer"]));
-export const anyAuth = createAuthMiddleware(new Set(["admin", "trainer", "customer"]));
+export const customerAuth = createAuthMiddleware(new Set([Role.Admin, Role.User]));
+export const adminAuth = createAuthMiddleware(new Set([Role.Admin]));
+export const trainerAuth = createAuthMiddleware(new Set([Role.Trainer, Role.Admin]));
+export const anyAuth = createAuthMiddleware(new Set([Role.User, Role.Trainer, Role.Admin]));
 export async function verifyJWT(jwt) {
     return await jwtVerify(jwt, JWT_KEY, {
         issuer: ISSUER,
