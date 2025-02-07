@@ -23,7 +23,7 @@ export default class API {
 
     static async fetchAllAdmins(req, res) {
         try {
-            const admin = await Admin.find({}, idProjection(Admin), null).exec();
+            const admin = await Admin.find({}, idProjection(Admin, new Set(["password"])), null).exec();
             res.status(200).json(admin);
 
         } catch (error) {
@@ -35,7 +35,7 @@ export default class API {
     static async fetchAdminByUsername(req, res) {
         const username = req.params.username;
         try {
-            const admin = await Admin.findOne({ username: username }, idProjection(Admin), null).exec();
+            const admin = await Admin.findOne({ username: username }, idProjection(Admin, new Set(["password"])), null).exec();
             res.status(200).json(admin);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -45,7 +45,7 @@ export default class API {
     static async fetchAdminBy_Id(req, res) {
         const id = req.params.id;
         try {
-            const admin = await Admin.findOne({ _id: id }, idProjection(Admin), null).exec();
+            const admin = await Admin.findOne({ _id: id }, idProjection(Admin, new Set(["password"])), null).exec();
             res.status(200).json(admin);
         } catch (error) {
             res.status(404).json({ message: error.message });
