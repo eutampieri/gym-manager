@@ -103,7 +103,7 @@ const bookOneonOne = '/user/book/session'
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => unsubscribeFromCourse((course.course as any)._id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
+                        @click="() => unsubscribeFromCourse(course.course.id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>
@@ -116,12 +116,12 @@ const bookOneonOne = '/user/book/session'
                     <dl>
                         <dt>Trainer</dt>
                         <dd>
-                            <NameLink :path="store.client.trainerProfilePath((session.trainer as any)._id)">{{
+                            <NameLink :path="store.client.trainerProfilePath(session.trainer.id)">{{
                                 session.trainer.firstName + ' ' + session.trainer.lastName }}</NameLink>
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => cancelSession((session.info as any)._id)">Cancel appointment</button>
+                        @click="() => cancelSession(session.info.id)">Cancel appointment</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>

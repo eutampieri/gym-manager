@@ -32,7 +32,7 @@ if (user) {
 }
 
 function isAlreadyBooked(courseId: string, dayOfWeek: string, startTime: string): boolean {
-    const result = undefined != myCourses.value?.find(e => (e.course as any)._id == courseId && e.dayOfWeek == dayOfWeek && e.startTime == startTime);
+    const result = undefined != myCourses.value?.find(e => e.course.id == courseId && e.dayOfWeek == dayOfWeek && e.startTime == startTime);
     return result;
 }
 

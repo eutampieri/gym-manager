@@ -16,8 +16,8 @@ function displayableCourseFormatter(c: Session): RowData {
         startTime: c.startTime,
         participant: ((p: User) => `${p.firstName} ${p.lastName}`)(c.participant as unknown as User),
         trainer: ((t: Trainer) => `${t.firstName} ${t.lastName}`)(c.trainer as unknown as Trainer),
-        trainerId: (c.trainer as any)._id,
-        participantId: (c.participant as any)._id,
+        trainerId: (c.trainer as Trainer).id,
+        participantId: (c.participant as User).id,
     };
 }
 
@@ -70,8 +70,8 @@ const mobileHeader = (d: Session | RowData) =>
     `${d.dayOfWeek} ${d.startTime} (trainer: ${d.trainer})`;
 
 const filter = (d: Session | RowData, s: string) =>
-    (d as Session).trainer.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
-    (d as Session).participant.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0;
+    ((d as Session).trainer as string).toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0 ||
+    ((d as Session).participant as string).toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0;
 
 </script>
 <template>
