@@ -88,7 +88,7 @@ const contactSupport = '/support/chat'
 
 <template>
     <div class="d-flex flex-column">
-        <h2 class="mx-auto">Hello {{ user?.username }}!</h2>
+        <h2 class="mx-auto">Hello {{ user?.firstName }}!</h2>
         <MainButton :path="bookCourse">Book course</MainButton>
         <MainButton :path="bookOneonOne">Book one-on-one</MainButton>
     </div>

@@ -9,7 +9,7 @@ const admin = store.client.userDetails;
 
 <template>
     <div class="d-flex flex-column">
-        <h2 class="mx-auto mb-5">Hello {{ admin?.username }}!</h2>
+        <h2 class="mx-auto mb-5">Hello {{ admin?.firstName }}!</h2>
     </div>
     <section class="d-flex flex-column mt-4">
         <h3 class="mx-auto">Courses</h3>

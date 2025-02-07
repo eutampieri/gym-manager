@@ -34,7 +34,7 @@ const contactSupport = '/support/chat'
 
 <template>
     <div class="d-flex flex-column">
-        <h2 class="mx-auto">Hello {{ user?.username }}!</h2>
+        <h2 class="mx-auto">Hello {{ user?.firstName }}!</h2>
     </div>
     <SectionContainer>
         <SectionContainerItem id="my-courses" class="my-3">
