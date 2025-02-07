@@ -103,7 +103,7 @@ const bookOneonOne = '/user/book/session'
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => unsubscribeFromCourse(course.course.id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
+                        @click="() => unsubscribeFromCourse((course.course as any)._id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>
