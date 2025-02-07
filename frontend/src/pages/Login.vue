@@ -22,12 +22,18 @@ const sadPath = () => notifications.fire({
 async function login() {
     if (loginInProgress.value) return;
     loginInProgress.value = true;
-    let authResult = await store.client.login(username.value || "", password.value || "").catch(sadPath);
-    loginInProgress.value = false;
-    if (authResult) {
-        router.push({ path: "/" })
-    } else {
-        sadPath();
+    try {
+        let authResult = await store.client.login(username.value || "", password.value || "");
+        console.log("authResult: "+authResult);
+        if (authResult) {
+            router.push({ path: "/" });
+        } else {
+            sadPath();
+        }
+    } catch (error) {
+        sadPath();  
+    } finally {
+        loginInProgress.value = false;
     }
 }
 </script>

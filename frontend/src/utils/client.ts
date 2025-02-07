@@ -43,9 +43,14 @@ export class Client {
             password: password
         }
         const response = await this.apiRequest("POST", "/auth/authenticate", request);
+        if(response.status !== 200) {
+            return false;
+        }
+        else {
         this.jwt = await response.text();
         localStorage.setItem(this.token_storage_name, this.jwt);
         return true;
+        }
     }
     public async logout(): Promise<boolean> {
         const ret = this.isLoggedIn;
