@@ -35,11 +35,11 @@ export interface CreateTrainerRequest extends RichInfo {
     password: string
 }
 // Admin
-interface BaseAdmin extends BasicInfo {
+export interface BaseAdmin extends BasicInfo {
     hasFullPrivileges: boolean
 }
 
-export interface CreateAdminRequest extends BaseAdmin {
+interface CreateAdminRequest extends BaseAdmin {
     password: string
 }
 
