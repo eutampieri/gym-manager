@@ -54,14 +54,14 @@ async function bookSession() {
     <dl>
         <dt>Select Day</dt>
         <dd>
-            <SelectInput id="dayOfWeek" v-model="selectedDay" :options="daysOfWeek">
+            <SelectInput :id="'dayOfWeek' + trainerId" v-model="selectedDay" :options="daysOfWeek">
                 Day of Week
             </SelectInput>
         </dd>
 
         <dt>Select Time</dt>
         <dd>
-            <SelectInput id="startTime" v-model="selectedTime" :options="availableTimeSlots">
+            <SelectInput :id="'startTime' + trainerId" v-model="selectedTime" :options="availableTimeSlots">
                 Start Time
             </SelectInput>
         </dd>
