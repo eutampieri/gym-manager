@@ -24,7 +24,7 @@ const data = computed<ListData>((): ListData => {
             // Se la data di nascita esiste, formatta la data
             if (user.dateOfBirth) {
                 const date = new Date(user.dateOfBirth);
-                user.dateOfBirth = date.toLocaleDateString();  // Format the date
+                return { ...user, dateOfBirth: date.toLocaleDateString() };  // Format the date
             }
             return user;
         }),
