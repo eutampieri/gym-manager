@@ -266,4 +266,8 @@ export class Client {
         return response;
     }
 
+    public getCustomerAvailabilities(customer: string): Promise<TrainerAvailabilities> {
+        return this.apiRequest("GET", `/customers/${customer}/availabilities`).then(x => x.json());
+    }
+
 }
