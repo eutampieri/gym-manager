@@ -17,10 +17,11 @@ interface ProfileEntry {
 
 const client = useUserStore().client;
 const confirm = useModalsStore().confirm;
-const userName = ref('');
+const user = ref<User | Trainer | Admin>();
 const profileData = ref<Array<ProfileEntry>>();
 const profileIcon = ref('');
 const logged = props.id == undefined || props.id == '' || client.userDetails?.id == props.id;
+const showImpersonateButton = client.getRole == Role.Admin && !client.isImpersonating && props.role != 'admin';
 
 function getUser(): Promise<undefined | User | Trainer | Admin> {
     console.log(props.role)
@@ -49,19 +50,19 @@ const fieldNameMapper = {
     fiscalCode: 'CF',
 }
 // prepare the display data
-getUser().then((user: undefined | User | Trainer | Admin) => {
-    if (user) {
-        userName.value = user.username;
-        profileData.value = Object.keys(user)
+getUser().then((x: undefined | User | Trainer | Admin) => {
+    if (x) {
+        user.value = x;
+        profileData.value = Object.keys(x)
             .filter(k => Object.keys(fieldNameMapper).includes(k))
             .map(k => {
                 return {
                     label: fieldNameMapper[k as keyof typeof fieldNameMapper],
-                    value: user[k as keyof typeof user] as string,
+                    value: x[k as keyof typeof x] as string,
                     linkPrefix: getLinkPrefix(k)
                 }
             });
-        profileIcon.value = getProfileIcon(user);
+        profileIcon.value = getProfileIcon(x);
     }
 });
 
@@ -82,13 +83,19 @@ async function logout() {
         router.push({ "path": "/login" });
     }
 }
+async function impersonate() {
+    if (await confirm(`Do you want to impersonate ${props.role} ${user.value?.username}?`)) {
+        client.startImpersonating(user.value! as (User | Trainer), (props.role == 'user') ? Role.User : Role.Trainer);
+        router.push({ path: '/' + props.role });
+    }
+}
 </script>
 
 <template>
     <SectionContainer>
         <SectionContainerItem id="profile">
             <div class="d-flex flex-column justify-content-center">
-                <img :src="profileIcon" class="rounded mx-auto d-block my-5" :alt="userName + 's profile picture'" />
+                <img :src="profileIcon" class="rounded mx-auto d-block my-5" :alt="user?.username + 's profile picture'" />
                 <dl>
                     <template v-for="item in profileData">
                         <dt class="text-center">{{ item.label }}</dt>
@@ -96,7 +103,10 @@ async function logout() {
                         <dd class="text-center" v-else>{{ item.value }}</dd>
                     </template>
                 </dl>
-                <button v-if="logged" type="button" class="btn btn-secondary m-2 mx-auto" @click="logout">Logout</button>
+                <div class="d-flex justify-content-evenly mt-2">
+                    <button v-if="logged" type="button" class="btn btn-secondary m-2" @click="logout">Logout</button>
+                    <button v-if="showImpersonateButton" type="button" class="btn btn-info m-2" @click="impersonate">Impersonate</button>
+                </div>
             </div>
         </SectionContainerItem>
     </SectionContainer>

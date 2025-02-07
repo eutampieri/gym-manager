@@ -8,25 +8,19 @@ import { ref } from 'vue';
 import { Admin, CourseInfo, Role, SessionInfo, Trainer } from '@gym-manager/models';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
-import { useRoute } from 'vue-router';
 
 const store = useUserStore();
-const route = useRoute();
 
 const myCourses = ref<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string, }[] }>>();
 const myOneOnOne = ref<Array<{ info: SessionInfo, participant: Admin }>>();
-const user = ref<Trainer | undefined>();
+const user = store.client.userDetails;
 
-((store.client.getRole == Role.Admin && route.query.id) ? store.client.getTrainerById(route.query.id as string) : Promise.resolve(store.client.userDetails as Trainer)).then((u) => {
-    user.value = u;
-    if (user.value) {
-        store.client.getTrainerCourses(user.value.id)
-            .then(courses => myCourses.value = courses);
-        store.client.getTrainerSessions(user.value.id)
-            .then(sessions => myOneOnOne.value = sessions);
-    }
-});
-
+if (user) {
+    store.client.getTrainerCourses(user.id)
+        .then(courses => myCourses.value = courses);
+    store.client.getTrainerSessions(user.id)
+        .then(sessions => myOneOnOne.value = sessions);
+}
 
 const contactSupport = '/support/chat'
 
@@ -76,5 +70,5 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <MainButton class="btn-secondary mt-5" :path="contactSupport" :use-variant="true">Need help?</MainButton>
+    <MainButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :path="contactSupport" :use-variant="true">Need help?</MainButton>
 </template>
