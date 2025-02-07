@@ -24,7 +24,7 @@ const fieldValid = computed(() => {
         </label>
         <input ref="input" :aria-invalid="!fieldValid"
             :class="`form-control ${((model?.length || 0 > 0) && errorMessage.length > 0) ? (fieldValid ? 'is-valid' : 'is-invalid') : ''}`"
-            :type="type" :id="id" v-model="model">
+            :type="type" :id="id" v-model="model" autocapitalize="none">
         <div class="invalid-feedback">{{ props.errorMessage }}</div>
     </div>
 </template>

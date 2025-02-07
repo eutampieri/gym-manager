@@ -4,7 +4,7 @@ import Dropdown from '@/components/Dropdown.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
 import MainButton from '@/components/MainButton.vue';
-import { BookCourseRequest, CourseInfo, Role, SessionInfo, Trainer, User } from '@gym-manager/models';
+import { BookCourseRequest, CourseInfo, SessionInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
 import { useModalsStore } from '@/store/modals';
 import SectionContainer from '@/components/SectionContainer.vue';
@@ -76,7 +76,7 @@ async function cancelSession(sessionId: string) {
 
 const bookCourse = '/user/book/course'
 const bookOneonOne = '/user/book/session'
-const contactSupport = '/support/chat'
+
 
 </script>
 
@@ -126,5 +126,5 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <ChatButton v-if="!store.client.isImpersonating" class="mt-5" :path="contactSupport" :use-variant="true">Need help?</ChatButton>
+    <ChatButton v-if="!store.client.isImpersonating" class="mt-5" :use-variant="true">Need help?</ChatButton>
 </template>

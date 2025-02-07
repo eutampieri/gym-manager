@@ -31,7 +31,7 @@ export function createSocketIoServer(server: NodeServer) {
                 if ((userData as any).role === Role.Admin) {
                     socket.join(ROOMS.admin);
                     availableAdmins += 1;
-                    socket.on('disconnect', () => { availableAdmins -= 1; })
+                    socket.on('disconnect', () => availableAdmins -= 1)
                 }
             } else {
                 socket.emit(EventType.Error.toString(), "Invalid token received");

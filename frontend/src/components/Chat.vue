@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Message as IMessage } from '@/utils/chat';
 import { BasicIdentifiable, Role, roleToString } from '@gym-manager/models';
-import { ref, useTemplateRef } from 'vue';
+import { onMounted, ref, useTemplateRef } from 'vue';
 import NameLink from './NameLink.vue';
 import Message from './Message.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -20,10 +20,22 @@ const minimise = () => minimised.value = true;
 const expand = () => minimised.value = false;
 const close = () => emit("close");
 function send() {
-    emit("send", currentMessage.value);
-    currentMessage.value = "";
-    messageBar.value?.focus();
+    if (currentMessage.value.trim() !== "") {
+        emit("send", currentMessage.value);
+        currentMessage.value = "";
+        messageBar.value?.focus();
+    }
 }
+function adjustHeight(event?: Event) {
+    const textarea = event ? (event.target as HTMLTextAreaElement) : document.querySelector(".auto-expand") as HTMLTextAreaElement;
+    if (textarea) {
+        textarea.style.height = "auto"; 
+        textarea.style.height = textarea.scrollHeight + "px"; 
+    }
+}
+onMounted(() => {
+    adjustHeight(); 
+});
 </script>
 <template>
     <div v-if="isActive" class="fixed-bottom">
@@ -51,7 +63,7 @@ function send() {
                     :sent-by-current-user="message.sentByCurrentUser"></Message>
             </section>
             <section class="input-group mb-3 align-self-end">
-                <input ref="messageBar" v-model="currentMessage" type="text" class="form-control" aria-label="Search">
+                <textarea ref="messageBar" v-model="currentMessage" class="form-control auto-expand" aria-label="Write a message..." rows="1" @input="adjustHeight" @keydown.enter="send"></textarea>
                 <button class="btn btn-primary" @click="send">
                     <FontAwesomeIcon :icon="faPaperPlane"></FontAwesomeIcon>
                 </button>
@@ -75,4 +87,12 @@ function send() {
     height: 85vh !important;
     max-height: 900px !important;
 }
+.auto-expand {
+    resize: none; 
+    overflow-y: hidden; 
+    max-height: 150px;
+    min-height: 40px; 
+    line-height: 1.4;
+}
+
 </style>

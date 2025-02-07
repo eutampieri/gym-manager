@@ -3,9 +3,9 @@ import { useUserStore } from '@/store/user';
 import Dropdown from '@/components/Dropdown.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
-import MainButton from '@/components/MainButton.vue';
+import ChatButton from '@/components/ChatButton.vue';
 import { ref } from 'vue';
-import { Admin, CourseInfo, Role, SessionInfo, Trainer } from '@gym-manager/models';
+import { Admin, CourseInfo, SessionInfo } from '@gym-manager/models';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 
@@ -21,8 +21,6 @@ if (user) {
     store.client.getTrainerSessions(user.id)
         .then(sessions => myOneOnOne.value = sessions);
 }
-
-const contactSupport = '/support/chat'
 
 </script>
 
@@ -70,5 +68,5 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <MainButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :path="contactSupport" :use-variant="true">Need help?</MainButton>
+    <ChatButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :use-variant="true">Need help?</ChatButton>
 </template>
