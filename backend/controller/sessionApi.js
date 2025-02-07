@@ -70,7 +70,11 @@ export default class API {
 
     static async fetchAllSessions(req, res) {
         try {
-            const sessions = await Session.find({}, idProjection(Session, new Set(["password"])), null).exec();
+            const sessions = await Session
+                .find({}, idProjection(Session, new Set(["password"])), null)
+                .populate("trainer")
+                .populate("customer")
+                .exec();
             res.status(200).json(sessions);
         } catch (error) {
             res.status(404).json({ message: error.message })
