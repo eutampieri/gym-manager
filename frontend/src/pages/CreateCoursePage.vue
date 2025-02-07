@@ -75,20 +75,19 @@ function computeHours(entry: CourseScheduleEntry): SelectInputValue[] {
 
 // Aggiungi un nuovo giorno/orario
 const addScheduleEntry = () => {
-    scheduleEntries.value.push({ dayOfWeek: "", startTime: "", participants: [], availableSpots: 0 });
+    scheduleEntries.value.push({ dayOfWeek: "", startTime: "", participants: [], availableSpots: undefined });
 };
 // Rimuovi un giorno/orario
 const removeScheduleEntry = (index: number) => {
     scheduleEntries.value.splice(index, 1);
 };
+const correctSchedule = (cap: number, schedules: CourseScheduleEntry[]) => schedules.map(e => ({ ...e, availableSpots: e.availableSpots || cap }))
+
 // Watch per aggiornare availableSpots quando cambia capacity
 watch(capacity, (newCapacity) => {
     const numericCapacity = Number(newCapacity);
     if (!isNaN(numericCapacity)) {
-        scheduleEntries.value = scheduleEntries.value.map(entry => ({
-            ...entry,
-            availableSpots: numericCapacity
-        }));
+        scheduleEntries.value = correctSchedule(numericCapacity, scheduleEntries.value);
     }
 });
 
@@ -99,7 +98,7 @@ client.listTrainers()
 const createRequest = () => ({
     name: name.value,
     description: description.value,
-    schedule: scheduleEntries.value,
+    schedule: correctSchedule(capacity.value, scheduleEntries.value),
     capacity: capacity.value,
     trainer: trainer.value,
 }) as CreateCourseRequest;

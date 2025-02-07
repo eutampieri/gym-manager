@@ -41,7 +41,7 @@ function handlePush(update: CourseAvailabilityUpdate) {
     if (courseIndex !== -1 && courseIndex !== undefined) {
         const scheduleIndex = allCourses.value![courseIndex].course.schedule.findIndex(x => x.dayOfWeek == update.dayOfWeek && x.startTime == update.startTime);
         if (scheduleIndex !== -1) {
-            allCourses.value![courseIndex].course.schedule[scheduleIndex].availableSpots += update.availability;
+            allCourses.value![courseIndex].course.schedule[scheduleIndex].availableSpots! += update.availability;
         }
     }
 }
