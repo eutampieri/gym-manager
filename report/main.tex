@@ -85,7 +85,7 @@
     \item Contattare un amministratore per assistenza tramite la chat in tempo reale.
 \end{itemize}
 \section{Design}
-\par Il sistema, realizzato sullo stack MEVN, si compone di una single-page application per il frontend e di un backend che fornisce le API REST necessarie al funzionamento della SPA. La divisione in due componenti permette sia una maggiore scalabilità, che un miglior riuso del codice.
+\par Il sistema, realizzato sullo stack MEVN, si compone di una single-page application per il frontend e di un backend che fornisce le API REST \citep{rest} necessarie al funzionamento della SPA. La divisione in due componenti permette sia una maggiore scalabilità, che un miglior riuso del codice.
 \subsection{Design del backend}
 \par Il backend è stato progettato per fornire operazioni CRUD autenticate sulle varie entità del dominio applicativo tramite API REST. Nello specifico, le operazioni sulle entità sono le seguenti:
 \begin{description}
@@ -152,7 +152,7 @@
 \par Il sistema è stato sviluppato con un'architettura composta da un frontend reattivo, un backend basato su Node.js, un database NoSQL per la gestione dei dati e un sistema di comunicazione in tempo reale. Inoltre, l'uso di Docker garantisce portabilità e coerenza degli ambienti di sviluppo e produzione.
 \par Le interfacce utente sono state realizzate utilizzando il framework Bootstrap e, dove necessario per rendere l'interfaccia più chiara, le icone FontAwesome.
 \subsection{Frontend}
-\par Il frontend è stato sviluppato utilizzando HTML, CSS, TypeScript, Vue.js e Socket.IO, fornendo un'interfaccia moderna, dinamica e altamente interattiva. Sono stati utilizzati anche i JSON Web Token per l'autenticazione, che contengono anche il profilo dell'utente, riducendo il numero di richieste necessarie.
+\par Il frontend è stato sviluppato utilizzando HTML, CSS, TypeScript, Vue.js e Socket.IO, fornendo un'interfaccia moderna, dinamica e altamente interattiva. Sono stati utilizzati anche i JSON Web Token \citep{rfc7519} per l'autenticazione, che contengono anche il profilo dell'utente, riducendo il numero di richieste necessarie.
 \par È stato scelto di realizzare il frontend in TypeScript per la migliore integrazione con Vue.js e per l'esperienza di sviluppo ottenibile con un linguaggio tipato staticamente.
 \par Si è inoltre fatto ampio uso dei componenti di Vue.js, per aderire ai principii di separation of concerns e single responsibility principle.
 \par È stato utilizzato Pinia per mantenere lo stato globale dell'applicazione e per fornire funzionalità globali quali l'invio di notifiche.
@@ -269,7 +269,7 @@ socket.on(
     }
 \end{minted}
 \par Questo è uno dei tanti metodi dell'API, e mostra come sia facile integrare MongoDB con Express per fornire i documenti tramite una API REST.
-\par Si noti anche l'utilizzo delle risposte HTTP.
+\par Si noti anche l'utilizzo delle risposte HTTP \citep{rfc2616}.
 \subsubsection{\texttt{createAuthMiddleware}}
 \begin{minted}{js}
 const createAuthMiddleware = (roles) => async function authMiddleware(req, res, next) {
