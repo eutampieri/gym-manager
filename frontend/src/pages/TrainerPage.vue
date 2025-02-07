@@ -46,14 +46,15 @@ const contactSupport = '/support/chat'
                     <dl>
                         <dt>{{ course.course.name }}</dt>
                         <dd>{{ course.course.description }}</dd>
-                        <dt>Partecipants</dt>
+                        <dt>Participants</dt>
                         <dd>
-                            <ul>
+                            <ul v-if="course.participants.length">
                                 <li v-for="u in course.participants">
                                     <NameLink :path="store.client.customerProfilePath(u.id)">{{
                                         u.firstName + ' ' + u.lastName }}</NameLink>
                                 </li>
                             </ul>
+                            <p v-else>No participants enrolled</p>
                         </dd>
                     </dl>
                 </DropdownItem>
@@ -67,10 +68,15 @@ const contactSupport = '/support/chat'
                     :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.participant.firstName + ' ' + session.participant.lastName]"
                     :id-prefix="'one-on-one'" :index="i" :dropdown-id="'my-oo-dropdown'">
                     <dl>
-                        <dt>Partecipant</dt>
+                        <dt>Participant</dt>
                         <dd>
+                            <div v-if="session.participant">
                             <NameLink :path="store.client.customerProfilePath(session.participant.id)">{{
                                 session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
+                            </div>
+                            <div v-else>
+                                No participant enrolled.
+                            </div>
                         </dd>
                     </dl>
                 </DropdownItem>
