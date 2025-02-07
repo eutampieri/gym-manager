@@ -10,6 +10,7 @@ const model = defineModel<string>();
         <span class="input-group-text">
             <FontAwesomeIcon :icon="faMagnifyingGlass"></FontAwesomeIcon>
         </span>
-        <input v-model="model" type="text" class="form-control" aria-label="Search">
+        <label class="d-none" for="search-bar">Search</label>
+        <input id="search-bar" v-model="model" type="text" class="form-control" aria-label="Search">
     </div>
 </template>
