@@ -71,7 +71,8 @@ export default class API {
     }
 
     static async updateCourse(req, res) {
-        const { id, name, description, schedule, capacity, trainer } = req.body;
+        const id = req.body._id;
+        const { name, description, schedule, capacity, trainer } = req.body;
 
         try {
             // Trova il corso esistente per confrontare il trainer originale

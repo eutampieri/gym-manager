@@ -62,7 +62,8 @@ export default class API {
 
 
     static async updateCustomer(req, res) {
-        const { id, username, firstName, lastName, password, email, phoneNumber, dateOfBirth, address } = req.body;
+        const id = req.body._id;
+        const { username, firstName, lastName, password, email, phoneNumber, dateOfBirth, address } = req.body;
 
         try {
             const updateFields = {}; // Object that will contain only the fields to update
