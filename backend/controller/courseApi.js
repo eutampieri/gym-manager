@@ -35,7 +35,7 @@ export default class API {
     static async fetchAllCourses(req, res) {
         console.log("fetchAllCourses");
         try {
-            const course = await Course.find({}, idProjection(Course, new Set(["password"])), null).exec();
+            const course = await Course.find({}, idProjection(Course), null).exec();
             res.status(200).json(course);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -47,7 +47,7 @@ export default class API {
         console.log("fetchCourseBy_Id");
         const id = req.params.id;
         try {
-            const course = await Course.findById(id, idProjection(Course, new Set(["password"])), null).exec();
+            const course = await Course.findById(id, idProjection(Course), null).exec();
             res.status(200).json(course);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -59,7 +59,7 @@ export default class API {
         console.log("fetchCourseByName");
         const name = req.params.name;
         try {
-            const course = await Course.find({ name: name }, idProjection(Course, new Set(["password"])), null);
+            const course = await Course.find({ name: name }, idProjection(Course), null);
             res.status(200).json(course);
         } catch (error) {
             res.status(404).json({ message: error.message });
