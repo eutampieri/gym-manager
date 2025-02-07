@@ -51,12 +51,12 @@ if (props.id) {
     })
 }
 const createRequest = () => ({
-        username: username.value,
-        password: password.value == '*******' ? undefined : password.value,
-        firstName: firstName.value,
-        lastName: lastName.value,
-        hasFullPrivileges: hasFullPrivileges.value
-    }) as CreateAdminRequest;
+    username: username.value,
+    password: password.value == '*******' ? undefined : password.value,
+    firstName: firstName.value,
+    lastName: lastName.value,
+    hasFullPrivileges: hasFullPrivileges.value
+}) as CreateAdminRequest;
 
 async function handleUpdateAdmin() {
     try {
@@ -118,14 +118,16 @@ async function handleCreateAdmin() {
     <SectionContainer>
         <SectionContainerItem>
             <form>
-                <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
-                    :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
+                <ValidatingGenericInput :dont-autocapitalize="true" type="text" id="username"
+                    error-message="The username can only contain letters" :validation-function="isOnlyLetters"
+                    v-model="username" v-model:valid="usernameValid">
                     Username
                 </ValidatingGenericInput>
 
                 <ValidatingGenericInput type="password" id="password"
                     error-message="The password must be at least 7 characters long"
-                    :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="passwordValid">
+                    :validation-function="(x: string) => x.length >= 7" v-model="password"
+                    v-model:valid="passwordValid">
                     Password
                 </ValidatingGenericInput>
 
@@ -146,8 +148,8 @@ async function handleCreateAdmin() {
                     :disabled="!submitButtonEnabled">Update Admin {{ firstName }}</button>
                 <button v-else class="btn btn-primary" type="button" @click="handleCreateAdmin"
                     :disabled="!submitButtonEnabled">Create Admin {{ firstName }}</button>
-            </form> 
+            </form>
         </SectionContainerItem>
     </SectionContainer>
-    
+
 </template>
