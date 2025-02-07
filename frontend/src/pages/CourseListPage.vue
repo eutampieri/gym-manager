@@ -25,10 +25,10 @@ const courses = ref<Array<Course>>([]);
 const displayableCourses = computed(() => courses.value.map(displayableCourseFormatter));
 
 client.listCourses()
-    .then(courses => Promise.all(courses.map(c => 
+    .then(courses => Promise.all(courses.map(c =>
         client.getTrainerById(c.trainer)
-            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}` }))
-        ))
+            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}`, trainerId: t!.id }))
+    ))
     ).then(x => courses.value = x);
 
 
@@ -42,7 +42,7 @@ const data = computed<ListData>((): ListData => {
         headers: [
             { key: "name", name: "Name" },
             { key: "description", name: "Description" },
-            { key: "trainer", name: "Trainer" },
+            { key: "trainer", name: "Trainer", link: (d) => `/trainer?id=${d.trainerId}` },
             { key: "schedule", name: "Schedule" },
         ]
     };
