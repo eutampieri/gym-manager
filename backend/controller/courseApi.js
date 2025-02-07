@@ -91,16 +91,15 @@ export default class API {
                 return res.status(400).json({ message: 'No fields to update' });
             }
             if (capacity) {
-            const capacityDifference = capacity - existingCourse.capacity;
-             for (let i=0; i<existingCourse.schedule.length; i++) {                
-                updateFields.schedule[i].availableSpots = existingCourse.schedule[i].availableSpots+capacity-existingCourse.capacity;                
-                if (updateFields.schedule[i].availableSpots < 0) {
-                    return res.status(400).json({ message: "Wrong capacity" });
+                for (let i = 0; i < existingCourse.schedule.length; i++) {
+                    updateFields.schedule[i].availableSpots = existingCourse.schedule[i].availableSpots + capacity - existingCourse.capacity;
+                    if (updateFields.schedule[i].availableSpots < 0) {
+                        return res.status(400).json({ message: "Wrong capacity" });
+                    }
                 }
-             }
             }
-        
-          
+
+
             if (trainer && trainer !== existingCourse.trainer.toString()) {
                 await Trainer.updateOne(
                     { _id: existingCourse.trainer },
@@ -147,7 +146,7 @@ export default class API {
 
             // Elimina il corso dal database
             await Course.findOneAndDelete({ _id: courseId });
-            for (s of course.schedule) {
+            for (const s of course.schedule) {
                 req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
                     course: courseId,
                     availability: s.availableSpots * -1,
