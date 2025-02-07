@@ -4,12 +4,14 @@ import { useUserStore } from '@/store/user';
 
 const store = useUserStore();
 const admin = store.client.userDetails;
+// Verifica se admin è di tipo 'Admin' e ha la proprietà 'hasFullPrivileges'
+const privilege = admin && 'hasFullPrivileges' in admin ? admin.hasFullPrivileges : false;
 
 </script>
 
 <template>
     <div class="d-flex flex-column">
-        <h2 class="mx-auto mb-5">Hello {{ admin?.username }}!</h2>
+        <h2 class="mx-auto mb-5">Hello {{ admin?.firstName }}!</h2>
     </div>
     <section class="d-flex flex-column mt-4">
         <h3 class="mx-auto">Courses</h3>
@@ -30,7 +32,7 @@ const admin = store.client.userDetails;
         <MainButton :path="'/admin/createTrainer'">Create trainer</MainButton>
         <MainButton :path="'/admin/listTrainers'">View trainers</MainButton>
     </section>
-    <section class="d-flex flex-column mt-4">
+    <section v-if="privilege" class="d-flex flex-column mt-4">
         <h3 class="mx-auto">Admins</h3>
         <MainButton :path="'/admin/createAdmin'">Create admin</MainButton>
         <MainButton :path="'/admin/listAdmins'">View admins</MainButton>

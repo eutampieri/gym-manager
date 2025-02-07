@@ -20,7 +20,14 @@ const data = computed<ListData>((): ListData => {
             { action: edit, colour: "primary", label: "Edit" },
             { action: del, colour: "danger", label: "Delete" },
         ],
-        data: users.value,
+        data: users.value.map(user => {
+            // Se la data di nascita esiste, formatta la data
+            if (user.dateOfBirth) {
+                const date = new Date(user.dateOfBirth);
+                user.dateOfBirth = date.toLocaleDateString();  // Format the date
+            }
+            return user;
+        }),
         headers: [
             { key: "username", name: "Username", link: (d) => client.customerProfilePath(d._id as string) },
             { key: "firstName", name: "First name" },

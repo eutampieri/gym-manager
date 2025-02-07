@@ -56,6 +56,14 @@ getUser().then((x: undefined | User | Trainer | Admin) => {
         profileData.value = Object.keys(x)
             .filter(k => Object.keys(fieldNameMapper).includes(k))
             .map(k => {
+                let value = user[k as keyof typeof user] as string;
+
+                  // If the field is dateOfBirth, format the date using toLocaleDateString()
+                 if (k === 'dateOfBirth' && value) {
+                 const date = new Date(value);
+                 value = date.toLocaleDateString();  // Format the date
+                }
+
                 return {
                     label: fieldNameMapper[k as keyof typeof fieldNameMapper],
                     value: x[k as keyof typeof x] as string,

@@ -106,6 +106,7 @@ const bookOneonOne = '/user/book/session'
                         @click="() => unsubscribeFromCourse(course.course._id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
+            <p v-if="!(myCourses ?? []).length">You haven't signed up for any course yet</p>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one">
             <h3>My One-on-one</h3>
@@ -124,6 +125,7 @@ const bookOneonOne = '/user/book/session'
                         @click="() => cancelSession(session.info._id)">Cancel appointment</button>
                 </DropdownItem>
             </Dropdown>
+            <p v-if="!(myOneOnOne ?? []).length">You haven't signed up for any one-on-one yet</p>
         </SectionContainerItem>
     </SectionContainer>
     <ChatButton v-if="!store.client.isImpersonating" class="mt-5" :use-variant="true">Need help?</ChatButton>
