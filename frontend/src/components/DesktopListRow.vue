@@ -27,7 +27,7 @@ const otherHeaders = headers.slice(1);
             </ul>
         </td>
         <td>
-            <ActionButton v-for="(action, index) in actions" :key="index" :action="action" :data="data">
+            <ActionButton :small="true" v-for="(action, index) in actions" :key="index" :action="action" :data="data">
             </ActionButton>
         </td>
     </tr>

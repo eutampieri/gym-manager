@@ -6,7 +6,7 @@ defineProps<{ data: ListData }>();
 
 </script>
 <template>
-    <table class="table table-striped">
+    <table class="table table-striped align-middle">
         <thead>
             <tr>
                 <th v-for="h in data.headers" scope="col" :id="h.key">{{ h.name }}</th>
