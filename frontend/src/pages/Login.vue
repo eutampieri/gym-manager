@@ -24,7 +24,6 @@ async function login() {
     loginInProgress.value = true;
     try {
         let authResult = await store.client.login(username.value || "", password.value || "");
-        console.log("authResult: "+authResult);
         if (authResult) {
             router.push({ path: "/" });
         } else {
