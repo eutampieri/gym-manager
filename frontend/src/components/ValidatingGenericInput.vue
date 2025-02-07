@@ -5,6 +5,7 @@ const props = defineProps<{
     errorMessage: string,
     type: string,
     id: string,
+    dontAutocapitalize?: boolean,
 }>();
 // le props vengono passata dal padre al figlio :nomeProp e nel figlio vengono usate direttamente:  nomeProp
 const model = defineModel<string>(); // defineModel per valori modificabili con v-model che possono essere modificati dal figlio
@@ -24,7 +25,7 @@ const fieldValid = computed(() => {
         </label>
         <input ref="input" :aria-invalid="!fieldValid"
             :class="`form-control ${((model?.length || 0 > 0) && errorMessage.length > 0) ? (fieldValid ? 'is-valid' : 'is-invalid') : ''}`"
-            :type="type" :id="id" v-model="model" autocapitalize="none">
+            :type="type" :id="id" v-model="model" :autocapitalize="dontAutocapitalize ? 'none' : 'yes'">
         <div class="invalid-feedback">{{ props.errorMessage }}</div>
     </div>
 </template>
