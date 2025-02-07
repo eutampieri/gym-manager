@@ -118,7 +118,6 @@ export default class API {
             res.status(200).json({ message: 'Course updated successfully' });
 
         } catch (error) {
-            throw error;
             res.status(500).json({ message: error.message });
         }
     }
