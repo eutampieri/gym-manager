@@ -1,8 +1,9 @@
 import { Server as NodeServer } from 'node:http';
 import { Server } from 'socket.io';
-import { EventType } from '@gym-manager/models/chat.js';
+import { EventType, SubscriptionEntity } from '@gym-manager/models/chat.js';
 import { verifyJWT } from '../../utils.js';
 import { ulid } from 'ulidx';
+import { Role } from '@gym-manager/models/role.js';
 
 const ROOMS = {
     admin: "admin"
@@ -27,7 +28,7 @@ export function createSocketIoServer(server: NodeServer) {
             const token = (await verifyJWT(jwt)).payload as { error?: boolean };
             if (token.error === undefined) {
                 userData = token;
-                if ((userData as any).role === "admin") {
+                if ((userData as any).role === Role.Admin) {
                     socket.join(ROOMS.admin);
                     availableAdmins += 1;
                     socket.on('disconnect', () => availableAdmins -= 1)
@@ -54,7 +55,7 @@ export function createSocketIoServer(server: NodeServer) {
 
         // Accept chat request
         socket.on(EventType.AcceptChatRequest.toString(), (room) => {
-            if (userData !== undefined && (userData as any).role === "admin") {
+            if (userData !== undefined && (userData as any).role === Role.Admin) {
                 if (ACCEPTED_CHATS.has(room)) {
                     socket.emit(EventType.Error.toString(), "The chat was already taken.");
                 } else {
@@ -82,11 +83,19 @@ export function createSocketIoServer(server: NodeServer) {
         });
         socket.on(EventType.LeaveRoom.toString(), () => {
             if (userData !== undefined) {
-                if (userData.role === "admin") {
+                if (userData.role === Role.Admin) {
                     availableAdmins += 1;
                 }
                 socket.leave(roomID!);
                 roomID = undefined;
+            }
+        });
+
+        //Backend-initiated push subscriptions
+        socket.on(EventType.Subscribe.toString(), async (data: { token: string, entity: SubscriptionEntity }) => {
+            const token = (await verifyJWT(data.token)).payload as { error?: boolean };
+            if (token.error === undefined) {
+                socket.join(data.entity.toString());
             }
         });
 

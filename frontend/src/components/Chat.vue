@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { Message as IMessage } from '@/utils/chat';
-import { BasicInfo, Role } from '@gym-manager/models';
-import { onMounted, ref } from 'vue';
+import { BasicIdentifiable, Role, roleToString } from '@gym-manager/models';
+import { onMounted, ref, useTemplateRef } from 'vue';
 import NameLink from './NameLink.vue';
 import Message from './Message.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCircleXmark, faChevronDown, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
-
+const messageBar = useTemplateRef('messageBar');
 const emit = defineEmits<{ send: [string], close: [] }>();
 defineProps<{
     isActive: boolean,
     messages: IMessage[],
-    otherParty: [BasicInfo, Role],
+    otherParty: [BasicIdentifiable, Role],
 }>();
 const minimised = defineModel<boolean>();
 const currentMessage = ref("");
@@ -23,6 +23,7 @@ function send() {
     if (currentMessage.value.trim() !== "") {
         emit("send", currentMessage.value);
         currentMessage.value = "";
+        messageBar.value?.focus();
     }
 }
 function adjustHeight(event?: Event) {
@@ -44,7 +45,7 @@ onMounted(() => {
                 <section class="flex-grow-1">
                     <h2>Support chat</h2>
                     <h3 v-if="otherParty[1] != Role.Admin">with
-                        <NameLink path="">
+                        <NameLink :path="`/${roleToString(otherParty[1])}?id=${otherParty[0].id}`">
                             {{ otherParty[0].firstName }} {{ otherParty[0].lastName }} ({{ otherParty[1] }})
                         </NameLink>
                     </h3>
@@ -62,8 +63,7 @@ onMounted(() => {
                     :sent-by-current-user="message.sentByCurrentUser"></Message>
             </section>
             <section class="input-group mb-3 align-self-end">
-                <textarea v-model="currentMessage" class="form-control auto-expand" aria-label="Write a message..." rows="1" @input="adjustHeight" @keydown.enter="send"
-                 ></textarea>
+                <textarea ref="messageBar" v-model="currentMessage" class="form-control auto-expand" aria-label="Write a message..." rows="1" @input="adjustHeight" @keydown.enter="send"></textarea>
                 <button class="btn btn-primary" @click="send">
                     <FontAwesomeIcon :icon="faPaperPlane"></FontAwesomeIcon>
                 </button>
@@ -80,8 +80,7 @@ onMounted(() => {
 
 <style scoped>
 .chat-container-full {
-    min-height: 100vh !important;
-    max-height: 100vh !important;
+    max-height: calc(100dvh - 5em) !important;
 }
 
 .chat-container-small {

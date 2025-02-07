@@ -17,14 +17,13 @@ const confirm = useModalsStore().confirm;
 const notification = useNotificationsStore();
 
 const user = store.client.userDetails;
-
 const myCourses = ref<Array<{ course: CourseInfo; dayOfWeek: string; startTime: string; trainer: Trainer }>>();
 const myOneOnOne = ref<Array<{ info: SessionInfo, trainer: Trainer }>>();
 
 if (user) {
     store.client.getCustomerCourses(user.id)
-        .then(courses => Promise.all(courses.map(c => 
-            store.client.getTrainerById(c.course.trainer).then(t => ({ ...c, trainer: t }))
+        .then(courses => Promise.all(courses.map(c =>
+            store.client.getTrainerById(c.course.trainer).then(t => ({ ...c, trainer: t! }))
         )))
         .then(courses => myCourses.value = courses);
     store.client.getCustomerSessions(user.id)
@@ -33,7 +32,7 @@ if (user) {
 
 async function unsubscribeFromCourse(courseId: string, courseName: string, dayOfWeek: string, startTime: string) {
     if (await confirm('Do you want to unsubscribe from ' + courseName + '?')) {
-        const req: BookCourseRequest = { clientId: user?.id, dayOfWeek, startTime }
+        const req: BookCourseRequest = { clientId: user!.id, dayOfWeek, startTime }
         store.client.unsubscribeFromCourse(courseId, req)
             .then(res => {
                 if (res) {
@@ -83,7 +82,7 @@ const bookOneonOne = '/user/book/session'
 
 <template>
     <div class="d-flex flex-column">
-        <h2 class="mx-auto">Hello {{ user?.username }}!</h2>
+        <h2 class="mx-auto">Hello {{ user?.firstName }}!</h2>
         <MainButton :path="bookCourse">Book course</MainButton>
         <MainButton :path="bookOneonOne">Book one-on-one</MainButton>
     </div>
@@ -112,20 +111,20 @@ const bookOneonOne = '/user/book/session'
             <h3>My One-on-one</h3>
             <Dropdown id="my-oo-dropdown">
                 <DropdownItem v-for="(session, i) in myOneOnOne" :key="i"
-                    :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.trainer.firstName + ' ' + session.trainer]"
+                    :header="[session.info.dayOfWeek + ' ' + session.info.startTime, session.trainer.firstName + ' ' + session.trainer.lastName]"
                     :id-prefix="'one-on-one'" :index="i" :dropdown-id="'my-oo-dropdown'">
                     <dl>
                         <dt>Trainer</dt>
                         <dd>
-                            <NameLink :path="store.client.trainerProfilePath(session.trainer.id)">{{
-                                session.trainer.firstName + ' ' + session.trainer }}</NameLink>
+                            <NameLink :path="store.client.trainerProfilePath((session.trainer as any)._id)">{{
+                                session.trainer.firstName + ' ' + session.trainer.lastName }}</NameLink>
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => cancelSession(session.info.id)">Cancel appointment</button>
+                        @click="() => cancelSession((session.info as any)._id)">Cancel appointment</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <ChatButton class="mt-5" :use-variant="true">Need help?</ChatButton>
+    <ChatButton v-if="!store.client.isImpersonating" class="mt-5" :use-variant="true">Need help?</ChatButton>
 </template>

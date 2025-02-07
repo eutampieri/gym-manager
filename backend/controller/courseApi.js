@@ -1,7 +1,10 @@
+import { Role } from '@gym-manager/models/role.js';
 import Client from '../models/clientModel.js';
 import Course from '../models/courseModel.js';
 import Trainer from '../models/trainerModel.js';
 import idProjection from './idProjection.js';
+import { EventType, SubscriptionEntity } from '@gym-manager/models/chat.js';
+
 
 // RESTFUL CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
 // Mongoose functions are CRUD
@@ -105,7 +108,7 @@ export default class API {
             }
 
             // Aggiorna il corso nel database
-            await Course.updateOne({_id: id}, updateFields, null);
+            await Course.updateOne({ _id: id }, updateFields, null);
             res.status(200).json({ message: 'Course updated successfully' });
 
         } catch (error) {
@@ -137,6 +140,14 @@ export default class API {
 
             // Elimina il corso dal database
             await Course.findOneAndDelete({ _id: courseId });
+            for (s of course.schedule) {
+                req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+                    course: courseId,
+                    availability: s.availableSpots * -1,
+                    dayOfWeek: s.dayOfWeek,
+                    startTime: s.startTime,
+                });
+            }
 
             res.status(200).json({ message: 'Course deleted successfully, removed from clients and trainer' });
 
@@ -148,7 +159,7 @@ export default class API {
     static async createBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
-            const safeClientId = req.user.role === "admin" ? clientId : req.user.id;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user.id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato e popola i partecipanti
@@ -193,6 +204,12 @@ export default class API {
                     }
                 }
             );
+            req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+                course: courseId,
+                availability: -1,
+                dayOfWeek,
+                startTime,
+            });
 
 
             // Trova il client con l'ID specificato
@@ -239,7 +256,7 @@ export default class API {
     static async deleteBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
-            const safeClientId = req.user.role === "admin" ? clientId : req.user.id;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user.id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato
@@ -281,6 +298,13 @@ export default class API {
                     }
                 }
             );
+
+            req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+                course: courseId,
+                availability: 1,
+                dayOfWeek,
+                startTime,
+            });
 
             // Trova il client e rimuove il corso dal suo elenco
             const client = await Client.findById(safeClientId);

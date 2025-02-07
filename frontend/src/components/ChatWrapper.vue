@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { io } from 'socket.io-client';
 import Chat from './Chat.vue';
-import { BasicInfo, EventType, parseRole, Role } from '@gym-manager/models';
+import { BasicIdentifiable, BasicInfo, EventType, parseRole, Role } from '@gym-manager/models';
 import { useUserStore } from '@/store/user';
 import { onMounted, Ref, ref } from 'vue';
 import { useNotificationsStore } from '@/store/notifications';
@@ -14,17 +14,18 @@ const socket = io({
     path: "/api/socketio",
 });
 
-const DUMMY_OTHER_PARTY: [BasicInfo, Role] = [{
+const DUMMY_OTHER_PARTY: [BasicIdentifiable, Role] = [{
     username: "admin",
     firstName: "Gym",
-    lastName: "Support"
+    lastName: "Support",
+    id: "1"
 
 }, Role.Admin];
 
 const active = ref(false);
 const minimised = ref(false);
 const messages = ref<Message[]>([]);
-const otherParty: Ref<[BasicInfo, Role]> = ref(DUMMY_OTHER_PARTY);
+const otherParty: Ref<[BasicIdentifiable, Role]> = ref(DUMMY_OTHER_PARTY);
 
 const myId = client.userDetails!.id;
 
