@@ -36,7 +36,6 @@ async function unsubscribeFromCourse(courseId: string, courseName: string, dayOf
         store.client.unsubscribeFromCourse(courseId, req)
             .then(res => {
                 if (res) {
-                    console.log("res: "+res);
                     // removed
                     myCourses.value = myCourses.value?.filter(x => x.course.id != courseId && x.dayOfWeek != dayOfWeek && x.startTime != startTime)
                     notification.fire({
