@@ -259,7 +259,8 @@ socket.on(
         console.log("fetchCourseBy_Id");
         const id = req.params.id;
         try {
-            const course = await Course.findById(id, idProjection(Course), null).exec();
+            const course = await Course.findById(id, idProjection(Course), null)
+                .exec();
             res.status(200).json(course);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -281,7 +282,10 @@ const createAuthMiddleware = (roles) => async function authMiddleware(req, res, 
             req.user = jwt_payload.profile
             req.user.role = parseRole(jwt_payload.role);
         } else {
-            res.contentType("text/plain").status(401).send(`Invalid token${jwt_payload.error === undefined ? "" : ": " + jwt_payload.error.code}`);
+            res.contentType("text/plain")
+                .status(401)
+                .send(`Invalid token${jwt_payload.error === undefined ?
+                    "" : ": " + jwt_payload.error.code}`);
             return;
         }
     }
