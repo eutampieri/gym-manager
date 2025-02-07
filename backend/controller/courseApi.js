@@ -87,14 +87,21 @@ export default class API {
             if (capacity) updateFields.capacity = capacity;
             if (trainer) updateFields.trainer = trainer;
 
-            // Se non ci sono campi da aggiornare, restituisci un errore
             if (Object.keys(updateFields).length === 0) {
                 return res.status(400).json({ message: 'No fields to update' });
             }
-
-            // Controlla se il trainer è cambiato
+            if (capacity) {
+            const capacityDifference = capacity - existingCourse.capacity;
+             for (let i=0; i<existingCourse.schedule.length; i++) {                
+                updateFields.schedule[i].availableSpots = existingCourse.schedule[i].availableSpots+capacity-existingCourse.capacity;                
+                if (updateFields.schedule[i].availableSpots < 0) {
+                    return res.status(400).json({ message: "Wrong capacity" });
+                }
+             }
+            }
+        
+          
             if (trainer && trainer !== existingCourse.trainer.toString()) {
-                // Rimuove il corso dall'array courses del trainer precedente
                 await Trainer.updateOne(
                     { _id: existingCourse.trainer },
                     { $pull: { courses: id } }
