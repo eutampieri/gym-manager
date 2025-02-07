@@ -56,17 +56,17 @@ getUser().then((x: undefined | User | Trainer | Admin) => {
         profileData.value = Object.keys(x)
             .filter(k => Object.keys(fieldNameMapper).includes(k))
             .map(k => {
-                let value = user[k as keyof typeof user] as string;
+                let value = x[k as keyof typeof x] as string;
 
-                  // If the field is dateOfBirth, format the date using toLocaleDateString()
-                 if (k === 'dateOfBirth' && value) {
-                 const date = new Date(value);
-                 value = date.toLocaleDateString();  // Format the date
+                // If the field is dateOfBirth, format the date using toLocaleDateString()
+                if (k === 'dateOfBirth' && value) {
+                    const date = new Date(value);
+                    value = date.toLocaleDateString();  // Format the date
                 }
 
                 return {
                     label: fieldNameMapper[k as keyof typeof fieldNameMapper],
-                    value: x[k as keyof typeof x] as string,
+                    value: value,
                     linkPrefix: getLinkPrefix(k)
                 }
             });
@@ -109,7 +109,7 @@ async function impersonate() {
                     <template v-for="item in profileData">
                         <dt class="text-center">{{ item.label }}</dt>
                         <dd class="text-center" v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{
-                                item.value }}</a></dd>
+                            item.value }}</a></dd>
                         <dd class="text-center" v-else>{{ item.value }}</dd>
                     </template>
                 </dl>
