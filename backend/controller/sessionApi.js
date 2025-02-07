@@ -12,7 +12,7 @@ export default class API {
         const session = req.body;
         const idTrainer = req.body.trainer;
         const idParticipant = req.body.participant;
-        const safeIdParticipant = req.user.role === Role.Admin ? idParticipant : req.user.id;
+        const safeIdParticipant = req.user.role === Role.Admin ? idParticipant : req.user._id;
 
         try {
 

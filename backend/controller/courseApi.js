@@ -166,7 +166,7 @@ export default class API {
     static async createBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
-            const safeClientId = req.user.role === Role.Admin ? clientId : req.user.id;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user._id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato e popola i partecipanti
@@ -263,7 +263,7 @@ export default class API {
     static async deleteBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
-            const safeClientId = req.user.role === Role.Admin ? clientId : req.user.id;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user._id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato
