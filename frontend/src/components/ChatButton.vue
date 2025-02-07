@@ -11,7 +11,7 @@ const chatHandler = useChatStore().requestChat;
 </script>
 
 <template>
-    <button role="button" :class="btnStyle" @click="chatHandler" aria-label="Open chat">
+    <button role="button" :class="btnStyle" @click="chatHandler">
         <slot></slot>
     </button>
 </template>

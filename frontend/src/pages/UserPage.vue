@@ -102,7 +102,7 @@ const bookOneonOne = '/user/book/session'
                                 course.trainer.firstName + ' ' + course.trainer.lastName }}</NameLink>
                         </dd>
                     </dl>
-                    <button type="button" aria-label="Unsubscribe from course" class="btn btn-primary m-2"
+                    <button type="button" class="btn btn-primary m-2"
                         @click="() => unsubscribeFromCourse((course.course as any)._id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
@@ -120,7 +120,7 @@ const bookOneonOne = '/user/book/session'
                                 session.trainer.firstName + ' ' + session.trainer.lastName }}</NameLink>
                         </dd>
                     </dl>
-                    <button type="button" aria-label="Cancel one-on-one session" class="btn btn-primary m-2"
+                    <button type="button" class="btn btn-primary m-2"
                         @click="() => cancelSession((session.info as any)._id)">Cancel appointment</button>
                 </DropdownItem>
             </Dropdown>

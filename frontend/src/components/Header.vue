@@ -38,7 +38,7 @@ const stopImpersonation = () => {
         </RouterLink>
     </header>
     <div v-if="client.isImpersonating" class="alert alert-info text-center mx-auto col-11 col-lg-7">
-        You are currently impersonating a user. <button type="button" class="btn btn-link" @click="stopImpersonation" aria-label="Stop impersonation">Click to stop impersonation.</button>
+        You are currently impersonating a user. <button type="button" class="btn btn-link" @click="stopImpersonation">Click to stop impersonation.</button>
     </div>
 </template>
 

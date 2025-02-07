@@ -104,8 +104,8 @@ async function impersonate() {
                     </template>
                 </dl>
                 <div class="d-flex justify-content-evenly mt-2">
-                    <button v-if="logged" type="button" aria-label="Logout" class="btn btn-secondary m-2" @click="logout">Logout</button>
-                    <button v-if="showImpersonateButton" type="button" aria-label="Impersonate" class="btn btn-info m-2" @click="impersonate">Impersonate</button>
+                    <button v-if="logged" type="button" class="btn btn-secondary m-2" @click="logout">Logout</button>
+                    <button v-if="showImpersonateButton" type="button" class="btn btn-info m-2" @click="impersonate">Impersonate</button>
                 </div>
             </div>
         </SectionContainerItem>
