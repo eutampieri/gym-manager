@@ -17,6 +17,10 @@ const admin = store.client.userDetails;
         <MainButton :path="'/admin/listCourses'">View courses</MainButton>
     </section>
     <section class="d-flex flex-column mt-4">
+        <h3 class="mx-auto">One-on-ones</h3>
+        <MainButton :path="'/admin/listOneOnOnes'">View One-on-ones</MainButton>
+    </section>
+    <section class="d-flex flex-column mt-4">
         <h3 class="mx-auto">Users</h3>
         <MainButton :path="'/admin/createClient'">Create user</MainButton>
         <MainButton :path="'/admin/listCustomers'">View users</MainButton>

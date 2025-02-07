@@ -182,7 +182,7 @@ export default class API {
                 .populate("sessions")
                 .populate("courses");
 
-            const trainerUnavailabilities = trainer[0].sessions.concat(trainer[0].courses);
+            const trainerUnavailabilities = trainer[0].sessions.concat(trainer[0].courses.flatMap(x => x.schedule));
 
             for (const t of trainerUnavailabilities) {
                 availabilities[t.dayOfWeek][t.startTime] = false;

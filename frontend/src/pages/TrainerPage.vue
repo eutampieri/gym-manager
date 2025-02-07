@@ -48,8 +48,12 @@ const contactSupport = '/support/chat'
                         <dd>{{ course.course.description }}</dd>
                         <dt>Partecipants</dt>
                         <dd>
-                            <NameLink v-for="u in course.participants" :path="store.client.customerProfilePath(u.id)">{{
-                                u.firstName + ' ' + u.lastName }}</NameLink>
+                            <ul>
+                                <li v-for="u in course.participants">
+                                    <NameLink :path="store.client.customerProfilePath(u.id)">{{
+                                        u.firstName + ' ' + u.lastName }}</NameLink>
+                                </li>
+                            </ul>
                         </dd>
                     </dl>
                 </DropdownItem>

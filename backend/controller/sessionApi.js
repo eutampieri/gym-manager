@@ -24,7 +24,7 @@ export default class API {
                 'sessions.startTime': session.startTime,
                 'sessions.dayOfWeek': session.dayOfWeek
             }, null, null);
-            if (overlappingParticipantSessions) {
+            if (overlappingParticipantSessions.length > 0) {
                 return res.status(400).json({ message: 'Cannot create session' });
             }
             // check in trainer sessions
@@ -33,7 +33,7 @@ export default class API {
                 'sessions.startTime': session.startTime,
                 'sessions.dayOfWeek': session.dayOfWeek
             }, null, null);
-            if (overlappingTrainerSessions) {
+            if (overlappingTrainerSessions.length > 0) {
                 return res.status(400).json({ message: 'Cannot create session' });
             }
             // check in trainer courses
@@ -42,7 +42,7 @@ export default class API {
                 'courses.schedule.startTime': session.startTime,
                 'courses.schedule.dayOfWeek': session.dayOfWeek
             }, null, null);
-            if (overlappingTrainerCourses) {
+            if (overlappingTrainerCourses.length > 0) {
                 return res.status(400).json({ message: 'Cannot create session' });
             }
 
@@ -70,7 +70,11 @@ export default class API {
 
     static async fetchAllSessions(req, res) {
         try {
-            const sessions = await Session.find({}, idProjection(Session, new Set(["password"])), null).exec();
+            const sessions = await Session
+                .find({}, idProjection(Session, new Set(["password"])), null)
+                .populate("trainer")
+                .populate("participant")
+                .exec();
             res.status(200).json(sessions);
         } catch (error) {
             res.status(404).json({ message: error.message })
