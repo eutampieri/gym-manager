@@ -50,7 +50,8 @@ onMounted(() => {
                         </NameLink>
                     </h3>
                 </section>
-                <button @click="minimise" class="align-self-center btn btn-light">
+                <button @click="minimise" class="align-self-center btn btn-light" role="button"
+                    aria-label="Minimise chat">
                     <FontAwesomeIcon :icon="faChevronDown"></FontAwesomeIcon>
                 </button>
             </section>
@@ -65,7 +66,7 @@ onMounted(() => {
             <section class="input-group mb-3 align-self-end">
                 <textarea ref="messageBar" v-model="currentMessage" class="form-control auto-expand"
                     aria-label="Write a message..." rows="1" @input="adjustHeight" @keydown.enter="send"></textarea>
-                <button class="btn btn-primary" @click="send">
+                <button class="btn btn-primary" @click="send" role="button">
                     <FontAwesomeIcon :icon="faPaperPlane"></FontAwesomeIcon>
                 </button>
             </section>

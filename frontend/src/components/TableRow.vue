@@ -12,7 +12,7 @@ const props = defineProps<{
 </script>
 <template>
     <div class="row">
-        <div v-for="h in headers" :class="props.class || ''">
+        <div :aria-label="!showHeaders ? h.name : undefined" v-for="h in headers" :class="props.class || ''">
             <span class="fw-bold" v-if="showHeaders">{{ h.name }}: </span>
             <template v-if="!Array.isArray(data[h.key])">
                 <RouterLink v-if="h.link" :to="h.link(data)">{{ data[h.key] }}</RouterLink>
