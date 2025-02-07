@@ -144,16 +144,16 @@ export class Client {
     }
 
     public updateAdmin(id: string, updated: CreateAdminRequest): Promise<boolean> {
-        return this.apiRequest("PUT", "/admins", { ...updated, id: id }).then(r => r.status == 200);
+        return this.apiRequest("PUT", "/admins", { ...updated, _id: id }).then(r => r.status == 200);
     }
     public updateCustomer(id: string, updated: CreateUserRequest): Promise<boolean> {
-        return this.apiRequest("PUT", "/customers", { ...updated, id: id }).then(r => r.status == 200);
+        return this.apiRequest("PUT", "/customers", { ...updated, _id: id }).then(r => r.status == 200);
     }
     public updateTrainer(id: string, updated: CreateTrainerRequest): Promise<boolean> {
-        return this.apiRequest("PUT", "/trainers", { ...updated, id: id }).then(r => r.status == 200);
+        return this.apiRequest("PUT", "/trainers", { ...updated, _id: id }).then(r => r.status == 200);
     }
     public updateCourse(id: string, updated: CreateCourseRequest): Promise<boolean> {
-        return this.apiRequest("PUT", "/courses", { ...updated, id: id }).then(r => r.status == 200);
+        return this.apiRequest("PUT", "/courses", { ...updated, _id: id }).then(r => r.status == 200);
     }
 
     public deleteAdmin(id: string): Promise<boolean> {
@@ -188,15 +188,15 @@ export class Client {
     public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
         return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
     }
-    public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string }[] }>> {
+    public getTrainerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, _id: string }[] }>> {
         return this.apiRequest("GET", `/trainers/${userId}/courses`)
             .then(r => r.json())
             .then(r =>
-                r.flatMap((c: { schedule: any[]; id: string; name: string; description: string; capacity: string; trainer: string; }) =>
+                r.flatMap((c: { schedule: any[]; _id: string; name: string; description: string; capacity: string; trainer: string; }) =>
                     c.schedule.map((s: { startTime: string; dayOfWeek: string; participants: any[]; }) =>
                     ({
                         course: {
-                            id: c.id,
+                            _id: c._id,
                             name: c.name,
                             description: c.description,
                             capacity: c.capacity,
@@ -213,14 +213,14 @@ export class Client {
     public getCustomerSessions(userId: string): Promise<Array<{ info: SessionInfo, trainer: Trainer }>> {
         return this.apiRequest("GET", `/customers/${userId}/sessions`)
             .then(r => r.json())
-            .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string, username: string; firstName: string; lastName: string; email: string; phoneNumber: string; }; }) => ({
+            .then(r => r.map((s: { _id: string, dayOfWeek: string; startTime: string; trainer: { _id: string, username: string; firstName: string; lastName: string; email: string; phoneNumber: string; }; }) => ({
                 info: {
                     dayOfWeek: s.dayOfWeek,
                     startTime: s.startTime,
-                    id: s.id,
+                    _id: s._id,
                 },
                 trainer: {
-                    id: s.trainer.id,
+                    _id: s.trainer._id,
                     username: s.trainer.username,
                     firstName: s.trainer.firstName,
                     lastName: s.trainer.lastName,
@@ -232,14 +232,14 @@ export class Client {
     public getTrainerSessions(userId: string): Promise<Array<{ info: SessionInfo, participant: Admin }>> {
         return this.apiRequest("GET", `/trainers/${userId}/sessions`)
             .then(r => r.json())
-            .then(r => r.map((s: { id: string, dayOfWeek: string; startTime: string; trainer: { id: string; username: string; firstName: string; lastName: string; }; }) => ({
+            .then(r => r.map((s: { _id: string, dayOfWeek: string; startTime: string; trainer: { _id: string; username: string; firstName: string; lastName: string; }; }) => ({
                 info: {
                     dayOfWeek: s.dayOfWeek,
                     startTime: s.startTime,
-                    id: s.id,
+                    _id: s._id,
                 },
                 participant: {
-                    id: s.trainer.id,
+                    _id: s.trainer._id,
                     username: s.trainer.username,
                     firstName: s.trainer.firstName,
                     lastName: s.trainer.lastName,
