@@ -16,8 +16,8 @@ function displayableCourseFormatter(c: Session): RowData {
         startTime: c.startTime,
         participant: ((p: User) => `${p.firstName} ${p.lastName}`)(c.participant as unknown as User),
         trainer: ((t: Trainer) => `${t.firstName} ${t.lastName}`)(c.trainer as unknown as Trainer),
-        trainerId: (c.trainer as unknown as Trainer).id,
-        participantId: (c.participant as unknown as User).id,
+        trainerId: (c.trainer as any)._id,
+        participantId: (c.participant as any)._id,
     };
 }
 
@@ -27,17 +27,7 @@ const notification = useNotificationsStore();
 const courses = ref<Array<Session>>([]);
 const displayableCourses = computed(() => courses.value.map(displayableCourseFormatter));
 
-client.listSessions()
-    .then(courses => Promise.all(courses.map(c =>
-        client.getTrainerById(c.trainer)
-            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}`, trainerId: t!.id }))
-    )))
-    .then(courses => Promise.all(courses.map(c =>
-        client.getTrainerById(c.trainer)
-            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}`, trainerId: t!.id }))
-    ))
-    ).then(x => courses.value = x);
-
+client.listSessions().then(x => courses.value = x);
 
 const data = computed<ListData>((): ListData => {
     return {

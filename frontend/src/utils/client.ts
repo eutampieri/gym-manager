@@ -155,6 +155,9 @@ export class Client {
     public listCourses(): Promise<Course[]> {
         return this.apiRequest("GET", "/courses").then(x => x.json());
     }
+    public listSessions(): Promise<Session[]> {
+        return this.apiRequest("GET", "/sessions").then(x => x.json());
+    }
 
     public getCustomerCourses(userId: string): Promise<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string }>> {
         return this.apiRequest("GET", `/customers/${userId}/courses`).then(r => r.json());
