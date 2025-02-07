@@ -24,7 +24,7 @@ const myOneOnOne = ref<Array<{ info: SessionInfo, trainer: Trainer }>>();
 if (user) {
     store.client.getCustomerCourses(user.id)
         .then(courses => Promise.all(courses.map(c => 
-            store.client.getTrainerById(c.course.trainer).then(t => ({ ...c, trainer: t }))
+            store.client.getTrainerById(c.course.trainer).then(t => ({ ...c, trainer: t! }))
         )))
         .then(courses => myCourses.value = courses);
     store.client.getCustomerSessions(user.id)

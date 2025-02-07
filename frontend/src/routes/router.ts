@@ -34,7 +34,7 @@ const routes = [
     { path: '/admin/updateAdmin/:id', name: "updateAdmin", component: CreateAdminPage, meta: { role: "admin" }, props: true },
     { path: '/admin/listAdmins', name: "listAdmins", component: AdminListPage, meta: { role: "admin" } },
     { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
-    { path: '/user/book/oneOnOne', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
+    { path: '/user/book/session', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
     { path: '/user/book/course', name: "bookCourse", component: BookCoursePage, meta: { role: "user" } },
     { path: '/trainer', name: "trainerPage", component: TrainerPage, meta: { role: "trainer" } },
     { path: '/:role/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },
