@@ -8,7 +8,6 @@ export type Headers = Array<Header>;
 export interface Header {
     key: string,
     name: string,
-    link?: (d: RowData) => string,
 }
 export interface Action {
     action: (data: any) => void,

@@ -6,6 +6,8 @@ import { useUserStore } from '@/store/user';
 import { ref } from 'vue';
 import { Role } from '@gym-manager/models';
 import { useNotificationsStore } from '@/store/notifications';
+import SectionContainer from '@/components/SectionContainer.vue';
+import SectionContainerItem from '@/components/SectionContainerItem.vue';
 
 const store = useUserStore();
 const username = ref<string>();
@@ -33,14 +35,19 @@ async function login() {
 </script>
 
 <template>
-    <h2>Login</h2>
-    <form @submit.prevent="login">
-        <GenericInput v-model="username" type="text" id="username">Username</GenericInput>
-        <GenericInput v-model="password" type="password" id="password">Password</GenericInput>
-        <button :disabled="loginInProgress" class="btn btn-primary" type="submit">
-            <div v-if="loginInProgress" class="spinner-border spinner-border-sm" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div> Login
-        </button>
-    </form>
+    <h2 class="text-center">Login</h2>
+    <SectionContainer>
+        <SectionContainerItem>
+            <form @submit.prevent="login" class="d-flex flex-column justify-content-center">
+                <GenericInput v-model="username" type="text" id="username">Username</GenericInput>
+                <GenericInput v-model="password" type="password" id="password">Password</GenericInput>
+                <button :disabled="loginInProgress" class="btn btn-primary btn-lg mx-auto" type="submit">
+                    <div v-if="loginInProgress" class="spinner-border spinner-border-sm" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div> Login
+                </button>
+            </form> 
+        </SectionContainerItem>
+    </SectionContainer>
+    
 </template>

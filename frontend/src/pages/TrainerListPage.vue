@@ -5,7 +5,7 @@ import { useModalsStore } from '@/store/modals';
 import { useNotificationsStore } from '@/store/notifications';
 import { useUserStore } from '@/store/user';
 import { ListData, RowData } from '@/utils/lists';
-import { Trainer } from '@gym-manager/models';
+import { Role, Trainer } from '@gym-manager/models';
 import { computed, ref } from 'vue';
 
 const client = useUserStore().client;
@@ -19,10 +19,11 @@ const data = computed<ListData>((): ListData => {
         actions: [
             { action: edit, colour: "primary", label: "Edit" },
             { action: del, colour: "danger", label: "Delete" },
+            { action: impersonate, colour: "info", label: "Impersonate" }
         ],
         data: users.value,
         headers: [
-            { key: "username", name: "Username", link: (d) => `/trainer?id=${d.id}` },
+            { key: "username", name: "Username" },
             { key: "firstName", name: "First name" },
             { key: "lastName", name: "Last name" },
             { key: "email", name: "Email" },
@@ -52,6 +53,10 @@ const del = async (d: Trainer | RowData) => {
             }
         });
     }
+}
+const impersonate = (d: Trainer | RowData) => {
+    client.startImpersonating(d as Trainer, Role.Trainer);
+    router.push({ path: '/trainer' });
 }
 
 const mobileHeader = (d: Trainer | RowData) =>

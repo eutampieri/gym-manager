@@ -5,6 +5,7 @@ import { ref } from 'vue';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 import router from '@/routes/router';
+import { useModalsStore } from '@/store/modals';
 
 const props = defineProps<{ id?: string, role: string }>();
 
@@ -15,6 +16,7 @@ interface ProfileEntry {
 }
 
 const client = useUserStore().client;
+const confirm = useModalsStore().confirm;
 const userName = ref('');
 const profileData = ref<Array<ProfileEntry>>();
 const profileIcon = ref('');
@@ -72,12 +74,13 @@ function getLinkPrefix(field: string): string | undefined {
         return undefined;
     }
 }
-function logout() {
-    client.logout().then(res => {
-        if (res) {
-            router.push({ "path": "/login" });
-        }
-    })
+async function logout() {
+    if (client.isImpersonating) {
+        if (!await confirm("If you proceed, you will log out as an admin.")) return;
+    }
+    if (await client.logout()) {
+        router.push({ "path": "/login" });
+    }
 }
 </script>
 
