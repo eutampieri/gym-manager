@@ -9,7 +9,6 @@ import { computed } from 'vue';
 
 // Recupero del percorso corrente
 const route = useRoute();
-console.log(route.path);
 
 const isLoginPage = computed(() => route.path === '/login');
 const isAdminPage = computed(() => route.path === '/admin');
