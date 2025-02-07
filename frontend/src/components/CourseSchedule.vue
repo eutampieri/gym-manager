@@ -12,22 +12,26 @@ const isBooked = ref(props.booked);
 const availableSpots = ref(props.schedule.availableSpots);
 
 async function bookCourse(courseId: string, dayOfWeek: string, startTime: string) {
-    isBooked.value = await store.client.bookCourse(courseId, {
+    const response = await store.client.bookCourse(courseId, {
         dayOfWeek: dayOfWeek,
         startTime: startTime,
     });
-    if (isBooked.value) {
-        availableSpots.value--;
-        notifications.fire({
-            body: 'Course booked succesfully!',
-            background: 'success'
-        });
-    } else {
-        notifications.fire({
-            body: 'There was an error while booking.',
-            background: 'danger'
-        });
-    }
+    console.log("responsee:"+ response);
+    if (response) {
+            notifications.fire({
+                title: 'Success',
+                body: 'Course successfully booked!',
+                background: 'success',
+                when: new Date(),
+            });
+        } else {
+            notifications.fire({
+                title: 'Error',
+                body: 'This course could not be found',
+                background: 'danger'
+            })
+        }
+    
 }
 
 </script>

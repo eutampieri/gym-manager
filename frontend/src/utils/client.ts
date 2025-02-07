@@ -219,7 +219,7 @@ export class Client {
     }
 
     public async bookCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r).then(r => r.status == 201);
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
     }
     public unsubscribeFromCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
         return this.apiRequest("DELETE", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
