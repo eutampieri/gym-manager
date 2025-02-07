@@ -5,14 +5,14 @@ import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
 import ChatButton from '@/components/ChatButton.vue';
 import { ref } from 'vue';
-import { Admin, CourseInfo, SessionInfo } from '@gym-manager/models';
+import { BasicIdentifiable, CourseInfo, SessionInfo } from '@gym-manager/models';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 
 const store = useUserStore();
 
-const myCourses = ref<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string, }[] }>>();
-const myOneOnOne = ref<Array<{ info: SessionInfo, participant: Admin }>>();
+const myCourses = ref<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, _id: string, }[] }>>();
+const myOneOnOne = ref<Array<{ info: SessionInfo, participant: BasicIdentifiable }>>();
 const user = store.client.userDetails;
 
 if (user) {
@@ -42,7 +42,7 @@ if (user) {
                         <dd>
                             <ul v-if="course.participants.length">
                                 <li v-for="u in course.participants">
-                                    <NameLink :path="store.client.customerProfilePath(u.id)">{{
+                                    <NameLink :path="store.client.customerProfilePath(u._id)">{{
                                         u.firstName + ' ' + u.lastName }}</NameLink>
                                 </li>
                             </ul>
@@ -66,9 +66,7 @@ if (user) {
                             <NameLink :path="store.client.customerProfilePath(session.participant._id)">{{
                                 session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
                             </div>
-                            <div v-else>
-                                No participant enrolled.
-                            </div>
+                            <p v-else>No participant enrolled.</p>
                         </dd>
                     </dl>
                 </DropdownItem>
