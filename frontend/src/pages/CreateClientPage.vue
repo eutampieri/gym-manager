@@ -70,16 +70,16 @@ if (props.id) {
     })
 }
 const createRequest = () => ({
-        username: username.value,
-        password: password.value == '*******' ? undefined : password.value,
-        firstName: firstName.value,
-        lastName: lastName.value,
-        email: email.value,
-        phoneNumber: phoneNumber.value,
-        dateOfBirth: dateOfBirth.value,
-        fiscalCode: fiscalCode.value,
-        address: address.value,
-    }) as CreateUserRequest;
+    username: username.value,
+    password: password.value == '*******' ? undefined : password.value,
+    firstName: firstName.value,
+    lastName: lastName.value,
+    email: email.value,
+    phoneNumber: phoneNumber.value,
+    dateOfBirth: dateOfBirth.value,
+    fiscalCode: fiscalCode.value,
+    address: address.value,
+}) as CreateUserRequest;
 
 async function handleUpdateCustomer() {
     try {
@@ -140,14 +140,16 @@ async function handleCreateCustomer() {
     <SectionContainer>
         <SectionContainerItem>
             <form>
-                <ValidatingGenericInput type="text" id="username" error-message="The username can only contain letters"
-                    :validation-function="isOnlyLetters" v-model="username" v-model:valid="usernameValid">
+                <ValidatingGenericInput :dont-autocapitalize="true" type="text" id="username"
+                    error-message="The username can only contain letters" :validation-function="isOnlyLetters"
+                    v-model="username" v-model:valid="usernameValid">
                     Username
                 </ValidatingGenericInput>
 
                 <ValidatingGenericInput type="password" id="password"
                     error-message="The password must be at least 7 characters long"
-                    :validation-function="(x: string) => x.length >= 7" v-model="password" v-model:valid="passwordValid">
+                    :validation-function="(x: string) => x.length >= 7" v-model="password"
+                    v-model:valid="passwordValid">
                     Password
                 </ValidatingGenericInput>
 
@@ -164,8 +166,8 @@ async function handleCreateCustomer() {
                 <GenericInput type="email" id="email" v-model="email">Email
                     address</GenericInput>
 
-                <ValidatingGenericInput :validation-function="isPhoneNumber" error-message="Invalid phone number" type="tel"
-                    id="phoneNumber" v-model="phoneNumber">
+                <ValidatingGenericInput :validation-function="isPhoneNumber" error-message="Invalid phone number"
+                    type="tel" id="phoneNumber" v-model="phoneNumber">
                     Phone number
                 </ValidatingGenericInput>
 
@@ -182,5 +184,5 @@ async function handleCreateCustomer() {
             </form>
         </SectionContainerItem>
     </SectionContainer>
-    
+
 </template>

@@ -39,15 +39,16 @@ async function login() {
     <SectionContainer>
         <SectionContainerItem>
             <form @submit.prevent="login" class="d-flex flex-column justify-content-center">
-                <GenericInput v-model="username" type="text" id="username">Username</GenericInput>
+                <GenericInput :dont-autocapitalize="true" v-model="username" type="text" id="username">Username
+                </GenericInput>
                 <GenericInput v-model="password" type="password" id="password">Password</GenericInput>
                 <button :disabled="loginInProgress" class="btn btn-primary btn-lg mx-auto" type="submit">
                     <div v-if="loginInProgress" class="spinner-border spinner-border-sm" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div> Login
                 </button>
-            </form> 
+            </form>
         </SectionContainerItem>
     </SectionContainer>
-    
+
 </template>
