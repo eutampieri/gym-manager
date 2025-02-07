@@ -20,7 +20,6 @@ const phoneNumber = ref("");
 const dateOfBirth = ref("");
 const fiscalCode = ref("");
 const address = ref("");
-const message = ref("");
 
 const usernameValid = ref(false);
 const passwordValid = ref(false);
