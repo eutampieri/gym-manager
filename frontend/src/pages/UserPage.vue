@@ -37,7 +37,7 @@ async function unsubscribeFromCourse(courseId: string, courseName: string, dayOf
             .then(res => {
                 if (res) {
                     // removed
-                    myCourses.value = myCourses.value?.filter(x => x.course._id != courseId && x.dayOfWeek != dayOfWeek && x.startTime != startTime)
+                    myCourses.value = myCourses.value?.filter(x => !(x.course._id == courseId && x.dayOfWeek == dayOfWeek && x.startTime == startTime))
                     notification.fire({
                         body: 'Unsubscribed from course correctly!',
                         background: 'success'
