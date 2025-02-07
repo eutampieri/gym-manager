@@ -112,7 +112,7 @@ const contactSupport = '/support/chat'
                         @click="() => unsubscribeFromCourse(course.course.id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
-            <p v-if="!(myCourses ?? []).length">You haven't signed up for any courses yet</p>
+            <p v-if="!(myCourses ?? []).length">You haven't signed up for any course yet</p>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one">
             <h3>My One-on-one</h3>
