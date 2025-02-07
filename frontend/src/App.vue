@@ -16,7 +16,7 @@ const isLoggedIn = computed(() => useUserStore().client.isLoggedIn);
 
 <template>
     <Header></Header>
-    <div class="container-md bg-body p-3 rounded" id="app">
+    <div class="container-md bg-body p-3 rounded">
         <RouterView />
     </div>
     <NotificationArea :notifications="notifications"></NotificationArea>
