@@ -25,8 +25,6 @@ const myOneOnOne = ref<Array<{ info: SessionInfo, trainer: Trainer }>>();
 ((store.client.getRole == Role.Admin && route.query.id) ? store.client.getUserById(route.query.id as string) : Promise.resolve(store.client.userDetails as User)).then((u) => {
     user.value = u;
 
-
-
     if (user.value) {
         store.client.getCustomerCourses(user.value.id)
             .then(courses => Promise.all(courses.map(c =>

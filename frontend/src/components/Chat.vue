@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Message as IMessage } from '@/utils/chat';
-import { BasicInfo, Role } from '@gym-manager/models';
+import { BasicIdentifiable, Role, roleToString } from '@gym-manager/models';
 import { ref } from 'vue';
 import NameLink from './NameLink.vue';
 import Message from './Message.vue';
@@ -12,7 +12,7 @@ const emit = defineEmits<{ send: [string], close: [] }>();
 defineProps<{
     isActive: boolean,
     messages: IMessage[],
-    otherParty: [BasicInfo, Role],
+    otherParty: [BasicIdentifiable, Role],
 }>();
 const minimised = defineModel<boolean>();
 const currentMessage = ref("");
@@ -32,7 +32,7 @@ function send() {
                 <section class="flex-grow-1">
                     <h2>Support chat</h2>
                     <h3 v-if="otherParty[1] != Role.Admin">with
-                        <NameLink path="">
+                        <NameLink :path="`/${roleToString(otherParty[1])}?id=${otherParty[0].id}`">
                             {{ otherParty[0].firstName }} {{ otherParty[0].lastName }} ({{ otherParty[1] }})
                         </NameLink>
                     </h3>
