@@ -173,8 +173,122 @@
 \par L'utilizzo dei JWT (grazie alla libreria jose)  consente di gestire tramite un semplice middleware l'autenticazione, senza dover tener traccia delle sessioni.
 \par Le password vengono memorizzate \textit{salted and hashed} con l'algoritmo Argon2id, considerato stato dell'arte in quanto computazionalmente complesso da invertire, anche con l'ausilio di GPU.
 \section{Codice}
-Solo aspetti rilevanti.
+\par Di seguito verranno mostrati quattro esempi che ci sembrano esemplificare la natura del progetto e ci permettono di motivare le nostre scelte tecniche.
+\subsection{\texttt{ValidatingGenericInput}}
+\begin{minted}{html}
+<script setup lang="ts">
+import { computed } from 'vue';
+const props = defineProps<{
+    validationFunction: (value: string) => boolean,
+    errorMessage: string,
+    type: string,
+    id: string,
+    dontAutocapitalize?: boolean,
+}>();
+const model = defineModel<string>(); 
+const validationModel = defineModel<boolean>("valid");
 
+const fieldValid = computed(() => {
+    const status = props.validationFunction(model.value || "");
+    validationModel.value = status;
+    return status;
+});
+
+const class = computed(() => `form-control ${
+    ((model?.length || 0 > 0) && errorMessage.length > 0) ?
+    (fieldValid ? 'is-valid' : 'is-invalid') : ''}`);
+
+</script>
+<template>
+    <div class="mb-3">
+        <label class="form-label" :for="id">
+            <slot></slot>
+        </label>
+        <input ref="input" :aria-invalid="!fieldValid"
+            required aria-required="true"
+            :class="class"
+            :type="type" :id="id" v-model="model"
+            :autocapitalize="dontAutocapitalize ? 'none' : 'yes'">
+        <div class="invalid-feedback">{{ props.errorMessage }}</div>
+    </div>
+</template>
+\end{minted}
+\par Questo componente è stato scelto perché mostra le potenzialità di Vue nell'incapsulazione e nella reattività.
+\subsubsection{\texttt{CourseAvailabilityWatcher}}
+\begin{minted}{html}
+    <script setup lang="ts">
+import { io } from 'socket.io-client';
+import { EventType, SubscriptionEntity } from '@gym-manager/models';
+import { useUserStore } from '@/store/user';
+import { onMounted } from 'vue';
+
+export interface CourseAvailabilityUpdate {
+    course: string,
+    availability: number,
+    dayOfWeek: string,
+    startTime: string,
+}
+
+const emit = defineEmits<{ update: [CourseAvailabilityUpdate] }>();
+
+const client = useUserStore().client;
+const socket = io({
+    path: "/api/socketio",
+});
+
+onMounted(() => {
+    socket.emit(EventType.Subscribe.toString(), {
+        token: client.authToken!,
+        entity: SubscriptionEntity.CourseAvailability
+    });
+});
+
+socket.on(
+    EventType.SubscriptionUpdate.toString(),
+    (u: CourseAvailabilityUpdate) => emit('update', u)
+);
+
+</script>
+<template>
+</template>
+\end{minted}
+\par Qui si può notare l'utilizzo delle interfacce per la definizione dei messaggi emessi, ma soprattutto la comodità di incapsulare elementi interattivi di terze parti in componenti Vue, per integrarli con la reattività.
+\subsection{\texttt{fetchCourseBy_Id}}
+\begin{minted}{js}
+    static async fetchCourseBy_Id(req, res) {
+        console.log("fetchCourseBy_Id");
+        const id = req.params.id;
+        try {
+            const course = await Course.findById(id, idProjection(Course), null).exec();
+            res.status(200).json(course);
+        } catch (error) {
+            res.status(404).json({ message: error.message });
+        } finally {
+        }
+    }
+\end{minted}
+\par Questo è uno dei tanti metodi dell'API, e mostra come sia facile integrare MongoDB con Express per fornire i documenti tramite una API REST.
+\par Si noti anche l'utilizzo delle risposte HTTP.
+\subsubsection{\texttt{createAuthMiddleware}}
+\begin{minted}{js}
+const createAuthMiddleware = (roles) => async function authMiddleware(req, res, next) {
+    if (req.headers["authorization"] !== undefined) {
+        let jwt = req.headers["authorization"].split(' ')[1];
+        const { payload, _ } = await verifyJWT(jwt);
+        const jwt_payload = payload;
+        if (jwt_payload.error === undefined && roles.has(parseRole(jwt_payload.role))) {
+            // JWT is still valid
+            req.user = jwt_payload.profile
+            req.user.role = parseRole(jwt_payload.role);
+        } else {
+            res.contentType("text/plain").status(401).send(`Invalid token${jwt_payload.error === undefined ? "" : ": " + jwt_payload.error.code}`);
+            return;
+        }
+    }
+    next();
+};
+\end{minted}
+\par Questa è la funzione che crea i middleware utilizzati per proteggere gli endpoint dagli accessi non autorizzati. Qui è possibile notare come sia possibile separare i diversi aspetti della gesitione della richiesta (in questo caso l'autenticazione) in componenti diverse.
 \section{Test}
 \par Sono stati effettuati degli usability test per raccogliere feedback dall'utente tramite la metodologia del cognitive walkthrough. Durante i test sono emersi alcuni dettagli non considerati in fase di design, oltre ad alcuni errori negli edge case. A titolo esemplificativo, sono state apportate le seguenti modifiche:
 \begin{itemize}
