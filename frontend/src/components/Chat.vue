@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Message as IMessage } from '@/utils/chat';
 import { BasicIdentifiable, Role, roleToString } from '@gym-manager/models';
-import { ref } from 'vue';
+import { ref, useTemplateRef } from 'vue';
 import NameLink from './NameLink.vue';
 import Message from './Message.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faCircleXmark, faChevronDown, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 
-
+const messageBar = useTemplateRef('messageBar');
 const emit = defineEmits<{ send: [string], close: [] }>();
 defineProps<{
     isActive: boolean,
@@ -22,6 +22,7 @@ const close = () => emit("close");
 function send() {
     emit("send", currentMessage.value);
     currentMessage.value = "";
+    messageBar.value?.focus();
 }
 </script>
 <template>
@@ -50,7 +51,7 @@ function send() {
                     :sent-by-current-user="message.sentByCurrentUser"></Message>
             </section>
             <section class="input-group mb-3 align-self-end">
-                <input v-model="currentMessage" type="text" class="form-control" aria-label="Search">
+                <input ref="messageBar" v-model="currentMessage" type="text" class="form-control" aria-label="Search">
                 <button class="btn btn-primary" @click="send">
                     <FontAwesomeIcon :icon="faPaperPlane"></FontAwesomeIcon>
                 </button>
@@ -67,8 +68,7 @@ function send() {
 
 <style scoped>
 .chat-container-full {
-    min-height: 100vh !important;
-    max-height: 100vh !important;
+    max-height: calc(100dvh - 5em) !important;
 }
 
 .chat-container-small {
