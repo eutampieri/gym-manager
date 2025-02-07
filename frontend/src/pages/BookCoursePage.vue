@@ -8,6 +8,7 @@ import { ref } from 'vue';
 import CourseSchedule from '@/components/CourseSchedule.vue';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import CourseAvailabilityWatcher, { CourseAvailabilityUpdate } from '@/components/CourseAvailabilityWatcher.vue';
 
 const store = useUserStore();
 
@@ -18,10 +19,10 @@ const allCourses = ref<{ course: Course; trainer: Trainer }[]>();
 
 // get all courses and trainers
 store.client.listCourses()
-    .then(courses => Promise.all(courses.map(c => 
-            store.client.getTrainerById(c.trainer)
-                .then(t => ({ course: c, trainer: t! }))
-            ))
+    .then(courses => Promise.all(courses.map(c =>
+        store.client.getTrainerById(c.trainer)
+            .then(t => ({ course: c, trainer: t! }))
+    ))
     ).then(d => allCourses.value = d);
 
 //get user courses
@@ -35,6 +36,15 @@ function isAlreadyBooked(courseId: string, dayOfWeek: string, startTime: string)
     return result;
 }
 
+function handlePush(update: CourseAvailabilityUpdate) {
+    const courseIndex = allCourses.value?.findIndex((x) => x.course.id === update.course);
+    if (courseIndex !== -1 && courseIndex !== undefined) {
+        const scheduleIndex = allCourses.value![courseIndex].course.schedule.findIndex(x => x.dayOfWeek == update.dayOfWeek && x.startTime == update.startTime);
+        if (scheduleIndex !== -1) {
+            allCourses.value![courseIndex].course.schedule[scheduleIndex].availableSpots += update.availability;
+        }
+    }
+}
 
 </script>
 
@@ -65,4 +75,5 @@ function isAlreadyBooked(courseId: string, dayOfWeek: string, startTime: string)
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
+    <CourseAvailabilityWatcher @update="handlePush"></CourseAvailabilityWatcher>
 </template>
