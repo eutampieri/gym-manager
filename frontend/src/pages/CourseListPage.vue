@@ -44,7 +44,7 @@ const data = computed<ListData>((): ListData => {
         headers: [
             { key: "name", name: "Name" },
             { key: "description", name: "Description" },
-            { key: "trainer", name: "Trainer", link: (d) => `/trainer?id=${d.trainerId}` },
+            { key: "trainer", name: "Trainer", link: (d) => client.trainerProfilePath(d.trainerId as string) },
             { key: "schedule", name: "Schedule" },
         ]
     };
