@@ -171,7 +171,7 @@
     \item Supportare operazioni avanzate come popolazione dei dati e query complesse.
 \end{itemize}
 \par L'utilizzo dei JWT (grazie alla libreria jose)  consente di gestire tramite un semplice middleware l'autenticazione, senza dover tener traccia delle sessioni.
-\par Le password vengono memorizzate \textit{salted and hashed} con l'algoritmo Argon2id, considerato stato dell'arte in quanto computazionalmente complesso da invertire, anche con l'ausilio di GPU.
+\par Le password vengono memorizzate \textit{salted and hashed} con l'algoritmo Argon2id\citep{rfc9106}, considerato stato dell'arte in quanto computazionalmente complesso da invertire, anche con l'ausilio di GPU.
 \section{Codice}
 \par Di seguito verranno mostrati quattro esempi che ci sembrano esemplificare la natura del progetto e ci permettono di motivare le nostre scelte tecniche.
 \subsection{\texttt{ValidatingGenericInput}}
