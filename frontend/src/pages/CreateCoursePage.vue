@@ -93,16 +93,16 @@ watch(capacity, (newCapacity) => {
 });
 
 client.listTrainers()
-    .then(x => x.map((y => { return { id: y.id, label: `${y.firstName} ${y.lastName}` }; })))
+    .then(x => x.map((y => { return { id: y._id, label: `${y.firstName} ${y.lastName}` }; })))
     .then(x => allTrainers.value = x);
 
 const createRequest = () => ({
-        name: name.value,
-        description: description.value,
-        schedule: scheduleEntries.value,
-        capacity: capacity.value,
-        trainer: trainer.value,
-    }) as CreateCourseRequest;
+    name: name.value,
+    description: description.value,
+    schedule: scheduleEntries.value,
+    capacity: capacity.value,
+    trainer: trainer.value,
+}) as CreateCourseRequest;
 
 async function handleUpdateCourse() {
     try {
@@ -175,27 +175,32 @@ async function handleCreateCourse() {
 
                 <h3 class="fs-5">Schedule</h3>
                 <div class="d-flex flex-column">
-                    <div v-for="(entry, index) in scheduleEntries" :key="index" 
+                    <div v-for="(entry, index) in scheduleEntries" :key="index"
                         :class="`schedule-entry d-flex justify-content-center align-content-center pb-1 ${index != 0 ? 'pt-3 border-top' : ''}`">
                         <div class="d-flex flex-column col-8">
-                            <SelectInput :id="'dayOfWeek' + index" v-model="entry.dayOfWeek" :options="scheduleEntriesDays[index]">
+                            <SelectInput :id="'dayOfWeek' + index" v-model="entry.dayOfWeek"
+                                :options="scheduleEntriesDays[index]">
                                 Day of Week
                             </SelectInput>
-                            <SelectInput :id="'startTime' + index" v-model="entry.startTime" :options="scheduleEntriesHours[index]">
+                            <SelectInput :id="'startTime' + index" v-model="entry.startTime"
+                                :options="scheduleEntriesHours[index]">
                                 Start Time
                             </SelectInput>
                         </div>
-                        <button type="button" class="btn btn-danger m-3 align-self-center" @click="removeScheduleEntry(index)">Remove</button>
+                        <button type="button" class="btn btn-danger m-3 align-self-center"
+                            @click="removeScheduleEntry(index)">Remove</button>
                     </div>
-                    <button type="button" class="btn btn-secondary mx-auto" @click="addScheduleEntry">Add Schedule Entry</button>
+                    <button type="button" class="btn btn-secondary mx-auto" @click="addScheduleEntry">Add Schedule
+                        Entry</button>
                 </div>
 
-                <ValidatingGenericInput type="text" id="capacity" error-message="The course must have at least one participant"
-                    :validation-function="isValidCapacity" v-model="capacityString" v-model:valid="capacityValid">
+                <ValidatingGenericInput type="number" id="capacity"
+                    error-message="The course must have at least one participant" :validation-function="isValidCapacity"
+                    v-model="capacityString" v-model:valid="capacityValid">
                     Capacity
                 </ValidatingGenericInput>
 
-               
+
 
                 <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateCourse"
                     :disabled="!submitButtonEnabled">Update Course {{ name }}</button>
@@ -204,5 +209,5 @@ async function handleCreateCourse() {
             </form>
         </SectionContainerItem>
     </SectionContainer>
-    
+
 </template>

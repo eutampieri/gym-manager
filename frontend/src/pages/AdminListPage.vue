@@ -26,7 +26,7 @@ const data = computed<ListData>((): ListData => {
                 firstName: x.firstName,
                 lastName: x.lastName,
                 superadmin: x.hasFullPrivileges ? "Yes" : "No",
-                id: x._id
+                _id: x._id
             }
         }),
         headers: [
