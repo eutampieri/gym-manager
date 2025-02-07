@@ -1,9 +1,9 @@
-const express = require('express')
-const router = express.Router()
-const API = require('../controller/authApi')
+import { Router } from 'express'
+const router = Router()
+import { authenticate } from '../controller/authApi.js'
 
 
 // in the path, before these, there must be /auth
-router.post("/authenticate", API.authenticate)
+router.post("/authenticate", authenticate)
 
-module.exports = router
+export default router

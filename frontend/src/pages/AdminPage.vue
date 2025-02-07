@@ -1,28 +1,40 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import MainButton from '@/components/MainButton.vue';
+import { useUserStore } from '@/store/user';
 
-const buttons = [
-    {text: "Create Trainer", route: "/createTrainer",},
-    {text: "Delete Trainer", route: "/admin",},
-    {text: "Update Trainer", route: "/admin",},
-    {text: "Create Client", route: "/createClient",},
-    {text: "Delete Client", route: "/admin",},
-    {text: "Update Client", route: "/admin",},
-    {text: "Create Course", route: "/createCourse",},
-    {text: "Delete Course", route: "/admin",},
-    {text: "Update Course", route: "/admin",},
-];
+const store = useUserStore();
+const admin = store.client.userDetails;
+// Verifica se admin è di tipo 'Admin' e ha la proprietà 'hasFullPrivileges'
+const privilege = admin && 'hasFullPrivileges' in admin ? admin.hasFullPrivileges : false;
 
 </script>
+
 <template>
-    <h1>Admin Page</h1>
-    <div class="d-flex justify-content-center">
-    <div class="mt-5 d-flex flex-wrap justify-content-evenly col-md-8">
-        <RouterLink v-for="b in buttons"
-      :to="{ path: b.route }"
-      class="nav-link">
-    <button type="button" class="btn btn-primary m-2">{{ b.text }}</button></RouterLink>
+    <div class="d-flex flex-column">
+        <h2 class="mx-auto mb-5">Hello {{ admin?.firstName }}!</h2>
     </div>
-    </div>
-   
+    <section class="d-flex flex-column mt-4">
+        <h3 class="mx-auto">Courses</h3>
+        <MainButton :path="'/admin/createCourse'">Create course</MainButton>
+        <MainButton :path="'/admin/listCourses'">View courses</MainButton>
+    </section>
+    <section class="d-flex flex-column mt-4">
+        <h3 class="mx-auto">One-on-ones</h3>
+        <MainButton :path="'/admin/listOneOnOnes'">View One-on-ones</MainButton>
+    </section>
+    <section class="d-flex flex-column mt-4">
+        <h3 class="mx-auto">Users</h3>
+        <MainButton :path="'/admin/createClient'">Create user</MainButton>
+        <MainButton :path="'/admin/listCustomers'">View users</MainButton>
+    </section>
+    <section class="d-flex flex-column mt-4">
+        <h3 class="mx-auto">Trainers</h3>
+        <MainButton :path="'/admin/createTrainer'">Create trainer</MainButton>
+        <MainButton :path="'/admin/listTrainers'">View trainers</MainButton>
+    </section>
+    <section v-if="privilege" class="d-flex flex-column mt-4">
+        <h3 class="mx-auto">Admins</h3>
+        <MainButton :path="'/admin/createAdmin'">Create admin</MainButton>
+        <MainButton :path="'/admin/listAdmins'">View admins</MainButton>
+    </section>
 </template>

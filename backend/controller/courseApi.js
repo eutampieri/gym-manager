@@ -1,57 +1,44 @@
-const Course = require('../models/courseModel');
+import { Role } from '@gym-manager/models/role.js';
+import Client from '../models/clientModel.js';
+import Course from '../models/courseModel.js';
+import Trainer from '../models/trainerModel.js';
+import idProjection from './idProjection.js';
+import { EventType, SubscriptionEntity } from '@gym-manager/models/chat.js';
+
 
 // RESTFUL CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
 // Mongoose functions are CRUD
 
-module.exports = class API {
+export default class API {
+    static async createCourse(req, res) {
+
+        const course = req.body;
+        const idTrainer = req.body.trainer;
+        try {
+            const courseAlreadyPresent = await Course.findOne({ name: req.body.name }, idProjection(Course), null).exec();
+            if (!courseAlreadyPresent) {
+                const newCourse = await Course.create(course, null);
+                res.status(201).json({ message: 'Course created successfully' });
+                // Aggiunge la sessione al Trainer
+                await Trainer.updateOne(
+                    { _id: idTrainer },
+                    { $push: { courses: newCourse._id } }
+                );
+
+            }
+            else {
+                res.status(500).json({ message: "Course already present" });
+            }
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        } finally {
+        }
+    }
 
     static async fetchAllCourses(req, res) {
         console.log("fetchAllCourses");
         try {
-            const course = await Course.find({}, null, null).exec();
-            res.status(200).json(course);
-        } catch (error) {
-            res.status(404).json({message: error.message});
-        } finally {
-        }
-    }
-
-    static async isCourseIdPresent(req, res) {
-        console.log("isCourseIdPresent");
-        const id = req.params.id;
-        try {
-            const course = await Course.findOne({ id: id }, null, null).exec();
-            if(course) {
-                res.status(200).json(true);
-            }
-            else {
-                res.status(200).json(false);
-            }
-        } catch (error) {
-            res.status(404).json({message: error.message});
-        } finally {
-        }
-    }
-
-    static async fetchCourse_IdById(req, res) {
-        console.log("fetchCourse_IdById");
-        const id = req.params.id;
-        try {
-            const course = await Course.findOne({id: id}, null, null).exec();
-            res.status(200).json(course._id);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-
-
-
-    static async fetchCourseById(req, res) {
-        console.log("fetchCourseById");
-        const id = req.params.id;
-        try {
-            const course = await Course.findOne({id: id}, null, null).exec();
+            const course = await Course.find({}, idProjection(Course), null).exec();
             res.status(200).json(course);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -63,7 +50,7 @@ module.exports = class API {
         console.log("fetchCourseBy_Id");
         const id = req.params.id;
         try {
-            const course = await Course.findById(id, null, null).exec();
+            const course = await Course.findById(id, idProjection(Course), null).exec();
             res.status(200).json(course);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -71,205 +58,309 @@ module.exports = class API {
         }
     }
 
-    // returns all courses in the database that match the specified name
-    static async fetchCoursesByName(req, res) {
+    static async fetchCourseByName(req, res) {
         console.log("fetchCourseByName");
         const name = req.params.name;
         try {
-            const course = await Course.find({name: name}, null, null).exec();
+            const course = await Course.find({ name: name }, idProjection(Course), null);
             res.status(200).json(course);
         } catch (error) {
             res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-    // from an array of all course names
-    static async fetchAllCoursesNames(req, res) {
-        console.log("fetchAllCoursesNames");
-        try {
-            // uses the distinct() method of Mongoose to retrieve the unique names of courses from the 'name' property of the Course model
-            const courseNames = await Course.distinct('name').exec();
-            res.status(200).json(courseNames);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async createCourse(req, res) {
-
-        const course = req.body;
-        try {
-            const courseAlreadyPresent= await Course.findOne({ id: req.body.id }, null, null).exec();
-            if (!courseAlreadyPresent) {
-                await Course.create(course, null);
-                res.status(201).json({ message: 'Course created successfully' });
-
-            }
-            else {
-                res.status(500).json({ message: "Course id already present" });
-            }
-        } catch (error) {
-            res.status(400).json({ message: error.message });
         } finally {
         }
     }
 
     static async updateCourse(req, res) {
-        const id = req.body.id;
-        const { name, description, dayOfWeek, startTime, endTime, capacity, trainer } = req.body; // Estrai i campi da aggiornare
+        const { id, name, description, schedule, capacity, trainer } = req.body;
+
         try {
+            // Trova il corso esistente per confrontare il trainer originale
+            const existingCourse = await Course.findById(id);
+            if (!existingCourse) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+
             const updateFields = {};
-            // Check and add non-empty fields to the update object
             if (name) updateFields.name = name;
             if (description) updateFields.description = description;
-            if (dayOfWeek) updateFields.dayOfWeek = dayOfWeek;
-            if (startTime) updateFields.startTime = startTime;
-            if (endTime) updateFields.endTime = endTime;
+            if (schedule) updateFields.schedule = schedule;
             if (capacity) updateFields.capacity = capacity;
             if (trainer) updateFields.trainer = trainer;
 
-            // Perform the update only if there are fields to update
-            if (Object.keys(updateFields).length > 0) {
-                await Course.updateOne({ id: id }, updateFields, null);
-                res.status(200).json({ message: 'Course updated successfully' });
-            } else {
-                res.status(400).json({ message: 'No fields to update' });
+            if (Object.keys(updateFields).length === 0) {
+                return res.status(400).json({ message: 'No fields to update' });
             }
+            if (capacity) {
+            const capacityDifference = capacity - existingCourse.capacity;
+             for (let i=0; i<existingCourse.schedule.length; i++) {                
+                updateFields.schedule[i].availableSpots = existingCourse.schedule[i].availableSpots+capacity-existingCourse.capacity;                
+                if (updateFields.schedule[i].availableSpots < 0) {
+                    return res.status(400).json({ message: "Wrong capacity" });
+                }
+             }
+            }
+        
+          
+            if (trainer && trainer !== existingCourse.trainer.toString()) {
+                await Trainer.updateOne(
+                    { _id: existingCourse.trainer },
+                    { $pull: { courses: id } }
+                );
+
+                // Aggiunge il corso all'array courses del nuovo trainer
+                await Trainer.updateOne(
+                    { _id: trainer },
+                    { $addToSet: { courses: id } } // Evita duplicati con $addToSet
+                );
+            }
+
+            // Aggiorna il corso nel database
+            await Course.updateOne({ _id: id }, updateFields, null);
+            res.status(200).json({ message: 'Course updated successfully' });
+
         } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
+            res.status(500).json({ message: error.message });
         }
     }
-
 
 
     static async deleteCourse(req, res) {
-        const courseId = req.body.id;
-        try {
-            await Course.findOneAndDelete({id:courseId}, null);
-            res.status(200).json({ message: 'Course deleted successfully' });
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async deleteCourseBy_Id(req, res) {
         const courseId = req.params.id;
         try {
-            await Course.findOneAndDelete({_id:courseId}, null);
-            res.status(200).json({ message: 'Course deleted successfully' });
+            // Trova il corso prima di eliminarlo per recuperare clientId e trainerId
+            const course = await Course.findById(courseId);
+            if (!course) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+
+            // Rimuove l'intero oggetto dall'array courses dei Client che erano iscritti
+            await Client.updateMany(
+                { 'courses.course': courseId },
+                { $pull: { courses: { course: courseId } } } // Rimuove tutto l'oggetto con course, dayOfWeek e startTime
+            );
+
+            // Rimuove il corso dall'array courses del Trainer
+            await Trainer.updateOne(
+                { _id: course.trainer },
+                { $pull: { courses: courseId } }
+            );
+
+            // Elimina il corso dal database
+            await Course.findOneAndDelete({ _id: courseId });
+            for (s of course.schedule) {
+                req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+                    course: courseId,
+                    availability: s.availableSpots * -1,
+                    dayOfWeek: s.dayOfWeek,
+                    startTime: s.startTime,
+                });
+            }
+
+            res.status(200).json({ message: 'Course deleted successfully, removed from clients and trainer' });
+
         } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
+            res.status(500).json({ message: error.message });
         }
     }
 
-    static async fetchCourseTrainer(req, res) {
+    static async createBooking(req, res) {
         try {
-            const id = req.params.id;
-            const course = await Course.findOne({id: id}, null, null).populate('trainer').exec();
+            const { clientId, dayOfWeek, startTime } = req.body;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user._id;
+            const courseId = req.params.id;
+
+            // Trova il corso con il nome specificato e popola i partecipanti
+            const course = await Course.findOne({ _id: courseId })
+                .populate('schedule.participants')
+                .exec();
+
             if (!course) {
                 return res.status(404).json({ message: 'Course not found' });
             }
-            const trainer = course.trainer;
-            res.status(200).json(trainer);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
 
-    static async fetchCourseParticipants(req, res) {
-        try {
-            const id = req.params.id;
-            const course = await Course.findOne({id: id}, null, null).populate('participants').exec();
-            if (!course) {
-                return res.status(404).json({ message: 'Course not found' });
+            // Trova la schedule entry per il giorno e l'orario specificati
+            const scheduleEntry = course.schedule.find(entry =>
+                entry.dayOfWeek === dayOfWeek && entry.startTime === startTime
+            );
+
+            if (!scheduleEntry) {
+                return res.status(404).json({ message: 'No schedule found for the specified day and time' });
             }
-            // Fetch the list of participants
-            const participants = course.participants;
-            res.status(200).json(participants);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
 
-    static async removeParticipantByUsername(req, res) {
-        try {
-            const courseId = req.params.id;
-            const username = req.params.username;
-            const course = await Course.findOne({id: courseId}, null, null).populate('participants').exec();
-            if (!course) {
-                res.status(404).json({ message: 'Session not found' });
-            }
-            const indexToRemove = course.participants.findIndex(participant => participant.username === username);
-            if (indexToRemove === -1) {
-                return res.status(404).json({ message: 'Participant not found' });
-            }
-            course.participants.splice(indexToRemove, 1);
-            course.capacity++;
-            await Course.updateOne({id:courseId}, { $set:{ participants: course.participants, capacity: course.capacity }}, null);
-            res.status(200).json({ message: 'Participant deleted successfully' });
-
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async addParticipantById(req, res) {
-
-        try {
-            const courseId = req.params.id;
-            const clientId = req.params.clientId;
-
-            let full = false;
-            const course = await Course.findOne({id: courseId}, null, null).populate('participants').exec();
-            if (!course) {
-                res.status(404).json({ message: 'Course not found' });
-            }
-            // Check if the course is already present in the client's courses
-            if (course.participants.some(participant => participant._id === parseInt(clientId))) {
+            // Controlla se il cliente è già iscritto al corso
+            if (scheduleEntry.participants.some(participant => participant._id.toString() === safeClientId)) {
                 return res.status(400).json({ message: 'Participant already exists in the course' });
             }
 
-             if(course.capacity>0) {
-                        course.participants.push(clientId);
-                        course.capacity--;
-                        await Course.updateOne({id:courseId}, { $set:{ capacity: course.capacity, participants: course.participants }}, null);
-                        res.status(200).json(full);
-             }
-             else {
-                 full = true
-                 return res.status(404).json(full);
-             }
+            // Controlla se ci sono posti disponibili
+            if (scheduleEntry.availableSpots <= 0) {
+                return res.status(400).json({ message: 'No available spots for this schedule' });
+            }
 
-        } catch (error) {
+            // Aggiungi il cliente ai partecipanti e decrementa availableSpot
+            scheduleEntry.participants.push(safeClientId);
+            scheduleEntry.availableSpots -= 1;
+
+            // Aggiorna il corso con le nuove informazioni
+            await Course.updateOne(
+                { _id: course._id, schedule: { $elemMatch: { dayOfWeek, startTime } } },
+                {
+                    $set: {
+                        "schedule.$.participants": scheduleEntry.participants,
+                        "schedule.$.availableSpots": scheduleEntry.availableSpots
+                    }
+                }
+            );
+            req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+                course: courseId,
+                availability: -1,
+                dayOfWeek,
+                startTime,
+            });
+
+
+            // Trova il client con l'ID specificato
+            const client = await Client.findOne({ _id: safeClientId }).populate('courses.course').exec();
+
+            if (!client) {
+                return res.status(404).json({ message: 'Client not found' });
+            }
+
+            // Controlla se il corso è già presente nel client (stesso ID, giorno e orario)
+            const courseExists = client.courses.some(c =>
+                c.course.toString() === course._id.toString() &&
+                c.dayOfWeek === dayOfWeek &&
+                c.startTime === startTime
+            );
+
+            if (courseExists) {
+                return res.status(400).json({ message: 'Course already added to client at this time' });
+            }
+
+            // Aggiunge il corso con i dettagli specifici
+            client.courses.push({
+                course: course._id,
+                dayOfWeek: dayOfWeek,
+                startTime: startTime
+            });
+
+            // Aggiorna il client con il nuovo corso
+            await Client.updateOne(
+                { _id: safeClientId },
+                { $set: { courses: client.courses } }
+            );
+
+            res.status(200).json({ message: 'Course added successfully' });
+
+        }
+
+        catch (error) {
             res.status(500).json({ message: error.message });
         } finally {
         }
     }
 
-    static async checkParticipantsByUsername(req, res) {
+    static async deleteBooking(req, res) {
         try {
+            const { clientId, dayOfWeek, startTime } = req.body;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user._id;
             const courseId = req.params.id;
-            const username = req.params.username;
-            const course = await Course.findOne({id: courseId}, null, null).populate('participants').exec();
+
+            // Trova il corso con il nome specificato
+            const course = await Course.findOne({ _id: courseId })
+                .populate('schedule.participants')
+                .exec();
+
             if (!course) {
                 return res.status(404).json({ message: 'Course not found' });
             }
 
-            // Find the participant with the specified username
-            const participantStatus = course.participants.some(participant => participant.username === username);
-            res.status(200).json(participantStatus);
+            // Trova l'entry giusta nella `schedule`
+            const scheduleEntry = course.schedule.find(entry =>
+                entry.dayOfWeek === dayOfWeek && entry.startTime === startTime
+            );
+
+            if (!scheduleEntry) {
+                return res.status(404).json({ message: 'No schedule found for the specified day and time' });
+            }
+
+            // Controlla se il partecipante è registrato
+            if (!scheduleEntry.participants.some(participant => participant._id.toString() === safeClientId)) {
+                return res.status(400).json({ message: 'Participant not found in this course' });
+            }
+
+            // Rimuove il partecipante manualmente e aggiorna availableSpot
+            scheduleEntry.participants = scheduleEntry.participants.filter(
+                participant => participant._id.toString() !== safeClientId
+            );
+            scheduleEntry.availableSpots += 1;
+
+            // Aggiorna il corso nel database
+            await Course.updateOne(
+                { _id: course._id, schedule: { $elemMatch: { dayOfWeek, startTime } } },
+                {
+                    $set: {
+                        "schedule.$.participants": scheduleEntry.participants,
+                        "schedule.$.availableSpots": scheduleEntry.availableSpots
+                    }
+                }
+            );
+
+            req.app.locals.io.to(SubscriptionEntity.CourseAvailability.toString()).emit(EventType.SubscriptionUpdate.toString(), {
+                course: courseId,
+                availability: 1,
+                dayOfWeek,
+                startTime,
+            });
+
+            // Trova il client e rimuove il corso dal suo elenco
+            const client = await Client.findById(safeClientId);
+            if (!client) {
+                return res.status(404).json({ message: 'Client not found' });
+            }
+
+            client.courses = client.courses.filter(courseEntry =>
+                !(courseEntry.course.toString() === course._id.toString() &&
+                    courseEntry.dayOfWeek === dayOfWeek &&
+                    courseEntry.startTime === startTime)
+            );
+
+
+            // Aggiorna il client con il nuovo array `courses`
+            await Client.updateOne(
+                { _id: safeClientId },
+                { $set: { courses: client.courses } }
+            );
+
+            res.status(200).json({ message: 'Booking deleted successfully' });
 
         } catch (error) {
             res.status(500).json({ message: error.message });
-        } finally {
         }
     }
 
+    static async fetchCourseBookings(req, res) {
+        console.log("fetchCourseBookings");
+        const id = req.params.id;
+        try {
+            const course = await Course.findById(id)
+                .populate('schedule.participants', 'username')
+                .select('schedule') // Seleziona solo il campo schedule
+                .exec();
+            if (!course) {
+                return res.status(404).json({ message: "Course not found" });
+            }
+            // Mappa i dati per restituire solo i campi richiesti
+            const formattedSchedule = course.schedule.map(course => ({
+                dayOfWeek: course.dayOfWeek,
+                startTime: course.startTime,
+                participants: course.participants, // Include i dettagli dei partecipanti popolati
+                availableSpots: course.availableSpots
+            }));
+            res.status(200).json(formattedSchedule);
+        } catch (error) {
+            res.status(404).json({ message: error.message });
+        } finally {
+        }
+    }
 }

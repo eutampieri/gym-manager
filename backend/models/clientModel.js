@@ -1,10 +1,10 @@
 // creation of the client model in the database
 // use models to interact with the database
 // to modify clients, I will use Client (module.exports = Client)
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
 // Definition of the schema for the client model
-const clientSchema = new mongoose.Schema({
+const clientSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -43,21 +43,24 @@ const clientSchema = new mongoose.Schema({
         required: true
     },
     courses: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course',
-        required: false
+        course: {
+            type: Schema.Types.ObjectId,
+            ref: 'Course'
+        },
+        dayOfWeek: {
+            type: String,
+            enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        },
+        startTime: {
+            type: String,
+            match: /^(09|1[0-8]):00$/ // Regex per il formato "HH:00", tra 09 e 18
+        }
     }],
     sessions: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Session',
         required: false
-    }],
-    id: {
-        type: Number,
-        required: true
-    }
-
-
+    }]
 });
 
 /* Here are some of the main functions offered by Mongoose:
@@ -69,4 +72,4 @@ Advanced query methods: Mongoose offers many query methods to perform advanced s
 */
 
 // Creation of the client model
-module.exports = mongoose.model("Client", clientSchema)
+export default model("Client", clientSchema)

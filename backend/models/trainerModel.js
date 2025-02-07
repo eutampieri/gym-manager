@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const trainerSchema = new mongoose.Schema({
+const trainerSchema = new Schema({
     username: {
         type: String,
         required: true
@@ -27,20 +27,15 @@ const trainerSchema = new mongoose.Schema({
         required: true
     },
     courses: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Course',
         required: false
     }],
     sessions: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Session',
         required: false
     }],
-    id: {
-        type: Number,
-        required: true
-    }
-
 });
 
-module.exports = mongoose.model("Trainer", trainerSchema)
+export default model("Trainer", trainerSchema)

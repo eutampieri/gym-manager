@@ -1,20 +1,13 @@
 // Import modules
-const express = require('express');
-const router = express.Router();
-const API = require('../controller/sessionApi');
+import { Router } from 'express';
+import { wrapMiddleware, adminAuth, customerAuth, anyAuth } from '../utils.js';
+import API from '../controller/sessionApi.js';
 
-// in the path, before these, there must be /sessions
-router.get('/', API.fetchAllSessions);
-router.get('/:id', API.fetchSessionById);
-router.get("/_id/:id", API.fetchSessionBy_Id)
-router.get("/_id/id/:id", API.fetchSession_IdById)
-router.post('/', API.createSession);
-router.post('/delete', API.deleteSession);
-router.get("/delete/deleteBy_Id/:id", API.deleteSessionBy_Id)
-router.get("/trainer/:id", API.fetchSessionTrainer);
-router.get("/participant/:id", API.fetchSessionParticipant);
-router.get("/checkId/:id", API.isSessionIdPresent)
-router.get("/calculate/nextId", API.nextAvailableId)
+const router = Router();
 
-// Export the router to make it available elsewhere in the application
-module.exports = router;
+router.post('/', wrapMiddleware(customerAuth, API.createSession));
+router.get('/', wrapMiddleware(adminAuth, API.fetchAllSessions));
+router.get("/:id", wrapMiddleware(anyAuth, API.fetchSessionBy_Id));
+router.delete('/:id', wrapMiddleware(customerAuth, API.deleteSession));
+
+export default router;

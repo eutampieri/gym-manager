@@ -1,29 +1,57 @@
-const Client = require('../models/clientModel');
-const Trainer = require('../models/trainerModel');
+import Client from '../models/clientModel.js';
+import Trainer from '../models/trainerModel.js';
+import Admin from '../models/adminModel.js';
+import { SignJWT } from 'jose';
+import idProjection from './idProjection.js';
+import { JWT_KEY, ISSUER, AUDIENCE } from '../utils.js';
+import { verify } from '@node-rs/argon2';
+import { Role, roleToString } from '@gym-manager/models/role.js'
 
-exports.authenticate = async (req, res) => {
+async function lookupUsername(username) {
+    const models = [
+        { model: Client, kind: roleToString(Role.User) },
+        { model: Trainer, kind: roleToString(Role.Trainer) },
+        { model: Admin, kind: roleToString(Role.Admin) },
+    ];
+
+    for (const { model, kind } of models) {
+        const result = await model.findOne({ username }, idProjection(model), null).exec();
+        if (result) {
+            return { kind, data: result };
+        }
+    }
+
+    return { kind: null, data: null };
+}
+
+export async function authenticate(req, res) {
     const { username, password } = req.body;
+    const token = {};
 
     try {
-        const client = await Client.findOne({username: username}, null, null).exec();
-        if (client && client.password === password) {
-            return res.redirect(`/clientManager.html?username=${username}`);
+        const user = await lookupUsername(username);
+        if (user.kind === null || !await verify(user.data.password, password)) {
+            res.status(401).send("Unauthorized");
+        } else {
+            token.role = user.kind;
+            token.username = user.data.username;
+            token.profile = user.data;
+            token.profile.password = undefined;
+            token.profile.sessions = undefined;
+            token.profile.courses = undefined;
+            const jwt = await new SignJWT(token) // details to  encode in the token
+                .setProtectedHeader({
+                    alg: 'HS256'
+                }) // algorithm
+                .setIssuedAt()
+                .setIssuer(ISSUER) // issuer
+                .setAudience(AUDIENCE) // audience
+                .setExpirationTime("1 day") // FIXME sketchy
+                .sign(JWT_KEY);
+            res.contentType("text/plain").send(jwt);
         }
-
-        // Check if the username matches a trainer
-        const trainer = await Trainer.findOne({username: username}, null, null).exec();
-        if (trainer && trainer.password === password) {
-            return res.redirect(`/trainerManager.html?username=${username}`);
-        }
-
-        if (username === 'admin' && password === 'admin') {
-            return res.redirect(`/adminManager.html`); // Redirect to the adminManager page
-        }
-
-        // Redirect to the login page with a query parameter to indicate failure
-        res.redirect(`/login.html?error=true`);
     } catch (error) {
         console.error('Error during authentication:', error);
         res.status(500).send('Error during authentication');
     }
-};
+}

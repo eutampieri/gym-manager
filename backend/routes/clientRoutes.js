@@ -1,22 +1,16 @@
-const express = require('express')
-const router = express.Router()
-const API = require('../controller/clientApi')
+import { Router } from 'express';
+import API from '../controller/clientApi.js';
+import { wrapMiddleware, adminAuth, trainerAuth, customerAuth } from '../utils.js';
 
-// in the path, before these, there must be /clients
-router.get("/", API.fetchAllClients)
-router.get("/username/:username", API.fetchClientByUsername)
-router.post("/", API.createClient)
-router.post("/update", API.updateClient)
-router.post("/delete", API.deleteClient)
-router.get("/courses/:username", API.fetchAllClientCourses)
-router.get("/sessions/:username", API.fetchAllClientSessions)
-router.get("/courses/delete/:username/:id", API.deleteClientCourse)
-router.get("/sessions/delete/:username/:id", API.deleteClientSession)
-router.get("/courses/add/:username/:id", API.addClientCourseById)
-router.get("/sessions/add/:username/:id", API.addClientSessionById)
-router.get("/sessions/:username/:id", API.checkClientSessions)
-router.get("/id/:username", API.fetchClient_IdByUsername)
-router.get("/checkId/:id", API.isClientIdPresent)
+const router = Router();
+
+router.post("/", wrapMiddleware(adminAuth, API.createCustomer))
+router.get("/", wrapMiddleware(adminAuth, API.fetchAllCustomers))
+router.put("/", wrapMiddleware(adminAuth, API.updateCustomer))
+router.delete("/:id", wrapMiddleware(adminAuth, API.deleteCustomer))
+router.get("/:id", wrapMiddleware(trainerAuth, API.fetchCustomerBy_Id))
+router.get("/:id/sessions", wrapMiddleware(customerAuth, API.fetchAllCustomerSessions))
+router.get("/:id/courses", wrapMiddleware(customerAuth, API.fetchAllCustomerCourses))
 
 
-module.exports = router
+export default router

@@ -1,55 +1,84 @@
-const Session = require('../models/sessionModel');
-
+import Client from '../models/clientModel.js';
+import Trainer from '../models/trainerModel.js';
+import Session from '../models/sessionModel.js';
+import idProjection from './idProjection.js';
+import { Role } from '@gym-manager/models/role.js';
 
 // RESTful CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
 // Mongoose functions are CRUD
 
-module.exports = class API {
+export default class API {
+    static async createSession(req, res) {
+        const session = req.body;
+        const idTrainer = req.body.trainer;
+        const idParticipant = req.body.participant;
+        const safeIdParticipant = req.user.role === Role.Admin ? idParticipant : req.user._id;
+
+        try {
+
+            session.participant = safeIdParticipant;
+
+            /* check if session can be created */
+            // check in partecipant sessions
+            const overlappingParticipantSessions = await Client.find({
+                _id: safeIdParticipant,
+                'sessions.startTime': session.startTime,
+                'sessions.dayOfWeek': session.dayOfWeek
+            }, null, null);
+            if (overlappingParticipantSessions.length > 0) {
+                return res.status(400).json({ message: 'Cannot create session' });
+            }
+            // check in trainer sessions
+            const overlappingTrainerSessions = await Trainer.find({
+                _id: idTrainer,
+                'sessions.startTime': session.startTime,
+                'sessions.dayOfWeek': session.dayOfWeek
+            }, null, null);
+            if (overlappingTrainerSessions.length > 0) {
+                return res.status(400).json({ message: 'Cannot create session' });
+            }
+            // check in trainer courses
+            const overlappingTrainerCourses = await Trainer.find({
+                _id: idTrainer,
+                'courses.schedule.startTime': session.startTime,
+                'courses.schedule.dayOfWeek': session.dayOfWeek
+            }, null, null);
+            if (overlappingTrainerCourses.length > 0) {
+                return res.status(400).json({ message: 'Cannot create session' });
+            }
+
+            /* Create session */
+            const newSession = await Session.create(session, null);
+            // Aggiunge la sessione al Client
+            await Client.updateOne(
+                { _id: safeIdParticipant },
+                { $push: { sessions: newSession._id } }
+            );
+
+            // Aggiunge la sessione al Trainer
+            await Trainer.updateOne(
+                { _id: idTrainer },
+                { $push: { sessions: newSession._id } }
+            );
+            res.status(201).json({ message: 'Session created successfully' });
+
+
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        } finally {
+        }
+    }
 
     static async fetchAllSessions(req, res) {
         try {
-            const sessions = await Session.find({}, null, null).exec();
+            const sessions = await Session
+                .find({}, idProjection(Session, new Set(["password"])), null)
+                .populate("trainer")
+                .populate("participant")
+                .exec();
             res.status(200).json(sessions);
         } catch (error) {
-            res.status(404).json({message: error.message})
-        }
-    }
-
-    static async isSessionIdPresent(req, res) {
-        const id = req.params.id;
-        try {
-            const session = await Session.findOne({ id: id }, null, null).exec();
-            if(session) {
-                res.status(200).json(true);
-            }
-            else {
-                res.status(200).json(false);
-            }
-        } catch (error) {
-            res.status(404).json({message: error.message});
-        } finally {
-        }
-    }
-    static async fetchSession_IdById(req, res) {
-        console.log("fetchSession_IdById");
-        const id = req.params.id;
-        try {
-            const session = await Session.findOne({id: id}, null, null).exec();
-            res.status(200).json(session._id);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async fetchSessionById(req, res) {
-        const id = req.params.id;
-        try {
-            const session = await Session.findOne({id: id}, null, null).exec();
-            res.status(200).json(session);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
+            res.status(404).json({ message: error.message })
         }
     }
 
@@ -57,7 +86,7 @@ module.exports = class API {
         console.log("fetchSessionBy_Id");
         const id = req.params.id;
         try {
-            const session = await Session.findById(id, null, null).exec();
+            const session = await Session.findById(id, idProjection(Session, new Set(["password"])), null).exec();
             res.status(200).json(session);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -65,94 +94,35 @@ module.exports = class API {
         }
     }
 
-    static async createSession(req, res) {
-        const session = req.body;
-        try {
-            const sessionAlreadyPresent = await Session.findOne({ id: req.body.id }, null, null).exec();
-            if (!sessionAlreadyPresent) {
-                await Session.create(session, null);
-                res.status(201).json({ message: 'Session created successfully' });
-            }
-            else {
-                res.status(500).json({ message: "Session already present" });
-            }
-        } catch (error) {
-            res.status(400).json({ message: error.message });
-        } finally {
-        }
-    }
-
-
-
     static async deleteSession(req, res) {
-        const id = req.body.id;
         try {
-            await Session.findOneAndDelete({id:id}, null);
-            res.status(200).json({ message: 'Session deleted successfully' });
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
+            const sessionId = req.params.id;
 
-    static async deleteSessionBy_Id(req, res) {
-        const sessionId = req.params.id;
-        try {
-            await Session.findOneAndDelete({_id:sessionId}, null);
-            res.status(200).json({ message: 'Session deleted successfully' });
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async fetchSessionTrainer(req, res) {
-        try {
-            const id = req.params.id;
-            const session = await Session.findOne({id: id}, null, null).populate('trainer').exec();
+            // Trova la sessione prima di eliminarla per recuperare clientId e trainerId
+            const session = await Session.findById(sessionId);
             if (!session) {
-                return res.status(404).json({ message: 'Session not found' });
+                return res.status(404).json({ message: "Session not found" });
             }
-            const trainer = session.trainer;
-            res.status(200).json(trainer);
+
+            // Elimina la sessione dal database
+            await Session.findOneAndDelete({ _id: sessionId });
+
+            // Rimuove la sessione dal Client
+            await Client.updateOne(
+                { _id: session.participant },
+                { $pull: { sessions: sessionId } }
+            );
+
+            // Rimuove la sessione dal Trainer
+            await Trainer.updateOne(
+                { _id: session.trainer },
+                { $pull: { sessions: sessionId } }
+            );
+
+            res.status(200).json({ message: "Session deleted successfully" });
+
         } catch (error) {
             res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async fetchSessionParticipant(req, res) {
-        try {
-            const id = req.params.id;
-            const session = await Session.findOne({id: id}, null, null).populate('participant').exec();
-            if (!session) {
-                return res.status(404).json({ message: 'Session not found' });
-            }
-            const participant = session.participant;
-            res.status(200).json(participant);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async nextAvailableId(req, res) {
-        try {
-            console.log("done");
-            const sessions = await Session.find({}, null, null).sort({ id: 1 });
-            let nextId = 1;
-            for (const session of sessions) {
-                if (session.id !== nextId) {
-                    // If the current ID does not match the expected next ID, return the expected next ID
-                    break;
-                }
-                nextId++;
-            }
-            res.json({ nextId });
-        } catch (err) {
-            console.error("Error fetching next available session ID:", err);
-            res.status(500).json({ error: "Internal server error" });
-        } finally {
         }
     }
 }

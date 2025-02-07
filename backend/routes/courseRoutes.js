@@ -1,23 +1,17 @@
-const express = require('express')
-const router = express.Router()
-const API = require('../controller/courseApi')
+import { Router } from 'express';
+import API from '../controller/courseApi.js';
+import { wrapMiddleware, adminAuth, trainerAuth, customerAuth, anyAuth } from '../utils.js';
 
-// in the path, before these, there must be /courses
-router.get("/", API.fetchAllCourses)
-router.get("/names", API.fetchAllCoursesNames)
-router.get("/:id", API.fetchCourseById)
-router.get("/_id/id/:id", API.fetchCourse_IdById)
-router.get("/_id/:id", API.fetchCourseBy_Id)
-router.get("/name/:name", API.fetchCoursesByName)
-router.post("/", API.createCourse)
-router.post("/update", API.updateCourse)
-router.post("/delete", API.deleteCourse)
-router.get("/delete/deleteBy_Id/:id", API.deleteCourseBy_Id)
-router.get("/trainer/:id", API.fetchCourseTrainer)
-router.get("/participants/:id", API.fetchCourseParticipants)
-router.get("/removeParticipant/:id/:username", API.removeParticipantByUsername)
-router.get("/addParticipant/:id/:clientId", API.addParticipantById)
-router.get("/participants/:id/:username", API.checkParticipantsByUsername)
-router.get("/checkId/:id", API.isCourseIdPresent)
+const router = Router();
 
-module.exports = router
+router.post("/", wrapMiddleware(adminAuth, API.createCourse))
+router.get("/", wrapMiddleware(anyAuth, API.fetchAllCourses))
+router.get("/:id", wrapMiddleware(anyAuth, API.fetchCourseBy_Id))
+router.put("/", wrapMiddleware(adminAuth, API.updateCourse))
+router.delete("/:id", wrapMiddleware(adminAuth, API.deleteCourse))
+router.get("/:id/bookings", wrapMiddleware(trainerAuth, API.fetchCourseBookings))
+router.post("/:id/bookings", wrapMiddleware(customerAuth, API.createBooking)) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
+router.delete("/:id/bookings", wrapMiddleware(customerAuth, API.deleteBooking)) //prende come body {clientId:"", dayOfWeek: "", startTime: ""}
+
+
+export default router

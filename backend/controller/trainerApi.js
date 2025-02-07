@@ -1,66 +1,18 @@
-const Trainer = require('../models/trainerModel');
-
-const Client = require("../models/clientModel");
+import Client from '../models/clientModel.js';
+import Course from '../models/courseModel.js';
+import Trainer from '../models/trainerModel.js';
+import idProjection from './idProjection.js';
+import { hash } from '@node-rs/argon2';
 
 //API RESTFUL CRUD CON LOCK PER LA GESTIONE DELLA MUTUA ESCLUSIONE
 // le funzioni di Mongoose sono CRUD
 
-module.exports = class API {
-
-    static async fetchAllTrainers(req, res) {
-        try {
-            const trainers = await Trainer.find({}, null, null).exec();
-            // trainers array
-            res.status(200).json(trainers);
-        } catch (error) {
-            res.status(404).json({message: error.message})
-        } finally {
-        }
-    }
-
-    static async fetchTrainerByUsername(req, res) {
-        const username = req.params.username;
-        try {
-            const trainer = await Trainer.findOne({username: username}, null, null).exec();
-            res.status(200).json(trainer);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async isTrainerIdPresent(req, res) {
-        const id = req.params.id;
-        try {
-            const trainer = await Trainer.findOne({ id: id }, null, null).exec();
-            if(trainer) {
-                res.status(200).json(true);
-            }
-            else {
-                res.status(200).json(false);
-            }
-        } catch (error) {
-            res.status(404).json({message: error.message});
-        } finally {
-        }
-    }
-
-    static async fetchTrainerById(req, res) {
-        const id = req.params.id;
-        try {
-            const trainer = await Trainer.findOne({id: id}, null, null).exec();
-            res.status(200).json(trainer);
-        } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
-        }
-    }
-
+export default class API {
     static async createTrainer(req, res) {
         const trainer = req.body;
-        console.log(req.body);
+        trainer.password = await hash(trainer.password);
         try {
-            const trainerAlreadyPresent = await Trainer.findOne({username: req.body.username}, null, null).exec();
+            const trainerAlreadyPresent = await Trainer.findOne({ username: req.body.username }, idProjection(Trainer), null).exec();
 
             if (!trainerAlreadyPresent) {
                 await Trainer.create(trainer, null);
@@ -75,24 +27,56 @@ module.exports = class API {
         }
     }
 
+    static async fetchAllTrainers(req, res) {
+        try {
+            const trainers = await Trainer.find({}, idProjection(Trainer, new Set(["password"])), null).exec();
+            // trainers array
+            res.status(200).json(trainers);
+        } catch (error) {
+            res.status(404).json({ message: error.message })
+        } finally {
+        }
+    }
+
+    static async fetchTrainerByUsername(req, res) {
+        const username = req.params.username;
+        try {
+            const trainer = await Trainer.findOne({ username: username }, idProjection(Trainer, new Set(["password"])), null).exec();
+            res.status(200).json(trainer);
+        } catch (error) {
+            res.status(404).json({ message: error.message });
+        } finally {
+        }
+    }
+    static async fetchTrainerBy_Id(req, res) {
+        const id = req.params.id;
+        try {
+            const trainer = await Trainer.findById(id, idProjection(Trainer, new Set(["password"])), null).exec();
+            res.status(200).json(trainer);
+        } catch (error) {
+            res.status(404).json({ message: error.message });
+        } finally {
+        }
+    }
+
 
 
     static async updateTrainer(req, res) {
-        const username = req.body.username;
-        const { password, email, phoneNumber, courses, sessions} = req.body; // Extract the fields to update
+        const { id, username, firstName, lastName, password, email, phoneNumber } = req.body; // Extract the fields to update
 
         try {
             const updateFields = {}; // Object that will contain only the fields to update
             // Check and add non-empty fields to the update object
-            if (password) updateFields.password = password;
+            if (password) updateFields.password = await hash(password);
             if (email) updateFields.email = email;
             if (phoneNumber) updateFields.phoneNumber = phoneNumber;
-            if (courses) updateFields.courses = courses;
-            if (sessions) updateFields.sessions = sessions;
+            if (username) updateFields.username = username;
+            if (firstName) updateFields.firstName = firstName;
+            if (lastName) updateFields.lastName = lastName;
 
             // Perform the update only if there are fields to update
             if (Object.keys(updateFields).length > 0) {
-                await Trainer.updateOne({ username: username }, updateFields, null);
+                await Trainer.updateOne({ _id: id }, updateFields, null);
                 res.status(200).json({ message: 'Trainer updated successfully' });
             } else {
                 res.status(400).json({ message: 'No fields to update' });
@@ -105,25 +89,55 @@ module.exports = class API {
     }
 
     static async deleteTrainer(req, res) {
-        const username = req.body.username;
+        const id = req.params.id;
         try {
-            const trainer = await Trainer.findOneAndDelete({username:username}, null);
+            // Trova il trainer e i suoi corsi
+            const trainer = await Trainer.findById(id);
             if (!trainer) {
-                return res.status(404).json({message: 'Trainer not found'});
+                return res.status(404).json({ message: 'Trainer not found' });
             }
-            res.status(200).json({ message: 'Trainer deleted successfully' });
+
+            // Trova tutti i corsi che il trainer possiede
+            const trainerCourses = await Course.find({ _id: { $in: trainer.courses } });
+
+            if (trainerCourses.length > 0) {
+                // Rimuove tutti i corsi del trainer dal Client
+                await Client.updateMany(
+                    { 'courses.course': { $in: trainer.courses } },
+                    { $pull: { courses: { course: { $in: trainer.courses } } } }
+                );
+
+                // Elimina tutti i corsi assegnati al trainer
+                await Course.deleteMany({ _id: { $in: trainer.courses } });
+            }
+
+            // Infine, elimina il trainer dal database
+            await Trainer.findOneAndDelete({ _id: id });
+
+            res.status(200).json({ message: 'Trainer and all associated courses deleted successfully' });
+
         } catch (error) {
-            res.status(404).json({ message: error.message });
-        } finally {
+            res.status(500).json({ message: error.message });
         }
     }
 
+
     static async fetchAllTrainerCourses(req, res) {
-        const username = req.params.username;
+        const id = req.params.id;
         try {
-            const trainer = await Trainer.findOne({username: username}, null, null).exec();
+            // Trova il trainer e popola i corsi con i dettagli dei partecipanti
+            const trainer = await Trainer.findOne({ _id: id })
+                .populate({
+                    path: "courses",
+                    select: "name description schedule capacity trainer", // Seleziona i campi necessari del corso
+                    populate: {
+                        path: "schedule.participants", // Popola l'array `participants` dentro `schedule`
+                        select: "firstName lastName" // Seleziona solo nome e cognome del partecipante
+                    }
+                })
+                .exec();
             if (!trainer) {
-                return res.status(404).json({message: 'Trainer not found'});
+                return res.status(404).json({ message: 'Trainer not found' });
             }
             res.status(200).json(trainer.courses);
         } catch (error) {
@@ -133,11 +147,19 @@ module.exports = class API {
     }
 
     static async fetchAllTrainerSessions(req, res) {
-        const username = req.params.username;
+        const id = req.params.id;
         try {
-            const trainer = await Trainer.findOne({username: username}, null, null).exec();
+            const trainer = await Trainer.findOne({ _id: id }, idProjection(Trainer), null)
+                .populate({
+                    path: 'sessions',
+                    populate: {
+                        path: 'trainer participant', // Popola trainer e participant se servono
+                        select: 'username firstName lastName' // Se vuoi solo alcune info di trainer e participant
+                    }
+                })
+                .exec();
             if (!trainer) {
-                return res.status(404).json({message: 'Trainer not found'});
+                return res.status(404).json({ message: 'Trainer not found' });
             }
             res.status(200).json(trainer.sessions);
         } catch (error) {
@@ -146,119 +168,30 @@ module.exports = class API {
         }
     }
 
-
-    static async addTrainerCourse(req, res) {
+    static async listTrainerAvailability(req, res) {
+        const id = req.params.id;
         try {
-            const trainerId = req.params.id;
-            const courseId = req.params.courseId;
-            const trainer = await Trainer.findById(trainerId, null, null).populate('courses').exec();
+            // FIXME use days array from UI
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            const times = [...Array(10).keys()]
+                .map(x => `${(x + 9).toString().padStart(2, '0')}:00`);
 
-            if (!trainer) {
-                return res.status(404).json({ message: 'Trainer not found' });
+            const availabilities = days.reduce((o, key) => Object.assign(o, { [key]: times.reduce((o, key) => Object.assign(o, { [key]: true }), {}) }), {})
+
+            const trainer = await Trainer.find({ _id: id, }, null, null)
+                .populate("sessions")
+                .populate("courses");
+
+            const trainerUnavailabilities = trainer[0].sessions.concat(trainer[0].courses.flatMap(x => x.schedule));
+
+            for (const t of trainerUnavailabilities) {
+                availabilities[t.dayOfWeek][t.startTime] = false;
             }
-            if (trainer.courses.some(course => course._id === parseInt(courseId))) {
-                return res.status(400).json({ message: 'Course already added to trainer' });
-            }
-            // Add course to trainer
-            trainer.courses.push(courseId);
-            await Trainer.updateOne({_id:trainerId}, { $set:{ courses: trainer.courses }}, null);
-            res.status(200).json(trainer);
+
+            res.status(200).json(availabilities);
         } catch (error) {
             res.status(500).json({ message: error.message });
-        } finally {
         }
     }
 
-
-    static async deleteTrainerCourse(req, res) {
-        try {
-            const trainerId = req.params.id;
-            const courseId = req.params.courseId;
-
-            const trainer = await Trainer.findOne({id: trainerId}, null, null).populate("courses").exec();
-
-            if (!trainer) {
-                return res.status(404).json({ message: 'Trainer not found' });
-            }
-            const indexToRemove = trainer.courses.findIndex(course => course.id === parseInt(courseId));
-
-            if (indexToRemove === -1) {
-                return res.status(404).json({ message: 'Trainer not found' });
-            }
-            // Remove the course from the trainer's courses array
-            trainer.courses.splice(indexToRemove, 1);
-            await Trainer.updateOne({id:trainerId}, { $set:{ courses: trainer.courses }}, null);
-            res.status(200).json({ message: 'Course removed from trainer successfully' });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    static async fetchTrainerIdByUsername(req, res) {
-        try {
-            const username = req.params.username;
-            const trainer = await Trainer.findOne({username: username}, null, null).exec();
-            if (!trainer) {
-                return res.status(404).json({ message: 'Trainer not found' });
-            }
-            res.status(200).json(trainer._id);
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
-
-
-    // SAME AS DELETETRAINERSESSION BUT USING GET INSTEAD OF POST
-    static async deleteTrainerSessionById(req, res) {
-        try {
-
-            const id = req.params.id;
-            const username = req.params.username;
-
-            const trainer = await Trainer.findOne({username: username}, null, null).populate('sessions').exec();
-
-            if (!trainer) {
-                return res.status(404).json({ message: 'Trainer not found' });
-            }
-
-            const indexToRemove = trainer.sessions.findIndex(session => session.id === parseInt(id));
-            if (indexToRemove === -1) {
-                return res.status(404).json({ message: 'Trainer not found' });
-            }
-
-            // Remove the session from the trainer's sessions array
-            trainer.sessions.splice(indexToRemove, 1);
-            await Trainer.updateOne({username:username}, { $set:{ sessions: trainer.sessions }}, null);
-            res.status(200).json({ message: 'Session removed from trainer successfully' });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
-
-    // SAME AS ADDTRAINERSESSION BUT USING GET INSTEAD OF POST
-    static async addTrainerSessionById(req, res) {
-        try {
-            const id = req.params.id;
-            const username = req.params.username;
-            const trainer = await Trainer.findOne({username: username}, null, null).populate('sessions').exec();
-            if (!trainer) {
-                return res.status(404).json({ message: 'Trainer not found' });
-            }
-
-            // Check if the course is already present in the trainer's sessions
-            if (trainer.sessions.some(session => session._id === parseInt(id))) {
-                return res.status(400).json({ message: 'Session already added to trainer' });
-            }
-            trainer.sessions.push(id);
-
-            await Trainer.updateOne({username:username}, { $set:{ sessions: trainer.sessions }}, null);
-            res.status(200).json({ message: 'Session added to trainer successfully' });
-        } catch (error) {
-            res.status(500).json({ message: error.message });
-        } finally {
-        }
-    }
 }
