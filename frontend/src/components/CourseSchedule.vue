@@ -3,6 +3,7 @@ import { CourseScheduleEntry } from '@gym-manager/models';
 import { useUserStore } from '@/store/user';
 import { useNotificationsStore } from '@/store/notifications';
 import { ref } from 'vue';
+import router from '@/routes/router';
 
 const store = useUserStore();
 const notifications = useNotificationsStore();
@@ -23,6 +24,7 @@ async function bookCourse(courseId: string, dayOfWeek: string, startTime: string
             background: 'success',
             when: new Date(),
         });
+        router.back();
     } else {
         notifications.fire({
             title: 'Error',
