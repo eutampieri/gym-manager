@@ -29,12 +29,12 @@ function send() {
 function adjustHeight(event?: Event) {
     const textarea = event ? (event.target as HTMLTextAreaElement) : document.querySelector(".auto-expand") as HTMLTextAreaElement;
     if (textarea) {
-        textarea.style.height = "auto"; 
-        textarea.style.height = textarea.scrollHeight + "px"; 
+        textarea.style.height = "auto";
+        textarea.style.height = textarea.scrollHeight + "px";
     }
 }
 onMounted(() => {
-    adjustHeight(); 
+    adjustHeight();
 });
 </script>
 <template>
@@ -50,7 +50,8 @@ onMounted(() => {
                         </NameLink>
                     </h3>
                 </section>
-                <button @click="minimise" class="align-self-center btn btn-light">
+                <button @click="minimise" class="align-self-center btn btn-light" role="button"
+                    aria-label="Minimise chat">
                     <FontAwesomeIcon :icon="faChevronDown"></FontAwesomeIcon>
                 </button>
             </section>
@@ -63,8 +64,9 @@ onMounted(() => {
                     :sent-by-current-user="message.sentByCurrentUser"></Message>
             </section>
             <section class="input-group mb-3 align-self-end">
-                <textarea ref="messageBar" v-model="currentMessage" class="form-control auto-expand" aria-label="Write a message..." rows="1" @input="adjustHeight" @keydown.enter="send"></textarea>
-                <button class="btn btn-primary" @click="send">
+                <textarea ref="messageBar" v-model="currentMessage" class="form-control auto-expand"
+                    aria-label="Write a message..." rows="1" @input="adjustHeight" @keydown.enter="send"></textarea>
+                <button class="btn btn-primary" @click="send" role="button" aria-label="Send">
                     <FontAwesomeIcon :icon="faPaperPlane"></FontAwesomeIcon>
                 </button>
             </section>
@@ -87,12 +89,12 @@ onMounted(() => {
     height: 85vh !important;
     max-height: 900px !important;
 }
+
 .auto-expand {
-    resize: none; 
-    overflow-y: hidden; 
+    resize: none;
+    overflow-y: hidden;
     max-height: 150px;
-    min-height: 40px; 
+    min-height: 40px;
     line-height: 1.4;
 }
-
 </style>
