@@ -4,6 +4,7 @@ import { useNotificationsStore } from '@/store/notifications';
 import { useUserStore } from '@/store/user';
 import { computed, ref } from 'vue';
 import { TrainerAvailabilities } from '@gym-manager/models/trainer';
+import router from '@/routes/router';
 
 const { trainerId, availabilities } = defineProps<{ trainerId: string, availabilities: TrainerAvailabilities | null }>();
 
@@ -41,6 +42,7 @@ async function bookSession() {
             body: "Session booked successfuly!",
             background: "success",
         });
+        router.back();
     } else {
         notificationStore.fire({
             body: "An error occoured during the booking operation.",
