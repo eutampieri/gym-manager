@@ -167,6 +167,9 @@ async function handleCreateCourse() {
                     :validation-function="isOnlyLetters" v-model="name" v-model:valid="nameValid">
                     Name
                 </ValidatingGenericInput>
+                <SelectInput id="trainer" v-model="trainer" :options="trainersList">
+                    Trainer
+                </SelectInput>
 
                 <TextAreaInput type="text" id="description" label="Description" v-model="description" />
 
@@ -192,9 +195,7 @@ async function handleCreateCourse() {
                     Capacity
                 </ValidatingGenericInput>
 
-                <SelectInput id="trainer" v-model="trainer" :options="trainersList">
-                    Trainer
-                </SelectInput>
+               
 
                 <button v-if="props.id" class="btn btn-primary" type="button" @click="handleUpdateCourse"
                     :disabled="!submitButtonEnabled">Update Course {{ name }}</button>

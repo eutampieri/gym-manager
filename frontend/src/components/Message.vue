@@ -12,7 +12,11 @@ defineProps<Message>();
 }
 
 p {
-    max-width: min(calc(100% - 4em), 500px);
+    max-width: min(calc(100% - 4em), 500px); 
     min-width: 200px;
+    white-space: normal; 
+    overflow-wrap: normal; 
+    word-break: normal;
 }
+
 </style>

@@ -5,6 +5,7 @@ FROM node:22-alpine
 #RUN mkdir /app
 
 WORKDIR /app
+ENV MONGODB_URI="mongodb://mongodb:27017/gym"
 
 # Copy necessary files from host to container
 COPY package.json .

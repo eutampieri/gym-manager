@@ -4,45 +4,35 @@ import Dropdown from '@/components/Dropdown.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
 import MainButton from '@/components/MainButton.vue';
-import { BookCourseRequest, CourseInfo, Role, SessionInfo, Trainer, User } from '@gym-manager/models';
+import { BookCourseRequest, CourseInfo, SessionInfo, Trainer } from '@gym-manager/models';
 import { ref } from 'vue';
 import { useModalsStore } from '@/store/modals';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 import { useNotificationsStore } from '@/store/notifications';
 import ChatButton from '@/components/ChatButton.vue';
-import { useRoute } from 'vue-router';
 
 const store = useUserStore();
 const confirm = useModalsStore().confirm;
 const notification = useNotificationsStore();
-const route = useRoute();
 
-const user = ref<User | undefined>();
+const user = store.client.userDetails;
 const myCourses = ref<Array<{ course: CourseInfo; dayOfWeek: string; startTime: string; trainer: Trainer }>>();
 const myOneOnOne = ref<Array<{ info: SessionInfo, trainer: Trainer }>>();
 
-((store.client.getRole == Role.Admin && route.query.id) ? store.client.getUserById(route.query.id as string) : Promise.resolve(store.client.userDetails as User)).then((u) => {
-    user.value = u;
-
-    if (user.value) {
-        store.client.getCustomerCourses(user.value.id)
-            .then(courses => Promise.all(courses.map(c =>
-                store.client.getTrainerById(c.course.trainer).then(t => ({ ...c, trainer: t! }))
-            )))
-            .then(courses => myCourses.value = courses);
-        store.client.getCustomerSessions(user.value.id)
-            .then(sessions => myOneOnOne.value = sessions);
-    }
-});
+if (user) {
+    store.client.getCustomerCourses(user.id)
+        .then(courses => Promise.all(courses.map(c =>
+            store.client.getTrainerById(c.course.trainer).then(t => ({ ...c, trainer: t! }))
+        )))
+        .then(courses => myCourses.value = courses);
+    store.client.getCustomerSessions(user.id)
+        .then(sessions => myOneOnOne.value = sessions);
+}
 
 async function unsubscribeFromCourse(courseId: string, courseName: string, dayOfWeek: string, startTime: string) {
     if (await confirm('Do you want to unsubscribe from ' + courseName + '?')) {
-        const req: BookCourseRequest = { clientId: user.value?.id, dayOfWeek, startTime }
-        console.log("courseId: "+courseId);
-        console.log("request: ", req);
-        
-
+        const req: BookCourseRequest = { clientId: user!.id, dayOfWeek, startTime }
         store.client.unsubscribeFromCourse(courseId, req)
             .then(res => {
                 if (res) {
@@ -87,13 +77,13 @@ async function cancelSession(sessionId: string) {
 
 const bookCourse = '/user/book/course'
 const bookOneonOne = '/user/book/session'
-const contactSupport = '/support/chat'
+
 
 </script>
 
 <template>
     <div class="d-flex flex-column">
-        <h2 class="mx-auto">Hello {{ user?.username }}!</h2>
+        <h2 class="mx-auto">Hello {{ user?.firstName }}!</h2>
         <MainButton :path="bookCourse">Book course</MainButton>
         <MainButton :path="bookOneonOne">Book one-on-one</MainButton>
     </div>
@@ -114,7 +104,7 @@ const contactSupport = '/support/chat'
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => unsubscribeFromCourse(course.course._id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
+                        @click="() => unsubscribeFromCourse((course.course as any)._id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>
@@ -137,5 +127,5 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <ChatButton class="mt-5" :path="contactSupport" :use-variant="true">Need help?</ChatButton>
+    <ChatButton v-if="!store.client.isImpersonating" class="mt-5" :use-variant="true">Need help?</ChatButton>
 </template>

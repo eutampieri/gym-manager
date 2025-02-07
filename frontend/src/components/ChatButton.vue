@@ -2,7 +2,7 @@
 import { useChatStore } from '@/store/chat';
 import { computed } from 'vue';
 
-const { useVariant = false } = defineProps<{ useVariant?: boolean, path: string }>();
+const { useVariant = false } = defineProps<{ useVariant?: boolean}>();
 
 const btnStyle = computed(() => "btn m-2 btn-lg main-container mx-auto d-block " +
     (useVariant ? 'btn-secondary' : 'btn-primary'));
@@ -11,7 +11,7 @@ const chatHandler = useChatStore().requestChat;
 </script>
 
 <template>
-    <button role="button" :to="{ path: path }" :class="btnStyle" @click="chatHandler">
+    <button role="button" :class="btnStyle" @click="chatHandler">
         <slot></slot>
     </button>
 </template>

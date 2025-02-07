@@ -11,6 +11,9 @@ export class Client {
     private token_storage_name: string = 'gym-token';
     private jwt?: string = localStorage.getItem(this.token_storage_name) || undefined;
 
+    private impersonating: boolean = false;
+    private impersonatedInfo: { role: Role, user: User | Trainer | undefined } = { role: Role.Admin, user: undefined };
+
     public get isLoggedIn(): boolean {
         // check if token is defined and valid
         try {
@@ -22,11 +25,25 @@ export class Client {
             return false;
         }
     }
-
+    
     public get authToken(): string | undefined {
         return this.jwt;
     }
 
+    public get isImpersonating(): boolean {
+        return this.impersonating;
+    }
+
+    public startImpersonating(user: User | Trainer, role: Role) {
+        this.impersonatedInfo.role = role;
+        this.impersonatedInfo.user = user;
+        this.impersonating = true;
+    }
+    public stopImpersonating() {
+        this.impersonating = false;
+        this.impersonatedInfo.user = undefined;
+    }
+    
     private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
         const h = headers || new Headers;
         if (this.jwt !== undefined) {
@@ -37,7 +54,6 @@ export class Client {
     }
 
     public async login(username: string, password: string): Promise<boolean> {
-        // TODO API request
         const request: LoginRequest = {
             username: username,
             password: password
@@ -48,6 +64,7 @@ export class Client {
         return true;
     }
     public async logout(): Promise<boolean> {
+        this.impersonating = false;
         const ret = this.isLoggedIn;
         this.jwt = undefined;
         localStorage.removeItem(this.token_storage_name);
@@ -55,14 +72,18 @@ export class Client {
     }
 
     public get userDetails(): undefined | User | Trainer | Admin {
-        if (this.jwt !== undefined) {
+        if (this.isImpersonating) {
+            return this.impersonatedInfo.user;
+        } else if (this.jwt !== undefined) {
             return jwtDecode<UserJwt>(this.jwt!).profile;
         } else {
             return undefined;
         }
     }
     public get getRole(): undefined | Role {
-        if (this.jwt !== undefined) {
+        if (this.isImpersonating) {
+            return this.impersonatedInfo.role;
+        } else if (this.jwt !== undefined) {
             const role = jwtDecode<UserJwt>(this.jwt!).role;
             return parseRole(role);
         } else {
@@ -222,7 +243,7 @@ export class Client {
     }
 
     public async bookCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
-        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r).then(r => r.status == 201);
+        return this.apiRequest("POST", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
     }
     public unsubscribeFromCourse(courseId: string, r: BookCourseRequest): Promise<boolean> {
         return this.apiRequest("DELETE", `/courses/${courseId}/bookings`, r).then(r => r.status == 200);
