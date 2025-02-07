@@ -29,7 +29,7 @@ export default class API {
 
     static async fetchAllTrainers(req, res) {
         try {
-            const trainers = await Trainer.find({}, idProjection(Trainer), null).exec();
+            const trainers = await Trainer.find({}, idProjection(Trainer, new Set(["password"])), null).exec();
             // trainers array
             res.status(200).json(trainers);
         } catch (error) {
@@ -41,7 +41,7 @@ export default class API {
     static async fetchTrainerByUsername(req, res) {
         const username = req.params.username;
         try {
-            const trainer = await Trainer.findOne({ username: username }, idProjection(Trainer), null).exec();
+            const trainer = await Trainer.findOne({ username: username }, idProjection(Trainer, new Set(["password"])), null).exec();
             res.status(200).json(trainer);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -51,7 +51,7 @@ export default class API {
     static async fetchTrainerBy_Id(req, res) {
         const id = req.params.id;
         try {
-            const trainer = await Trainer.findById(id, idProjection(Trainer), null).exec();
+            const trainer = await Trainer.findById(id, idProjection(Trainer, new Set(["password"])), null).exec();
             res.status(200).json(trainer);
         } catch (error) {
             res.status(404).json({ message: error.message });

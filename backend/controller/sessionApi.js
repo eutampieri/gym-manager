@@ -70,7 +70,7 @@ export default class API {
 
     static async fetchAllSessions(req, res) {
         try {
-            const sessions = await Session.find({}, idProjection(Session), null).exec();
+            const sessions = await Session.find({}, idProjection(Session, new Set(["password"])), null).exec();
             res.status(200).json(sessions);
         } catch (error) {
             res.status(404).json({ message: error.message })
@@ -81,7 +81,7 @@ export default class API {
         console.log("fetchSessionBy_Id");
         const id = req.params.id;
         try {
-            const session = await Session.findById(id, idProjection(Session), null).exec();
+            const session = await Session.findById(id, idProjection(Session, new Set(["password"])), null).exec();
             res.status(200).json(session);
         } catch (error) {
             res.status(404).json({ message: error.message });
