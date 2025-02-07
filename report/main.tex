@@ -113,6 +113,13 @@
 \subsubsection{Accesso e autenticazione}
 \par All'apertura dell'applicazione, l'utente visualizza la pagina di login, che consente l'autenticazione e il reindirizzamento alla pagina principale in base al ruolo assegnato. Dopo l'accesso, ogni utente può consultare la propria pagina profilo, dove sono riportate le informazioni personali e dove è possibile effettuare il logout.
 \subsubsection{Interfaccia per i clienti}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1.5]{user-mockups.pdf}
+    \caption{Mock up clienti}
+    \label{fig:deathstar}
+\end{figure}
+    
 \par La pagina principale dei clienti mostra:
 \begin{itemize}
     \item I corsi a cui sono iscritti, con dettagli come descrizione, trainer e orari.
@@ -126,12 +133,24 @@
 \par Nella pagina di registrazione ai corsi, vengono elencati tutti i corsi disponibili in palestra, permettendo agli utenti di selezionare una fascia oraria per l'iscrizione.
 \par La pagina di prenotazione delle sessioni mostra invece l'elenco dei trainer, consentendo la selezione di un giorno e un orario per richiedere una sessione privata.
 \subsubsection{Interfaccia per i trainer}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1.5]{trainer-mockups.pdf}
+    \caption{Mock up trainer}
+    \label{fig:deathstar}
+\end{figure}
 \par La pagina principale dei trainer contiene:
 \begin{itemize}
     \item L'elenco dei corsi, con descrizione e partecipanti, di cui sono istruttori.
     \item Le sessioni private prenotate dagli utenti.
 \end{itemize}
 \subsubsection{Interfaccia per gli amministratori}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=1]{admin-mockups.pdf}
+    \caption{Mock up trainer}
+    \label{fig:deathstar}
+\end{figure}
 \par Gli amministratori hanno accesso a una pagina che consente la gestione completa della palestra, includendo le seguenti operazioni:
 \begin{itemize}
     \item Visualizzazione della lista completa degli utenti, con la possibilità di modificarli o eliminarli.
@@ -140,13 +159,6 @@
 \par L'accesso alle diverse funzioni avviene tramite pulsanti che indirizzano l'admin alle pagine dedicate.
 \subsubsection{Interfaccia per i segretari}
 \par La pagina dei segretari è identica a quella degli amministratori, con l'unica eccezione che non include le operazioni relative alla gestione degli amministratori.
-
-\begin{figure}[h!]
-\centering
-%\includegraphics[scale=0.44]{deathStar2.jpg}
-\caption{Death Star}
-\label{fig:deathstar}
-\end{figure}
 
 \section{Tecnologie}
 \par Il sistema è stato sviluppato con un'architettura composta da un frontend reattivo, un backend basato su Node.js, un database NoSQL per la gestione dei dati e un sistema di comunicazione in tempo reale. Inoltre, l'uso di Docker garantisce portabilità e coerenza degli ambienti di sviluppo e produzione.
