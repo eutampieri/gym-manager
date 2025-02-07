@@ -36,8 +36,8 @@ const data = computed<ListData>((): ListData => {
         ],
         data: displayableCourses.value,
         headers: [
-            { key: "trainer", name: "Trainer", link: (d) => `/trainer?id=${d.trainerId}` },
-            { key: "participant", name: "Customer", link: (d) => `/user?id=${d.participantId}` },
+            { key: "trainer", name: "Trainer", link: (d) => client.trainerProfilePath(d.trainerId as string) },
+            { key: "participant", name: "Customer", link: (d) => client.customerProfilePath(d.trainerId as string) },
             { key: "dayOfWeek", name: "Day" },
             { key: "startTime", name: "Time" },
         ]
