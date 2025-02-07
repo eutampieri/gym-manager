@@ -15,7 +15,8 @@ const props = defineProps<{
         <div v-for="h in headers" :class="props.class || ''">
             <span class="fw-bold" v-if="showHeaders">{{ h.name }}: </span>
             <template v-if="!Array.isArray(data[h.key])">
-                {{ data[h.key] }}
+                <RouterLink v-if="h.link" :to="h.link(data)">{{ data[h.key] }}</RouterLink>
+                <template v-else>{{ data[h.key] }}</template>
             </template>
             <ul v-else>
                 <li v-for="i in data[h.key]">

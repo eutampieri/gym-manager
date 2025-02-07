@@ -5,7 +5,7 @@ import API from '../controller/trainerApi.js';
 const router = Router();
 
 router.post("/", wrapMiddleware(adminAuth, API.createTrainer));
-router.get("/", wrapMiddleware(adminAuth, API.fetchAllTrainers));
+router.get("/", wrapMiddleware(anyAuth, API.fetchAllTrainers));
 router.get("/:id", wrapMiddleware(customerAuth, API.fetchTrainerBy_Id));
 router.put("/", wrapMiddleware(adminAuth, API.updateTrainer));
 router.delete("/:id", wrapMiddleware(adminAuth, API.deleteTrainer));

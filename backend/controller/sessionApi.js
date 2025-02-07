@@ -2,6 +2,7 @@ import Client from '../models/clientModel.js';
 import Trainer from '../models/trainerModel.js';
 import Session from '../models/sessionModel.js';
 import idProjection from './idProjection.js';
+import { Role } from '@gym-manager/models/role.js';
 
 // RESTful CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
 // Mongoose functions are CRUD
@@ -11,7 +12,7 @@ export default class API {
         const session = req.body;
         const idTrainer = req.body.trainer;
         const idParticipant = req.body.participant;
-        const safeIdParticipant = req.user.role === "admin" ? idParticipant : req.user.id;
+        const safeIdParticipant = req.user.role === Role.Admin ? idParticipant : req.user.id;
 
         try {
 
@@ -24,7 +25,7 @@ export default class API {
                 'sessions.startTime': session.startTime,
                 'sessions.dayOfWeek': session.dayOfWeek
             }, null, null);
-            if (overlappingParticipantSessions) {
+            if (overlappingParticipantSessions.length > 0) {
                 return res.status(400).json({ message: 'Cannot create session' });
             }
             // check in trainer sessions
@@ -33,7 +34,7 @@ export default class API {
                 'sessions.startTime': session.startTime,
                 'sessions.dayOfWeek': session.dayOfWeek
             }, null, null);
-            if (overlappingTrainerSessions) {
+            if (overlappingTrainerSessions.length > 0) {
                 return res.status(400).json({ message: 'Cannot create session' });
             }
             // check in trainer courses
@@ -42,7 +43,7 @@ export default class API {
                 'courses.schedule.startTime': session.startTime,
                 'courses.schedule.dayOfWeek': session.dayOfWeek
             }, null, null);
-            if (overlappingTrainerCourses) {
+            if (overlappingTrainerCourses.length > 0) {
                 return res.status(400).json({ message: 'Cannot create session' });
             }
 
@@ -70,7 +71,11 @@ export default class API {
 
     static async fetchAllSessions(req, res) {
         try {
-            const sessions = await Session.find({}, idProjection(Session), null).exec();
+            const sessions = await Session
+                .find({}, idProjection(Session, new Set(["password"])), null)
+                .populate("trainer")
+                .populate("participant")
+                .exec();
             res.status(200).json(sessions);
         } catch (error) {
             res.status(404).json({ message: error.message })
@@ -81,7 +86,7 @@ export default class API {
         console.log("fetchSessionBy_Id");
         const id = req.params.id;
         try {
-            const session = await Session.findById(id, idProjection(Session), null).exec();
+            const session = await Session.findById(id, idProjection(Session, new Set(["password"])), null).exec();
             res.status(200).json(session);
         } catch (error) {
             res.status(404).json({ message: error.message });

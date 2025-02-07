@@ -3,7 +3,7 @@ import { useUserStore } from '@/store/user';
 import Dropdown from '@/components/Dropdown.vue';
 import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
-import MainButton from '@/components/MainButton.vue';
+import ChatButton from '@/components/ChatButton.vue';
 import { ref } from 'vue';
 import { Admin, CourseInfo, SessionInfo } from '@gym-manager/models';
 import SectionContainer from '@/components/SectionContainer.vue';
@@ -11,10 +11,9 @@ import SectionContainerItem from '@/components/SectionContainerItem.vue';
 
 const store = useUserStore();
 
-const user = store.client.userDetails;
-
 const myCourses = ref<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string, }[] }>>();
 const myOneOnOne = ref<Array<{ info: SessionInfo, participant: Admin }>>();
+const user = store.client.userDetails;
 
 if (user) {
     store.client.getTrainerCourses(user.id)
@@ -22,8 +21,6 @@ if (user) {
     store.client.getTrainerSessions(user.id)
         .then(sessions => myOneOnOne.value = sessions);
 }
-
-const contactSupport = '/support/chat'
 
 </script>
 
@@ -43,8 +40,12 @@ const contactSupport = '/support/chat'
                         <dd>{{ course.course.description }}</dd>
                         <dt>Partecipants</dt>
                         <dd>
-                            <NameLink v-for="u in course.participants" :path="store.client.customerProfilePath(u.id)">{{
-                                u.firstName + ' ' + u.lastName }}</NameLink>
+                            <ul>
+                                <li v-for="u in course.participants">
+                                    <NameLink :path="store.client.customerProfilePath(u.id)">{{
+                                        u.firstName + ' ' + u.lastName }}</NameLink>
+                                </li>
+                            </ul>
                         </dd>
                     </dl>
                 </DropdownItem>
@@ -67,5 +68,5 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <MainButton class="btn-secondary mt-5" :path="contactSupport" :use-variant="true">Need help?</MainButton>
+    <ChatButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :use-variant="true">Need help?</ChatButton>
 </template>

@@ -16,6 +16,7 @@ import AdminListPage from '@/pages/AdminListPage.vue';
 import TrainerPage from '@/pages/TrainerPage.vue';
 import BookCoursePage from '@/pages/BookCoursePage.vue';
 import { Role } from '@gym-manager/models';
+import OneOnOneListPage from '@/pages/OneOnOneListPage.vue';
 
 
 const routes = [
@@ -24,6 +25,7 @@ const routes = [
     { path: '/admin/createCourse', name: "createCourse", component: CreateCoursePage, meta: { role: "admin" } },
     { path: '/admin/updateCourse/:id', name: "updateCourse", component: CreateCoursePage, meta: { role: "admin" }, props: true },
     { path: '/admin/listCourses', name: "listCourses", component: CourseListPage, meta: { role: "user" } },
+    { path: '/admin/listOneOnOnes', name: "listOneOnOnes", component: OneOnOneListPage, meta: { role: "user" } },
     { path: '/admin/createClient', name: "createClient", component: CreateClientPage, meta: { role: "admin" } },
     { path: '/admin/updateClient/:id', name: "updateClient", component: CreateClientPage, meta: { role: "admin" }, props: true },
     { path: '/admin/listCustomers', name: "listCustomers", component: UserListPage, meta: { role: "admin" } },
@@ -34,7 +36,7 @@ const routes = [
     { path: '/admin/updateAdmin/:id', name: "updateAdmin", component: CreateAdminPage, meta: { role: "admin" }, props: true },
     { path: '/admin/listAdmins', name: "listAdmins", component: AdminListPage, meta: { role: "admin" } },
     { path: '/user', name: "userPage", component: UserPage, meta: { role: "user" } },
-    { path: '/user/book/oneOnOne', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
+    { path: '/user/book/session', name: "bookOneOnOne", component: BookOneOnOnePage, meta: { role: "user" }, props: true },
     { path: '/user/book/course', name: "bookCourse", component: BookCoursePage, meta: { role: "user" } },
     { path: '/trainer', name: "trainerPage", component: TrainerPage, meta: { role: "trainer" } },
     { path: '/:role/profile/:id', name: "userProfile", component: ProfilePage, meta: { role: "user" }, props: true },

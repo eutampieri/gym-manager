@@ -28,7 +28,7 @@ export default class API {
 
     static async fetchAllCustomers(req, res) {
         try {
-            const user = await Client.find({}, idProjection(Client), null).exec();
+            const user = await Client.find({}, idProjection(Client, new Set(["password"])), null).exec();
             res.status(200).json(user);
 
         } catch (error) {
@@ -42,7 +42,7 @@ export default class API {
     static async fetchCustomerByUsername(req, res) {
         const username = req.params.username;
         try {
-            const user = await Client.findOne({ username: username }, idProjection(Client), null).exec();
+            const user = await Client.findOne({ username: username }, idProjection(Client, new Set(["password"])), null).exec();
             res.status(200).json(user);
         } catch (error) {
             res.status(404).json({ message: error.message });
@@ -52,7 +52,7 @@ export default class API {
     static async fetchCustomerBy_Id(req, res) {
         const id = req.params.id;
         try {
-            const user = await Client.findById(id);
+            const user = await Client.findById(id, idProjection(Client, new Set(["password"])));
             res.status(200).json(user);
         } catch (error) {
             res.status(404).json({ message: error.message });

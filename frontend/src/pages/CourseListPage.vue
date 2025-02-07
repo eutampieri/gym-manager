@@ -16,6 +16,7 @@ function displayableCourseFormatter(c: Course): RowData {
         description: c.description,
         trainer: c.trainer,
         schedule: c.schedule.map(x => `${x.dayOfWeek} ${x.startTime} (available slots: ${x.availableSpots}/${c.capacity})`),
+        trainerId: (c as any).trainerId,
     };
 }
 
@@ -28,7 +29,7 @@ const displayableCourses = computed(() => courses.value.map(displayableCourseFor
 client.listCourses()
     .then(courses => Promise.all(courses.map(c =>
         client.getTrainerById(c.trainer)
-            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}` }))
+            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}`, trainerId: t!.id }))
     ))
     ).then(x => courses.value = x);
 
@@ -43,7 +44,7 @@ const data = computed<ListData>((): ListData => {
         headers: [
             { key: "name", name: "Name" },
             { key: "description", name: "Description" },
-            { key: "trainer", name: "Trainer" },
+            { key: "trainer", name: "Trainer", link: (d) => client.trainerProfilePath(d.trainerId as string) },
             { key: "schedule", name: "Schedule" },
         ]
     };
