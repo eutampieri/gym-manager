@@ -21,23 +21,23 @@ const myCourses = ref<Array<{ course: CourseInfo; dayOfWeek: string; startTime: 
 const myOneOnOne = ref<Array<{ info: SessionInfo, trainer: Trainer }>>();
 
 if (user) {
-    store.client.getCustomerCourses(user.id)
+    store.client.getCustomerCourses(user._id)
         .then(courses => Promise.all(courses.map(c =>
             store.client.getTrainerById(c.course.trainer).then(t => ({ ...c, trainer: t! }))
         )))
         .then(courses => myCourses.value = courses);
-    store.client.getCustomerSessions(user.id)
+    store.client.getCustomerSessions(user._id)
         .then(sessions => myOneOnOne.value = sessions);
 }
 
 async function unsubscribeFromCourse(courseId: string, courseName: string, dayOfWeek: string, startTime: string) {
     if (await confirm('Do you want to unsubscribe from ' + courseName + '?')) {
-        const req: BookCourseRequest = { clientId: user!.id, dayOfWeek, startTime }
+        const req: BookCourseRequest = { clientId: user!._id, dayOfWeek, startTime }
         store.client.unsubscribeFromCourse(courseId, req)
             .then(res => {
                 if (res) {
                     // removed
-                    myCourses.value = myCourses.value?.filter(x => x.course.id != courseId && x.dayOfWeek != dayOfWeek && x.startTime != startTime)
+                    myCourses.value = myCourses.value?.filter(x => x.course._id != courseId && x.dayOfWeek != dayOfWeek && x.startTime != startTime)
                     notification.fire({
                         body: 'Unsubscribed from course correctly!',
                         background: 'success'
@@ -58,7 +58,7 @@ async function cancelSession(sessionId: string) {
             .then(res => {
                 if (res) {
                     // removed
-                    myOneOnOne.value = myOneOnOne.value?.filter(x => x.info.id != sessionId)
+                    myOneOnOne.value = myOneOnOne.value?.filter(x => x.info._id != sessionId)
                     notification.fire({
                         body: 'One-on-one canceled correctly!',
                         background: 'success'
@@ -103,7 +103,7 @@ const bookOneonOne = '/user/book/session'
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => unsubscribeFromCourse(course.course.id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
+                        @click="() => unsubscribeFromCourse(course.course._id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
             <p v-if="!(myCourses ?? []).length">You haven't signed up for any course yet</p>
@@ -117,12 +117,12 @@ const bookOneonOne = '/user/book/session'
                     <dl>
                         <dt>Trainer</dt>
                         <dd>
-                            <NameLink :path="store.client.trainerProfilePath(session.trainer.id)">{{
+                            <NameLink :path="store.client.trainerProfilePath(session.trainer._id)">{{
                                 session.trainer.firstName + ' ' + session.trainer.lastName }}</NameLink>
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => cancelSession(session.info.id)">Cancel appointment</button>
+                        @click="() => cancelSession(session.info._id)">Cancel appointment</button>
                 </DropdownItem>
             </Dropdown>
             <p v-if="!(myOneOnOne ?? []).length">You haven't signed up for any one-on-one yet</p>

@@ -14,6 +14,15 @@ export class Client {
     private impersonating: boolean = false;
     private impersonatedInfo: { role: Role, user: User | Trainer | undefined } = { role: Role.Admin, user: undefined };
 
+    private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
+        const h = headers || new Headers;
+        if (this.jwt !== undefined) {
+            h.append("Authorization", "Bearer " + this.jwt);
+        }
+        h.append("Content-Type", "application/json");
+        return fetch(`/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
+    }
+
     public get isLoggedIn(): boolean {
         // check if token is defined and valid
         try {
@@ -25,7 +34,7 @@ export class Client {
             return false;
         }
     }
-    
+
     public get authToken(): string | undefined {
         return this.jwt;
     }
@@ -42,15 +51,6 @@ export class Client {
     public stopImpersonating() {
         this.impersonating = false;
         this.impersonatedInfo.user = undefined;
-    }
-    
-    private apiRequest(method: string, endpoint: string, body?: object, headers?: Headers) {
-        const h = headers || new Headers;
-        if (this.jwt !== undefined) {
-            h.append("Authorization", "Bearer " + this.jwt);
-        }
-        h.append("Content-Type", "application/json");
-        return fetch(`/api${endpoint}`, { method: method, body: JSON.stringify(body), headers: h })
     }
 
     public async login(username: string, password: string): Promise<boolean> {
@@ -119,7 +119,7 @@ export class Client {
         return '/user/profile/' + trainerId;
     }
     public getProfilePath() {
-        const id = this.userDetails?.id || '';
+        const id = this.userDetails?._id || '';
         switch (this.getRole) {
             case Role.User:
                 return this.customerProfilePath(id);

@@ -27,17 +27,17 @@ store.client.listCourses()
 
 //get user courses
 if (user) {
-    store.client.getCustomerCourses(user.id)
+    store.client.getCustomerCourses(user._id)
         .then(courses => myCourses.value = courses);
 }
 
 function isAlreadyBooked(courseId: string, dayOfWeek: string, startTime: string): boolean {
-    const result = undefined != myCourses.value?.find(e => e.course.id == courseId && e.dayOfWeek == dayOfWeek && e.startTime == startTime);
+    const result = undefined != myCourses.value?.find(e => e.course._id == courseId && e.dayOfWeek == dayOfWeek && e.startTime == startTime);
     return result;
 }
 
 function handlePush(update: CourseAvailabilityUpdate) {
-    const courseIndex = allCourses.value?.findIndex((x) => x.course.id === update.course);
+    const courseIndex = allCourses.value?.findIndex((x) => x.course._id === update.course);
     if (courseIndex !== -1 && courseIndex !== undefined) {
         const scheduleIndex = allCourses.value![courseIndex].course.schedule.findIndex(x => x.dayOfWeek == update.dayOfWeek && x.startTime == update.startTime);
         if (scheduleIndex !== -1) {
@@ -66,9 +66,9 @@ function handlePush(update: CourseAvailabilityUpdate) {
                         </dd>
                         <dt>Date & Time</dt>
                         <dd class="container">
-                            <CourseSchedule v-for="schedule in course.course.schedule" :course-id="course.course.id"
+                            <CourseSchedule v-for="schedule in course.course.schedule" :course-id="course.course._id"
                                 :schedule="schedule"
-                                :booked="isAlreadyBooked(course.course.id, schedule.dayOfWeek, schedule.startTime)" />
+                                :booked="isAlreadyBooked(course.course._id, schedule.dayOfWeek, schedule.startTime)" />
                         </dd>
                     </dl>
                 </DropdownItem>

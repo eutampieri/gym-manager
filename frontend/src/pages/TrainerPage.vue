@@ -16,9 +16,9 @@ const myOneOnOne = ref<Array<{ info: SessionInfo, participant: Admin }>>();
 const user = store.client.userDetails;
 
 if (user) {
-    store.client.getTrainerCourses(user.id)
+    store.client.getTrainerCourses(user._id)
         .then(courses => myCourses.value = courses);
-    store.client.getTrainerSessions(user.id)
+    store.client.getTrainerSessions(user._id)
         .then(sessions => myOneOnOne.value = sessions);
 }
 
@@ -63,7 +63,7 @@ if (user) {
                         <dt>Participant</dt>
                         <dd>
                             <div v-if="session.participant">
-                            <NameLink :path="store.client.customerProfilePath(session.participant.id)">{{
+                            <NameLink :path="store.client.customerProfilePath(session.participant._id)">{{
                                 session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
                             </div>
                             <div v-else>
@@ -76,5 +76,6 @@ if (user) {
             <p v-if="!(myOneOnOne ?? []).length">You haven't signed up for any one-on-one session yet</p>
         </SectionContainerItem>
     </SectionContainer>
-    <ChatButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :use-variant="true">Need help?</ChatButton>
+    <ChatButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :use-variant="true">Need help?
+    </ChatButton>
 </template>

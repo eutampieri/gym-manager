@@ -45,7 +45,7 @@ onMounted(() => {
                 <section class="flex-grow-1">
                     <h2>Support chat</h2>
                     <h3 v-if="otherParty[1] != Role.Admin">with
-                        <NameLink :path="`/${roleToString(otherParty[1])}?id=${otherParty[0].id}`">
+                        <NameLink :path="`/${roleToString(otherParty[1])}?id=${otherParty[0]._id}`">
                             {{ otherParty[0].firstName }} {{ otherParty[0].lastName }} ({{ otherParty[1] }})
                         </NameLink>
                     </h3>
@@ -66,7 +66,7 @@ onMounted(() => {
             <section class="input-group mb-3 align-self-end">
                 <textarea ref="messageBar" v-model="currentMessage" class="form-control auto-expand"
                     aria-label="Write a message..." rows="1" @input="adjustHeight" @keydown.enter="send"></textarea>
-                <button class="btn btn-primary" @click="send" role="button" aria-label="Send">
+                <button class="btn btn-primary" @click="send" role="button">
                     <FontAwesomeIcon :icon="faPaperPlane"></FontAwesomeIcon>
                 </button>
             </section>

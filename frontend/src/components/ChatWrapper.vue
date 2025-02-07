@@ -18,7 +18,7 @@ const DUMMY_OTHER_PARTY: [BasicIdentifiable, Role] = [{
     username: "admin",
     firstName: "Gym",
     lastName: "Support",
-    id: "1"
+    _id: "1"
 
 }, Role.Admin];
 
@@ -27,7 +27,7 @@ const minimised = ref(false);
 const messages = ref<Message[]>([]);
 const otherParty: Ref<[BasicIdentifiable, Role]> = ref(DUMMY_OTHER_PARTY);
 
-const myId = client.userDetails!.id;
+const myId = client.userDetails!._id;
 
 onMounted(() => {
     socket.emit(EventType.Authenticate.toString(), client.authToken!);

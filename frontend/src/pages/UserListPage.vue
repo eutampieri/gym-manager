@@ -29,7 +29,7 @@ const data = computed<ListData>((): ListData => {
             return user;
         }),
         headers: [
-            { key: "username", name: "Username", link: (d) => client.customerProfilePath(d.id as string) },
+            { key: "username", name: "Username", link: (d) => client.customerProfilePath(d._id as string) },
             { key: "firstName", name: "First name" },
             { key: "lastName", name: "Last name" },
             { key: "email", name: "Email" },
@@ -40,12 +40,12 @@ const data = computed<ListData>((): ListData => {
         ]
     };
 });
-const edit = (d: User | RowData) => router.push({ path: '/admin/updateClient/' + d.id })
+const edit = (d: User | RowData) => router.push({ path: '/admin/updateClient/' + d._id })
 const del = async (d: User | RowData) => {
     if (await confirm(`Are you sure you want to delete user ${d.username}?`)) {
-        client.deleteCustomer(d.id as string).then(r => {
+        client.deleteCustomer(d._id as string).then(r => {
             if (r) {
-                users.value = users.value.filter(u => u.id != d.id)
+                users.value = users.value.filter(u => u._id != d._id)
                 notification.fire({
                     title: 'Success',
                     body: 'User deleted successfully!',

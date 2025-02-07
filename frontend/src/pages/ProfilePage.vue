@@ -20,7 +20,7 @@ const confirm = useModalsStore().confirm;
 const user = ref<User | Trainer | Admin>();
 const profileData = ref<Array<ProfileEntry>>();
 const profileIcon = ref('');
-const logged = props.id == undefined || props.id == '' || client.userDetails?.id == props.id;
+const logged = props.id == undefined || props.id == '' || client.userDetails?._id == props.id;
 const showImpersonateButton = client.getRole == Role.Admin && !client.isImpersonating && props.role != 'admin';
 
 function getUser(): Promise<undefined | User | Trainer | Admin> {
@@ -103,17 +103,20 @@ async function impersonate() {
     <SectionContainer>
         <SectionContainerItem id="profile">
             <div class="d-flex flex-column justify-content-center">
-                <img :src="profileIcon" class="rounded mx-auto d-block my-5" :alt="user?.username + 's profile picture'" />
+                <img :src="profileIcon" class="rounded mx-auto d-block my-5"
+                    :alt="user?.username + 's profile picture'" />
                 <dl>
                     <template v-for="item in profileData">
                         <dt class="text-center">{{ item.label }}</dt>
-                        <dd class="text-center" v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{ item.value }}</a></dd>
+                        <dd class="text-center" v-if="item.linkPrefix"><a :href="item.linkPrefix + item.value">{{
+                                item.value }}</a></dd>
                         <dd class="text-center" v-else>{{ item.value }}</dd>
                     </template>
                 </dl>
                 <div class="d-flex justify-content-evenly mt-2">
                     <button v-if="logged" type="button" class="btn btn-secondary m-2" @click="logout">Logout</button>
-                    <button v-if="showImpersonateButton" type="button" class="btn btn-info m-2" @click="impersonate">Impersonate</button>
+                    <button v-if="showImpersonateButton" type="button" class="btn btn-info m-2"
+                        @click="impersonate">Impersonate</button>
                 </div>
             </div>
         </SectionContainerItem>

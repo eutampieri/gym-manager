@@ -22,7 +22,7 @@ const data = computed<ListData>((): ListData => {
         ],
         data: users.value,
         headers: [
-            { key: "username", name: "Username", link: (d) => client.trainerProfilePath(d.id as string) },
+            { key: "username", name: "Username", link: (d) => client.trainerProfilePath(d._id as string) },
             { key: "firstName", name: "First name" },
             { key: "lastName", name: "Last name" },
             { key: "email", name: "Email" },
@@ -30,12 +30,12 @@ const data = computed<ListData>((): ListData => {
         ]
     };
 });
-const edit = (d: Trainer | RowData) => router.push({ path: '/admin/updateTrainer/' + d.id })
+const edit = (d: Trainer | RowData) => router.push({ path: '/admin/updateTrainer/' + d._id })
 const del = async (d: Trainer | RowData) => {
     if (await confirm(`Are you sure you want to delete trainer ${d.username}?`)) {
-        client.deleteTrainer(d.id as string).then(r => {
+        client.deleteTrainer(d._id as string).then(r => {
             if (r) {
-                users.value = users.value.filter(t => t.id != d.id)
+                users.value = users.value.filter(t => t._id != d._id)
                 notification.fire({
                     title: 'Success',
                     body: 'Trainer deleted successfully!',

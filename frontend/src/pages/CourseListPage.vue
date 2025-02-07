@@ -11,7 +11,7 @@ import { computed, ref } from 'vue';
 
 function displayableCourseFormatter(c: Course): RowData {
     return {
-        id: c.id,
+        _id: c._id,
         name: c.name,
         description: c.description,
         trainer: c.trainer,
@@ -29,7 +29,7 @@ const displayableCourses = computed(() => courses.value.map(displayableCourseFor
 client.listCourses()
     .then(courses => Promise.all(courses.map(c =>
         client.getTrainerById(c.trainer)
-            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}`, trainerId: t!.id }))
+            .then(t => ({ ...c, trainer: `${t!.firstName} ${t!.lastName}`, trainerId: t!._id }))
     ))
     ).then(x => courses.value = x);
 
@@ -49,12 +49,12 @@ const data = computed<ListData>((): ListData => {
         ]
     };
 });
-const edit = (d: Course | RowData) => router.push({ path: '/admin/updateCourse/' + d.id })
+const edit = (d: Course | RowData) => router.push({ path: '/admin/updateCourse/' + d._id })
 const del = async (d: Course | RowData) => {
     if (await confirm(`Are you sure you want to delete the course "${d.name}"?`)) {
-        client.deleteCourse(d.id as string).then(r => {
+        client.deleteCourse(d._id as string).then(r => {
             if (r) {
-                courses.value = courses.value.filter(c => c.id != d.id)
+                courses.value = courses.value.filter(c => c._id != d._id)
                 notification.fire({
                     title: 'Success',
                     body: 'Course deleted successfully!',
@@ -82,7 +82,7 @@ const filter = (d: Course | RowData, s: string) =>
     (d as Course).trainer.toLocaleLowerCase().indexOf(s.toLowerCase()) >= 0;
 
 function handlePush(update: CourseAvailabilityUpdate) {
-    const courseIndex = courses.value.findIndex((x) => x.id === update.course);
+    const courseIndex = courses.value.findIndex((x) => x._id === update.course);
     if (courseIndex !== -1) {
         const scheduleIndex = courses.value[courseIndex].schedule.findIndex(x => x.dayOfWeek == update.dayOfWeek && x.startTime == update.startTime);
         if (scheduleIndex !== -1) {
