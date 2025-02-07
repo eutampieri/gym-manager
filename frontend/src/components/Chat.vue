@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Message as IMessage } from '@/utils/chat';
 import { BasicInfo, Role } from '@gym-manager/models';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import NameLink from './NameLink.vue';
 import Message from './Message.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -20,9 +20,21 @@ const minimise = () => minimised.value = true;
 const expand = () => minimised.value = false;
 const close = () => emit("close");
 function send() {
-    emit("send", currentMessage.value);
-    currentMessage.value = "";
+    if (currentMessage.value.trim() !== "") {
+        emit("send", currentMessage.value);
+        currentMessage.value = "";
+    }
 }
+function adjustHeight(event?: Event) {
+    const textarea = event ? (event.target as HTMLTextAreaElement) : document.querySelector(".auto-expand") as HTMLTextAreaElement;
+    if (textarea) {
+        textarea.style.height = "auto"; // Resetta l'altezza
+        textarea.style.height = textarea.scrollHeight + "px"; // Adatta l'altezza al contenuto
+    }
+}
+onMounted(() => {
+    adjustHeight(); // Assicura che il campo sia impostato correttamente all'inizio
+});
 </script>
 <template>
     <div v-if="isActive" class="fixed-bottom">
@@ -50,7 +62,8 @@ function send() {
                     :sent-by-current-user="message.sentByCurrentUser"></Message>
             </section>
             <section class="input-group mb-3 align-self-end">
-                <input v-model="currentMessage" type="text" class="form-control" aria-label="Search">
+                <textarea v-model="currentMessage" class="form-control auto-expand" aria-label="Write a message..." rows="1" @input="adjustHeight" @keydown.enter="send"
+                 ></textarea>
                 <button class="btn btn-primary" @click="send">
                     <FontAwesomeIcon :icon="faPaperPlane"></FontAwesomeIcon>
                 </button>
@@ -75,4 +88,12 @@ function send() {
     height: 85vh !important;
     max-height: 900px !important;
 }
+.auto-expand {
+    resize: none; /* Impedisce il ridimensionamento manuale */
+    overflow-y: hidden; /* Evita lo scroll verticale */
+    max-height: 150px; /* Altezza massima per evitare che diventi enorme */
+    min-height: 40px; /* Altezza minima iniziale */
+    line-height: 1.4; /* Aumenta la leggibilità */
+}
+
 </style>

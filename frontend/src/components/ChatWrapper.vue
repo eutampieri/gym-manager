@@ -118,6 +118,7 @@ function close() {
     socket.emit(EventType.CloseChat.toString());
 }
 
+
 </script>
 <template>
     <Chat v-model="minimised" :is-active="active" :messages="messages" :other-party="otherParty" @send="send"

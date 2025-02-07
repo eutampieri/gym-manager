@@ -12,7 +12,11 @@ defineProps<Message>();
 }
 
 p {
-    max-width: min(calc(100% - 4em), 500px);
+    max-width: min(calc(100% - 4em), 500px); /* Mantiene una larghezza massima */
     min-width: 200px;
+    white-space: normal; /* Permette al testo di andare a capo senza spezzare parole */
+    overflow-wrap: normal; /* Evita di spezzare parole */
+    word-break: normal; /* Mantiene intere le parole lunghe */
 }
+
 </style>

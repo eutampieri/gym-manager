@@ -77,7 +77,7 @@ async function cancelSession(sessionId: string) {
 
 const bookCourse = '/user/book/course'
 const bookOneonOne = '/user/book/session'
-const contactSupport = '/support/chat'
+
 
 </script>
 
@@ -127,5 +127,5 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <ChatButton class="mt-5" :path="contactSupport" :use-variant="true">Need help?</ChatButton>
+    <ChatButton class="mt-5" :use-variant="true">Need help?</ChatButton>
 </template>

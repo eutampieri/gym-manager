@@ -23,8 +23,6 @@ if (user) {
         .then(sessions => myOneOnOne.value = sessions);
 }
 
-const contactSupport = '/support/chat'
-
 </script>
 
 <template>
@@ -67,5 +65,5 @@ const contactSupport = '/support/chat'
             </Dropdown>
         </SectionContainerItem>
     </SectionContainer>
-    <MainButton class="btn-secondary mt-5" :path="contactSupport" :use-variant="true">Need help?</MainButton>
+    <ChatButton class="btn-secondary mt-5" :use-variant="true">Need help?</ChatButton>
 </template>
