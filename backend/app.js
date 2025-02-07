@@ -60,7 +60,7 @@ app.get('/', function (req, res) {
   res.sendFile(join(__dirname, '../frontend/dist', 'index.html'));
 });
 
-const uri = 'mongodb://localhost:27017/gym' || 'mongodb://mongodb:27017/gym';
+const uri = 'mongodb://mongodb:27017/gym' || 'mongodb://localhost:27017/gym';
 // Connessione al database
 connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

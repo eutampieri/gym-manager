@@ -28,12 +28,12 @@ function send() {
 function adjustHeight(event?: Event) {
     const textarea = event ? (event.target as HTMLTextAreaElement) : document.querySelector(".auto-expand") as HTMLTextAreaElement;
     if (textarea) {
-        textarea.style.height = "auto"; // Resetta l'altezza
-        textarea.style.height = textarea.scrollHeight + "px"; // Adatta l'altezza al contenuto
+        textarea.style.height = "auto"; 
+        textarea.style.height = textarea.scrollHeight + "px"; 
     }
 }
 onMounted(() => {
-    adjustHeight(); // Assicura che il campo sia impostato correttamente all'inizio
+    adjustHeight(); 
 });
 </script>
 <template>
