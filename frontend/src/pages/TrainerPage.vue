@@ -51,7 +51,7 @@ if (user) {
                     </dl>
                 </DropdownItem>
             </Dropdown>
-            <p v-if="!(myCourses ?? []).length">You haven't signed up for any course yet</p>
+            <p v-if="!(myCourses ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">You haven't signed up for any course yet</p>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one" class="my-3">
             <h3>My One-on-one</h3>
@@ -73,7 +73,7 @@ if (user) {
                     </dl>
                 </DropdownItem>
             </Dropdown>
-            <p v-if="!(myOneOnOne ?? []).length">You haven't signed up for any one-on-one session yet</p>
+            <p v-if="!(myOneOnOne ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">You haven't signed up for any one-on-one session yet</p>
         </SectionContainerItem>
     </SectionContainer>
     <ChatButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :use-variant="true">Need help?
