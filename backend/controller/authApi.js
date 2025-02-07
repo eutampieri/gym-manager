@@ -5,12 +5,13 @@ import { SignJWT } from 'jose';
 import idProjection from './idProjection.js';
 import { JWT_KEY, ISSUER, AUDIENCE } from '../utils.js';
 import { verify } from '@node-rs/argon2';
+import { Role, roleToString } from '@gym-manager/models/role.js'
 
 async function lookupUsername(username) {
     const models = [
-        { model: Client, kind: 'customer' },
-        { model: Trainer, kind: 'trainer' },
-        { model: Admin, kind: 'admin' },
+        { model: Client, kind: roleToString(Role.User) },
+        { model: Trainer, kind: roleToString(Role.Trainer) },
+        { model: Admin, kind: roleToString(Role.Admin) },
     ];
 
     for (const { model, kind } of models) {
