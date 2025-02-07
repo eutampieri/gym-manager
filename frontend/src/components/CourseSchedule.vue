@@ -42,7 +42,7 @@ async function bookCourse(courseId: string, dayOfWeek: string, startTime: string
             <p class="text-muted m-0">Available spots: {{ availableSpots }}</p>
         </div>
         <div class="w-50 d-flex justify-content-center align-items-center">
-            <button type="button" class="btn btn-primary py-2 px-5" :disabled="isBooked || availableSpots <= 0"
+            <button type="button" aria-label="Book course" class="btn btn-primary py-2 px-5" :disabled="isBooked || availableSpots <= 0"
                 @click="() => bookCourse(courseId, schedule.dayOfWeek, schedule.startTime)">{{ isBooked ? 'Booked' :
                     'Book' }}</button>
         </div>

@@ -11,7 +11,7 @@ const goBack = () => {
 </script>
 
 <template>
-    <button class="btn" @click="goBack">
+    <button class="btn" @click="goBack" aria-label="Go back">
         <FontAwesomeIcon :icon="faChevronLeft"></FontAwesomeIcon>
     </button>
 </template>
