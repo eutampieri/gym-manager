@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { Action, Headers, RowData } from '@/utils/lists';
 import ActionButton from './ActionButton.vue';
+import { computed } from 'vue';
 
-const props = defineProps<{
-    class?: string,
+const { headers } = defineProps<{
     data: RowData,
     headers: Headers,
-    showHeaders: boolean,
     actions: Action[]
 }>();
+
+const rowHeader = headers[0];
+const otherHeaders = headers.slice(1);
 </script>
 <template>
-    <div class="row">
-        <div :aria-label="!showHeaders ? h.name : undefined" v-for="h in headers" :class="props.class || ''">
-            <span class="fw-bold" v-if="showHeaders">{{ h.name }}: </span>
+    <tr>
+        <th :id="(data[rowHeader.key] as string)">{{ data[rowHeader.key] }}</th>
+        <td v-for="h in otherHeaders">
             <template v-if="!Array.isArray(data[h.key])">
                 <RouterLink v-if="h.link" :to="h.link(data)">{{ data[h.key] }}</RouterLink>
                 <template v-else>{{ data[h.key] }}</template>
@@ -23,10 +25,10 @@ const props = defineProps<{
                     {{ i }}
                 </li>
             </ul>
-        </div>
-        <div class="col">
-            <ActionButton v-for="(action, index) in actions" :key="index" :action="action" :data="data">
+        </td>
+        <td>
+            <ActionButton :small="true" v-for="(action, index) in actions" :key="index" :action="action" :data="data">
             </ActionButton>
-        </div>
-    </div>
+        </td>
+    </tr>
 </template>
