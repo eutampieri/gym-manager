@@ -81,7 +81,7 @@ const contactSupport = '/support/chat'
                     </dl>
                 </DropdownItem>
             </Dropdown>
-            <p v-if="!(myOneOnOne ?? []).length">You haven't signed up for any one-on-one yet</p>
+            <p v-if="!(myOneOnOne ?? []).length">You haven't signed up for any one-on-one session yet</p>
         </SectionContainerItem>
     </SectionContainer>
     <MainButton class="btn-secondary mt-5" :path="contactSupport" :use-variant="true">Need help?</MainButton>
