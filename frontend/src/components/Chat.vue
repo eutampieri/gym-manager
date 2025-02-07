@@ -89,11 +89,11 @@ onMounted(() => {
     max-height: 900px !important;
 }
 .auto-expand {
-    resize: none; /* Impedisce il ridimensionamento manuale */
-    overflow-y: hidden; /* Evita lo scroll verticale */
-    max-height: 150px; /* Altezza massima per evitare che diventi enorme */
-    min-height: 40px; /* Altezza minima iniziale */
-    line-height: 1.4; /* Aumenta la leggibilità */
+    resize: none; 
+    overflow-y: hidden; 
+    max-height: 150px;
+    min-height: 40px; 
+    line-height: 1.4;
 }
 
 </style>
