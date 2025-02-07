@@ -5,23 +5,28 @@ import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
 import MainButton from '@/components/MainButton.vue';
 import { ref } from 'vue';
-import { Admin, CourseInfo, SessionInfo } from '@gym-manager/models';
+import { Admin, CourseInfo, Role, SessionInfo, Trainer } from '@gym-manager/models';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
+import { useRoute } from 'vue-router';
 
 const store = useUserStore();
-
-const user = store.client.userDetails;
+const route = useRoute();
 
 const myCourses = ref<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string, }[] }>>();
 const myOneOnOne = ref<Array<{ info: SessionInfo, participant: Admin }>>();
+const user = ref<Trainer | undefined>();
 
-if (user) {
-    store.client.getTrainerCourses(user.id)
-        .then(courses => myCourses.value = courses);
-    store.client.getTrainerSessions(user.id)
-        .then(sessions => myOneOnOne.value = sessions);
-}
+((store.client.getRole == Role.Admin && route.query.id) ? store.client.getTrainerById(route.query.id as string) : Promise.resolve(store.client.userDetails as Trainer)).then((u) => {
+    user.value = u;
+    if (user.value) {
+        store.client.getTrainerCourses(user.value.id)
+            .then(courses => myCourses.value = courses);
+        store.client.getTrainerSessions(user.value.id)
+            .then(sessions => myOneOnOne.value = sessions);
+    }
+});
+
 
 const contactSupport = '/support/chat'
 
