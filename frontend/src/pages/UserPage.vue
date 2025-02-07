@@ -112,6 +112,7 @@ const contactSupport = '/support/chat'
                         @click="() => unsubscribeFromCourse(course.course.id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
+            <p v-if="!(myCourses ?? []).length">You haven't signed up for any courses yet</p>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one">
             <h3>My One-on-one</h3>
@@ -130,6 +131,7 @@ const contactSupport = '/support/chat'
                         @click="() => cancelSession((session.info as any)._id)">Cancel appointment</button>
                 </DropdownItem>
             </Dropdown>
+            <p v-if="!(myOneOnOne ?? []).length">You haven't signed up for any one-on-one yet</p>
         </SectionContainerItem>
     </SectionContainer>
     <ChatButton class="mt-5" :path="contactSupport" :use-variant="true">Need help?</ChatButton>
