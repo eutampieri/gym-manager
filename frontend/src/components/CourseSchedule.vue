@@ -16,22 +16,21 @@ async function bookCourse(courseId: string, dayOfWeek: string, startTime: string
         dayOfWeek: dayOfWeek,
         startTime: startTime,
     });
-    console.log("responsee:"+ response);
     if (response) {
-            notifications.fire({
-                title: 'Success',
-                body: 'Course successfully booked!',
-                background: 'success',
-                when: new Date(),
-            });
-        } else {
-            notifications.fire({
-                title: 'Error',
-                body: 'This course could not be found',
-                background: 'danger'
-            })
-        }
-    
+        notifications.fire({
+            title: 'Success',
+            body: 'Course successfully booked!',
+            background: 'success',
+            when: new Date(),
+        });
+    } else {
+        notifications.fire({
+            title: 'Error',
+            body: 'This course could not be found',
+            background: 'danger'
+        })
+    }
+
 }
 
 </script>
