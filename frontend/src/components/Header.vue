@@ -6,16 +6,17 @@ import { useUserStore } from '@/store/user';
 import { getProfileIcon } from '@gym-manager/models/user';
 import router from '@/routes/router';
 import { computed } from 'vue';
+import { Role } from '@gym-manager/models';
 
 // Recupero del percorso corrente
 const route = useRoute();
-console.log(route.path);
 
+const isImpersonating = computed(() => store.client.getRole === Role.Admin && route.query.id);
 const isLoginPage = computed(() => route.path === '/login');
 const isAdminPage = computed(() => route.path === '/admin');
 const isUserPage = computed(() => route.path === '/user');
 const isTrainerPage = computed(() => route.path === '/trainer');
-const backHidden = computed(() => isAdminPage.value || isUserPage.value || isTrainerPage.value || isLoginPage.value);
+const backHidden = computed(() => isAdminPage.value || ((isUserPage.value || isTrainerPage.value || isLoginPage.value) && !isImpersonating.value));
 
 const store = useUserStore();
 

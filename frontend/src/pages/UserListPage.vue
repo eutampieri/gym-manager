@@ -22,7 +22,7 @@ const data = computed<ListData>((): ListData => {
         ],
         data: users.value,
         headers: [
-            { key: "username", name: "Username" },
+            { key: "username", name: "Username", link: (u) => `/user?id=${u.id}` },
             { key: "firstName", name: "First name" },
             { key: "lastName", name: "Last name" },
             { key: "email", name: "Email" },
