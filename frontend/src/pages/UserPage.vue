@@ -39,9 +39,14 @@ const myOneOnOne = ref<Array<{ info: SessionInfo, trainer: Trainer }>>();
 async function unsubscribeFromCourse(courseId: string, courseName: string, dayOfWeek: string, startTime: string) {
     if (await confirm('Do you want to unsubscribe from ' + courseName + '?')) {
         const req: BookCourseRequest = { clientId: user.value?.id, dayOfWeek, startTime }
+        console.log("courseId: "+courseId);
+        console.log("request: ", req);
+        
+
         store.client.unsubscribeFromCourse(courseId, req)
             .then(res => {
                 if (res) {
+                    console.log("res: "+res);
                     // removed
                     myCourses.value = myCourses.value?.filter(x => x.course.id != courseId && x.dayOfWeek != dayOfWeek && x.startTime != startTime)
                     notification.fire({
@@ -109,7 +114,7 @@ const contactSupport = '/support/chat'
                         </dd>
                     </dl>
                     <button type="button" class="btn btn-primary m-2"
-                        @click="() => unsubscribeFromCourse(course.course.id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
+                        @click="() => unsubscribeFromCourse(course.course._id, course.course.name, course.dayOfWeek, course.startTime)">Unsubscribe</button>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>
