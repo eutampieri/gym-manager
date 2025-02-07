@@ -14,7 +14,10 @@ const otherHeaders = headers.slice(1);
 </script>
 <template>
     <tr>
-        <th :id="(data[rowHeader.key] as string)">{{ data[rowHeader.key] }}</th>
+        <th :id="(data[rowHeader.key] as string)">
+            <RouterLink v-if="rowHeader.link" :to="rowHeader.link(data)">{{ data[rowHeader.key] }}</RouterLink>
+            <template v-else>{{ data[rowHeader.key] }}</template>
+        </th>
         <td v-for="h in otherHeaders">
             <template v-if="!Array.isArray(data[h.key])">
                 <RouterLink v-if="h.link" :to="h.link(data)">{{ data[h.key] }}</RouterLink>
