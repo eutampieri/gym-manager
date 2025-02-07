@@ -91,7 +91,6 @@ export default class API {
                 return res.status(400).json({ message: 'No fields to update' });
             }
             if (capacity) {
-            const capacityDifference = capacity - existingCourse.capacity;
              for (let i=0; i<existingCourse.schedule.length; i++) {                
                 updateFields.schedule[i].availableSpots = existingCourse.schedule[i].availableSpots+capacity-existingCourse.capacity;                
                 if (updateFields.schedule[i].availableSpots < 0) {
