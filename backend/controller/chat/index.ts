@@ -3,7 +3,7 @@ import { Server } from 'socket.io';
 import { EventType, SubscriptionEntity } from '@gym-manager/models/chat.js';
 import { verifyJWT } from '../../utils.js';
 import { ulid } from 'ulidx';
-import { Role } from '@gym-manager/models/role.js';
+import { parseRole, Role } from '@gym-manager/models/role.js';
 
 const ROOMS = {
     admin: "admin"
@@ -28,7 +28,7 @@ export function createSocketIoServer(server: NodeServer) {
             const token = (await verifyJWT(jwt)).payload as { error?: boolean };
             if (token.error === undefined) {
                 userData = token;
-                if ((userData as any).role === Role.Admin) {
+                if (parseRole((userData as any).role) === Role.Admin) {
                     socket.join(ROOMS.admin);
                     availableAdmins += 1;
                     socket.on('disconnect', () => availableAdmins -= 1)
