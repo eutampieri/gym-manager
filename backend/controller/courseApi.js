@@ -1,3 +1,4 @@
+import { Role } from '@gym-manager/models/role.js';
 import Client from '../models/clientModel.js';
 import Course from '../models/courseModel.js';
 import Trainer from '../models/trainerModel.js';
@@ -86,14 +87,21 @@ export default class API {
             if (capacity) updateFields.capacity = capacity;
             if (trainer) updateFields.trainer = trainer;
 
-            // Se non ci sono campi da aggiornare, restituisci un errore
             if (Object.keys(updateFields).length === 0) {
                 return res.status(400).json({ message: 'No fields to update' });
             }
-
-            // Controlla se il trainer è cambiato
+            if (capacity) {
+            const capacityDifference = capacity - existingCourse.capacity;
+             for (let i=0; i<existingCourse.schedule.length; i++) {                
+                updateFields.schedule[i].availableSpots = existingCourse.schedule[i].availableSpots+capacity-existingCourse.capacity;                
+                if (updateFields.schedule[i].availableSpots < 0) {
+                    return res.status(400).json({ message: "Wrong capacity" });
+                }
+             }
+            }
+        
+          
             if (trainer && trainer !== existingCourse.trainer.toString()) {
-                // Rimuove il corso dall'array courses del trainer precedente
                 await Trainer.updateOne(
                     { _id: existingCourse.trainer },
                     { $pull: { courses: id } }
@@ -158,7 +166,7 @@ export default class API {
     static async createBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
-            const safeClientId = req.user.role === "admin" ? clientId : req.user.id;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user.id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato e popola i partecipanti
@@ -255,7 +263,7 @@ export default class API {
     static async deleteBooking(req, res) {
         try {
             const { clientId, dayOfWeek, startTime } = req.body;
-            const safeClientId = req.user.role === "admin" ? clientId : req.user.id;
+            const safeClientId = req.user.role === Role.Admin ? clientId : req.user.id;
             const courseId = req.params.id;
 
             // Trova il corso con il nome specificato

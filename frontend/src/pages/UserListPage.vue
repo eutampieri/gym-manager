@@ -29,7 +29,7 @@ const data = computed<ListData>((): ListData => {
             return user;
         }),
         headers: [
-            { key: "username", name: "Username", link: (u) => `/user?id=${u.id}` },
+            { key: "username", name: "Username", link: (d) => client.customerProfilePath(d.id as string) },
             { key: "firstName", name: "First name" },
             { key: "lastName", name: "Last name" },
             { key: "email", name: "Email" },

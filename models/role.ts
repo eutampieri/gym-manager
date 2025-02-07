@@ -3,7 +3,7 @@ export enum Role {
 }
 
 export function parseRole(role: string): Role | undefined {
-    if (role === 'customer') {
+    if (role === 'user') {
         return Role.User;
     } else if (role === 'trainer') {
         return Role.Trainer;

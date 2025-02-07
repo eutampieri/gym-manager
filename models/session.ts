@@ -1,4 +1,4 @@
-import { Identifiable } from ".";
+import { Identifiable, Trainer, User } from ".";
 
 interface SessionData {
     dayOfWeek: string,
@@ -6,8 +6,8 @@ interface SessionData {
 }
 
 export interface CreateSessionRequest extends SessionData {
-    participant: string,
-    trainer: string,
+    participant: string | User,
+    trainer: string | Trainer,
 }
 
 export interface SessionInfo extends SessionData, Identifiable { }

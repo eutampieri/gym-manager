@@ -2,6 +2,7 @@ import Client from '../models/clientModel.js';
 import Trainer from '../models/trainerModel.js';
 import Session from '../models/sessionModel.js';
 import idProjection from './idProjection.js';
+import { Role } from '@gym-manager/models/role.js';
 
 // RESTful CRUD API WITH LOCK FOR MUTUAL EXCLUSION MANAGEMENT
 // Mongoose functions are CRUD
@@ -11,7 +12,7 @@ export default class API {
         const session = req.body;
         const idTrainer = req.body.trainer;
         const idParticipant = req.body.participant;
-        const safeIdParticipant = req.user.role === "admin" ? idParticipant : req.user.id;
+        const safeIdParticipant = req.user.role === Role.Admin ? idParticipant : req.user.id;
 
         try {
 
