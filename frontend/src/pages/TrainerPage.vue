@@ -46,7 +46,7 @@ if (user) {
                                         u.firstName + ' ' + u.lastName }}</NameLink>
                                 </li>
                             </ul>
-                            <p v-else>No participants enrolled</p>
+                            <p class="text-muted" v-else>No participants enrolled</p>
                         </dd>
                     </dl>
                 </DropdownItem>
@@ -63,11 +63,10 @@ if (user) {
                     <dl>
                         <dt>Participant</dt>
                         <dd>
-                            <div v-if="session.participant">
+                            <div>
                                 <NameLink :path="store.client.customerProfilePath(session.participant._id)">{{
                                     session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
                             </div>
-                            <p v-else>No participant enrolled.</p>
                         </dd>
                     </dl>
                 </DropdownItem>
