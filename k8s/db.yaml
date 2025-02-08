@@ -1,0 +1,64 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mongo-pv
+  namespace: gym-manager
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: longhorn
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: mongodb
+  name: mongodb
+  namespace: gym-manager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: mongodb
+  strategy:
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        service: mongodb
+    spec:
+      containers:
+        - image: mongodb:8.0.4
+          name: mongodb
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-pv
+              mountPath: /data/db
+      volumes:
+        - name: mongo-pv
+          persistentVolumeClaim:
+            claimName: mongo-pv
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: mongodb
+  name: db
+  namespace: gym-manager
+spec:
+  clusterIP: None
+  ports:
+    - name: "mongodb"
+      port: 27017
+      targetPort: 27017
+      protocol: TCP
+  selector:
+    service: mongodb
