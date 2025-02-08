@@ -45,8 +45,9 @@ onMounted(() => {
                 <section class="flex-grow-1">
                     <h2>Support chat</h2>
                     <h3 v-if="otherParty[1] != Role.Admin">with
-                        <NameLink :path="`/${roleToString(otherParty[1])}?id=${otherParty[0]._id}`">
-                            {{ otherParty[0].firstName }} {{ otherParty[0].lastName }} ({{ otherParty[1] }})
+                        <NameLink :path="`/${roleToString(otherParty[1])}/profile/${otherParty[0]._id}`">
+                            {{ otherParty[0].firstName }} {{ otherParty[0].lastName }} ({{ roleToString(otherParty[1])
+                            }})
                         </NameLink>
                     </h3>
                 </section>
