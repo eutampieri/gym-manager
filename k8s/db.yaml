@@ -34,7 +34,7 @@ spec:
         service: mongodb
     spec:
       containers:
-        - image: mongodb:8.0.4
+        - image: mongo:8.0.4
           name: mongodb
           ports:
             - containerPort: 27017
