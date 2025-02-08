@@ -4,8 +4,13 @@ import { useNotificationsStore } from '@/store/notifications';
 import { useUserStore } from '@/store/user';
 import { computed, ref } from 'vue';
 import { TrainerAvailabilities } from '@gym-manager/models/trainer';
+import router from '@/routes/router';
 
-const { trainerId, availabilities } = defineProps<{ trainerId: string, availabilities: TrainerAvailabilities | null }>();
+const { trainerId, trainerAvailabilities, customerAvailabilities } = defineProps<{ 
+    trainerId: string, 
+    trainerAvailabilities: TrainerAvailabilities | null, 
+    customerAvailabilities: TrainerAvailabilities | undefined
+}>();
 
 const notificationStore = useNotificationsStore();
 const client = useUserStore().client;
@@ -13,8 +18,17 @@ const daysOfWeek = ref(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
 
 const selectedDay = ref("");
 const selectedTime = ref("");
-const availableTimeSlots = computed(() => (availabilities === null || selectedDay.value === '') ? [] : Object.entries(availabilities[selectedDay.value])
-    .filter(x => x[1])
+
+const isCustomerAvailable = (day: string, time: string) => {
+    if (customerAvailabilities) {
+        return customerAvailabilities[day][time];
+    } else {
+        return true;
+    }
+}
+
+const availableTimeSlots = computed(() => (trainerAvailabilities === null || selectedDay.value === '') ? [] : Object.entries(trainerAvailabilities[selectedDay.value])
+    .filter(x => x[1] && isCustomerAvailable(selectedDay.value, x[0]))
     .map(x => x[0]));
 
 async function bookSession() {
@@ -41,6 +55,7 @@ async function bookSession() {
             body: "Session booked successfuly!",
             background: "success",
         });
+        router.back();
     } else {
         notificationStore.fire({
             body: "An error occoured during the booking operation.",

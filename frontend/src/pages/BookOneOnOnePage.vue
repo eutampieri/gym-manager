@@ -12,9 +12,13 @@ import SectionContainerItem from '@/components/SectionContainerItem.vue';
 const store = useUserStore();
 
 const trainers = ref<[Trainer, Ref<TrainerAvailabilities | null>][]>();
+const customerAvailabilities = ref<TrainerAvailabilities>();
 
 store.client.listTrainers()
     .then(t => trainers.value = t.map(x => [x, ref(null)]));
+
+store.client.getCustomerAvailabilities(store.client.userDetails!._id)
+    .then(t => customerAvailabilities.value = t);
 
 async function fillAvailability(trainer: Trainer, r: Ref<TrainerAvailabilities | null>) {
     if (r.value === null) {
@@ -31,7 +35,7 @@ async function fillAvailability(trainer: Trainer, r: Ref<TrainerAvailabilities |
                 <DropdownItem v-for="(trainer, i) in trainers" :key="i"
                     :header="[`${trainer[0].firstName} ${trainer[0].lastName}`]" :id-prefix="trainer[0]._id" :index="i"
                     :dropdown-id="'trainer-dropdown'" @shown="() => fillAvailability(trainer[0], trainer[1])">
-                    <BookOneOnOne :availabilities="trainer[1].value" :trainer-id="trainer[0]._id"></BookOneOnOne>
+                    <BookOneOnOne :customer-availabilities="customerAvailabilities" :trainer-availabilities="trainer[1].value" :trainer-id="trainer[0]._id"></BookOneOnOne>
                 </DropdownItem>
             </Dropdown>
         </SectionContainerItem>

@@ -5,14 +5,14 @@ import DropdownItem from '@/components/DropdownItem.vue';
 import NameLink from '@/components/NameLink.vue';
 import ChatButton from '@/components/ChatButton.vue';
 import { ref } from 'vue';
-import { Admin, CourseInfo, SessionInfo } from '@gym-manager/models';
+import { BasicIdentifiable, CourseInfo, SessionInfo } from '@gym-manager/models';
 import SectionContainer from '@/components/SectionContainer.vue';
 import SectionContainerItem from '@/components/SectionContainerItem.vue';
 
 const store = useUserStore();
 
-const myCourses = ref<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, id: string, }[] }>>();
-const myOneOnOne = ref<Array<{ info: SessionInfo, participant: Admin }>>();
+const myCourses = ref<Array<{ course: CourseInfo, dayOfWeek: string, startTime: string, participants: { firstName: string, lastName: string, _id: string, }[] }>>();
+const myOneOnOne = ref<Array<{ info: SessionInfo, participant: BasicIdentifiable }>>();
 const user = store.client.userDetails;
 
 if (user) {
@@ -42,16 +42,17 @@ if (user) {
                         <dd>
                             <ul v-if="course.participants.length">
                                 <li v-for="u in course.participants">
-                                    <NameLink :path="store.client.customerProfilePath(u.id)">{{
+                                    <NameLink :path="store.client.customerProfilePath(u._id)">{{
                                         u.firstName + ' ' + u.lastName }}</NameLink>
                                 </li>
                             </ul>
-                            <p v-else>No participants enrolled</p>
+                            <p class="text-muted" v-else>No participants enrolled</p>
                         </dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
-            <p v-if="!(myCourses ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">You haven't signed up for any course yet</p>
+            <p v-if="!(myCourses ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">You haven't been
+                assigned any course yet</p>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one" class="my-3">
             <h3>My One-on-one</h3>
@@ -62,18 +63,16 @@ if (user) {
                     <dl>
                         <dt>Participant</dt>
                         <dd>
-                            <div v-if="session.participant">
-                            <NameLink :path="store.client.customerProfilePath(session.participant._id)">{{
-                                session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
-                            </div>
-                            <div v-else>
-                                No participant enrolled.
+                            <div>
+                                <NameLink :path="store.client.customerProfilePath(session.participant._id)">{{
+                                    session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
                             </div>
                         </dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
-            <p v-if="!(myOneOnOne ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">You haven't signed up for any one-on-one session yet</p>
+            <p v-if="!(myOneOnOne ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">Nobody has
+                signed up for any one-on-one session with you yet</p>
         </SectionContainerItem>
     </SectionContainer>
     <ChatButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :use-variant="true">Need help?

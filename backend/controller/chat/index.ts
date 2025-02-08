@@ -70,14 +70,14 @@ export function createSocketIoServer(server: NodeServer) {
         // Handle messages
         socket.on(EventType.Message.toString(), ({ message }) => {
             if (userData !== undefined) {
-                io.to(roomID!).emit(EventType.MessageDelivery.toString(), { message, sender: userData.profile.id });
+                io.to(roomID!).emit(EventType.MessageDelivery.toString(), { message, sender: userData.profile._id });
             }
         });
 
         // Handle leave
         socket.on(EventType.CloseChat.toString(), () => {
             if (userData !== undefined) {
-                io.to(roomID!).emit(EventType.CloseChat.toString(), userData.profile.id);
+                io.to(roomID!).emit(EventType.CloseChat.toString(), userData.profile._id);
                 ACCEPTED_CHATS.delete(roomID!);
             }
         });
