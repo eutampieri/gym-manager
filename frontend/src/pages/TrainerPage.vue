@@ -51,7 +51,8 @@ if (user) {
                     </dl>
                 </DropdownItem>
             </Dropdown>
-            <p v-if="!(myCourses ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">You haven't signed up for any course yet</p>
+            <p v-if="!(myCourses ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">You haven't been
+                assigned any course yet</p>
         </SectionContainerItem>
         <SectionContainerItem id="my-one-on-one" class="my-3">
             <h3>My One-on-one</h3>
@@ -63,15 +64,16 @@ if (user) {
                         <dt>Participant</dt>
                         <dd>
                             <div v-if="session.participant">
-                            <NameLink :path="store.client.customerProfilePath(session.participant._id)">{{
-                                session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
+                                <NameLink :path="store.client.customerProfilePath(session.participant._id)">{{
+                                    session.participant.firstName + ' ' + session.participant.lastName }}</NameLink>
                             </div>
                             <p v-else>No participant enrolled.</p>
                         </dd>
                     </dl>
                 </DropdownItem>
             </Dropdown>
-            <p v-if="!(myOneOnOne ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">You haven't signed up for any one-on-one session yet</p>
+            <p v-if="!(myOneOnOne ?? []).length" class="py-5 px-3 text-muted text-center text-lg-start">Nobody has
+                signed up for any one-on-one session with you yet</p>
         </SectionContainerItem>
     </SectionContainer>
     <ChatButton v-if="!store.client.isImpersonating" class="btn-secondary mt-5" :use-variant="true">Need help?
