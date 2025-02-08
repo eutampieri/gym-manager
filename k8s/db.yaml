@@ -51,7 +51,7 @@ kind: Service
 metadata:
   labels:
     service: mongodb
-  name: db
+  name: mongodb
   namespace: gym-manager
 spec:
   clusterIP: None
