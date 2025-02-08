@@ -55,7 +55,7 @@ export function createSocketIoServer(server: NodeServer) {
 
         // Accept chat request
         socket.on(EventType.AcceptChatRequest.toString(), (room) => {
-            if (userData !== undefined && (userData as any).role === Role.Admin) {
+            if (userData !== undefined && parseRole((userData as any).role) === Role.Admin) {
                 if (ACCEPTED_CHATS.has(room)) {
                     socket.emit(EventType.Error.toString(), "The chat was already taken.");
                 } else {
@@ -83,7 +83,7 @@ export function createSocketIoServer(server: NodeServer) {
         });
         socket.on(EventType.LeaveRoom.toString(), () => {
             if (userData !== undefined) {
-                if (userData.role === Role.Admin) {
+                if (parseRole(userData.role) === Role.Admin) {
                     availableAdmins += 1;
                 }
                 socket.leave(roomID!);
