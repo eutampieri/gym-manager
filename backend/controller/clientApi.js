@@ -110,6 +110,14 @@ export default class API {
                     $inc: { 'schedule.$[].availableSpots': 1 }
                 }
             );
+            // Rimuove i trainer con le sessioni
+            const sessions = await Session.find({ participant: id }).distinct('_id');
+            await Trainer.updateMany(
+                { 'sessions': { $in: sessions } },
+                { $pull: { sessions: { $in: sessions } } }
+            );
+            // Cancella le sessioni
+            await Session.deleteMany({participant: id});
 
             // Elimina il cliente dal database
             await Client.findOneAndDelete({ _id: id });
