@@ -1,6 +1,7 @@
 import Client from '../models/clientModel.js';
 import Course from '../models/courseModel.js';
 import Trainer from '../models/trainerModel.js';
+import Session from '../models/sessionModel.js';
 import idProjection from './idProjection.js';
 import { hash } from '@node-rs/argon2';
 
@@ -107,9 +108,16 @@ export default class API {
                     { 'courses.course': { $in: trainer.courses } },
                     { $pull: { courses: { course: { $in: trainer.courses } } } }
                 );
+                // Rimuove tutte le sessioni del cliente
+                const sessions = await Session.find({ trainer: id }).distinct('_id');
+                await Client.updateMany(
+                    { 'sessions': { $in: sessions } },
+                    { $pull: { sessions: { $in: sessions } } }
+                );
 
                 // Elimina tutti i corsi assegnati al trainer
                 await Course.deleteMany({ _id: { $in: trainer.courses } });
+                await Session.deleteMany({trainer: id});
             }
 
             // Infine, elimina il trainer dal database
