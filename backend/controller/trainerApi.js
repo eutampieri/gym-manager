@@ -109,9 +109,10 @@ export default class API {
                     { $pull: { courses: { course: { $in: trainer.courses } } } }
                 );
                 // Rimuove tutte le sessioni del cliente
+                const sessions = await Session.find({ trainer: id }).distinct('_id');
                 await Client.updateMany(
-                    { 'sessions': { $in: await Session.find({ trainer: id }).distinct('_id') } },
-                    { $pull: { sessions: { $in: await Session.find({ trainer: id }).distinct('_id') } } }
+                    { 'sessions': { $in: sessions } },
+                    { $pull: { sessions: { $in: sessions } } }
                 );
 
                 // Elimina tutti i corsi assegnati al trainer
