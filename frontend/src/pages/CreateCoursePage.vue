@@ -81,7 +81,7 @@ const addScheduleEntry = () => {
 const removeScheduleEntry = (index: number) => {
     scheduleEntries.value.splice(index, 1);
 };
-const correctSchedule = (cap: number, schedules: CourseScheduleEntry[]) => schedules.map(e => ({ ...e, availableSpots: e.availableSpots || cap }))
+const correctSchedule = (cap: number, schedules: CourseScheduleEntry[]) => schedules.map(e => ({ ...e, availableSpots: cap }))
 
 // Watch per aggiornare availableSpots quando cambia capacity
 watch(capacity, (newCapacity) => {
