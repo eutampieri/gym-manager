@@ -38,9 +38,9 @@ onMounted(() => {
 });
 </script>
 <template>
-    <div v-if="isActive" class="fixed-bottom">
+    <div v-if="isActive" class="mt-5 pt-4">
         <div v-if="!minimised"
-            :class="`chat-container-${$matches.sm.max ? 'full' : 'small'} d-flex flex-column col-md-7 col-xl-5 p-3 m-0 mb-md-5 me-md-4 float-md-end bg-body-secondary rounded-${$matches.sm.max ? '0' : '5'} border`">
+            :class="`fixed-bottom ms-auto chat-container-${$matches.sm.max ? 'full' : 'small'} d-flex flex-column col-md-7 col-xl-5 p-3 m-0 mb-md-5 me-md-4 float-md-end bg-body-secondary rounded-${$matches.sm.max ? '0' : '5'} border`">
             <section class="d-flex flex-row">
                 <section class="flex-grow-1">
                     <h2>Support chat</h2>
@@ -72,8 +72,14 @@ onMounted(() => {
                 </button>
             </section>
         </div>
-        <div v-else class="fixed-bottom m-md-4 mb-md-5 d-grid d-md-block">
-            <button class="btn btn-primary shadow float-md-end pt-2 pb-5 py-md-4 fs-6 text-decoration-underline"
+        <div v-else-if="$matches.sm.max" class="position-absolute bottom-0 end-0 m-4 mb-5 d-block">
+            <button class="btn btn-primary shadow float-end py-4 fs-6 text-decoration-underline"
+                @click="expand">
+                Resume chat with {{ otherParty[0].firstName }} {{ otherParty[0].lastName }}
+            </button>
+        </div>
+        <div v-else class="fixed-bottom d-grid">
+            <button class="btn btn-primary shadow pt-2 pb-5 fs-6 text-decoration-underline"
                 @click="expand">
                 Resume chat with {{ otherParty[0].firstName }} {{ otherParty[0].lastName }}
             </button>
